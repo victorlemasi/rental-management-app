@@ -1,0 +1,167 @@
+import { useState, useEffect } from 'react';
+import { Building2, Users, Wrench, DollarSign, AlertTriangle, PieChart as PieChartIcon } from 'lucide-react';
+import StatsCard from '../components/StatsCard';
+import RevenueChart from '../components/RevenueChart';
+import RecentActivity from '../components/RecentActivity';
+import { useAuth } from '../context/AuthContext';
+import { tenantsAPI, propertiesAPI } from '../services/api';
+import type { Tenant, Property } from '../types';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+
+const Dashboard = () => {
+    const { user } = useAuth();
+    const [expiringLeases, setExpiringLeases] = useState<Tenant[]>([]);
+    const [occupancyData, setOccupancyData] = useState<{ name: string; value: number }[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [tenants, properties] = await Promise.all([
+                    tenantsAPI.getAll(),
+                    propertiesAPI.getAll()
+                ]);
+
+                // Lease Alerts Logic
+                const now = new Date();
+                const thirtyDaysFromNow = new Date();
+                thirtyDaysFromNow.setDate(now.getDate() + 30);
+
+                const expiring = tenants.filter((tenant: Tenant) => {
+                    const leaseEnd = new Date(tenant.leaseEnd);
+                    return leaseEnd >= now && leaseEnd <= thirtyDaysFromNow;
+                });
+                setExpiringLeases(expiring);
+
+                // Occupancy Logic
+                const totalUnits = properties.reduce((sum: number, p: Property) => sum + p.units, 0);
+                const occupiedUnits = properties.reduce((sum: number, p: Property) => sum + p.occupiedUnits, 0);
+                const vacantUnits = totalUnits - occupiedUnits;
+
+                setOccupancyData([
+                    { name: 'Occupied', value: occupiedUnits },
+                    { name: 'Vacant', value: vacantUnits }
+                ]);
+
+            } catch (error) {
+                console.error('Failed to fetch dashboard data', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const COLORS = ['#10B981', '#EF4444'];
+
+    if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
+
+    return (
+        <div className="space-y-6">
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-gray-500 mt-1">Welcome back {user?.name}, here's what's happening today.</p>
+            </div>
+
+            {/* Alerts Section */}
+            {expiringLeases.length > 0 && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <AlertTriangle className="h-5 w-5 text-yellow-400" />
+                        </div>
+                        <div className="ml-3">
+                            <h3 className="text-sm font-medium text-yellow-800">
+                                Leases Expiring Soon ({expiringLeases.length})
+                            </h3>
+                            <div className="mt-2 text-sm text-yellow-700">
+                                <ul className="list-disc pl-5 space-y-1">
+                                    {expiringLeases.map(tenant => (
+                                        <li key={tenant._id}>
+                                            {tenant.name} - Unit {tenant.unitNumber} (Ends: {new Date(tenant.leaseEnd).toLocaleDateString()})
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatsCard
+                    label="Total Properties"
+                    value="12"
+                    trend="+2"
+                    trendUp={true}
+                    icon={Building2}
+                    color="bg-blue-500"
+                />
+                <StatsCard
+                    label="Total Tenants"
+                    value="48"
+                    trend="+5"
+                    trendUp={true}
+                    icon={Users}
+                    color="bg-green-500"
+                />
+                <StatsCard
+                    label="Maintenance Requests"
+                    value="3"
+                    trend="-1"
+                    trendUp={true}
+                    icon={Wrench}
+                    color="bg-orange-500"
+                />
+                <StatsCard
+                    label="Total Revenue"
+                    value="$54,200"
+                    trend="+12%"
+                    trendUp={true}
+                    icon={DollarSign}
+                    color="bg-purple-500"
+                />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                    <RevenueChart />
+                    <div className="bg-white p-6 rounded-xl border border-gray-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <PieChartIcon className="w-5 h-5 text-primary-600" />
+                            Occupancy Rate
+                        </h3>
+                        <div className="h-64">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={occupancyData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                    >
+                                        {occupancyData.map((_, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <RecentActivity />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Dashboard;

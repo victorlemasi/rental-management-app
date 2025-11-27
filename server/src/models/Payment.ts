@@ -1,0 +1,39 @@
+import mongoose, { Schema, Document } from 'mongoose';
+
+export interface IPayment extends Document {
+    tenantId: mongoose.Types.ObjectId;
+    tenantName: string;
+    propertyName: string;
+    amount: number;
+    date: Date;
+    status: 'completed' | 'pending' | 'failed';
+    method: 'bank-transfer' | 'credit-card' | 'cash' | 'check';
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const PaymentSchema: Schema = new Schema(
+    {
+        tenantId: { type: Schema.Types.ObjectId, ref: 'Tenant', required: true },
+        tenantName: { type: String, required: true },
+        propertyName: { type: String, required: true },
+        amount: { type: Number, required: true },
+        date: { type: Date, required: true },
+        status: {
+            type: String,
+            required: true,
+            enum: ['completed', 'pending', 'failed'],
+            default: 'pending'
+        },
+        method: {
+            type: String,
+            required: true,
+            enum: ['bank-transfer', 'credit-card', 'cash', 'check']
+        }
+    },
+    {
+        timestamps: true
+    }
+);
+
+export default mongoose.model<IPayment>('Payment', PaymentSchema);
