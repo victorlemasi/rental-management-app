@@ -2,13 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/database.js';
-import propertyRoutes from './routes/properties';
-import tenantRoutes from './routes/tenants';
-import maintenanceRoutes from './routes/maintenance';
-import paymentRoutes from './routes/payments';
-import { authRoutes } from './routes/auth';
-import { mpesaRoutes } from './routes/mpesa';
-import notificationRoutes from './routes/notifications';
+import propertyRoutes from './routes/properties.js';
+import tenantRoutes from './routes/tenants.js';
+import maintenanceRoutes from './routes/maintenance.js';
+import paymentRoutes from './routes/payments.js';
+import { authRoutes } from './routes/auth.js';
+import { mpesaRoutes } from './routes/mpesa.js';
+import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
 
