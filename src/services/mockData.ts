@@ -4,6 +4,7 @@ import type { Property, Tenant, MaintenanceRequest, Payment } from '../types';
 export const properties: Property[] = [
     {
         id: '1',
+        _id: 'mock-prop-1',
         name: 'Sunset Apartments',
         address: '123 Main St, Downtown',
         type: 'apartment',
@@ -16,6 +17,7 @@ export const properties: Property[] = [
     },
     {
         id: '2',
+        _id: 'mock-prop-2',
         name: 'Oak Street Condos',
         address: '456 Oak St, Midtown',
         type: 'condo',
@@ -28,6 +30,7 @@ export const properties: Property[] = [
     },
     {
         id: '3',
+        _id: 'mock-prop-3',
         name: 'Riverside House',
         address: '789 River Rd, Westside',
         type: 'house',
@@ -40,6 +43,7 @@ export const properties: Property[] = [
     },
     {
         id: '4',
+        _id: 'mock-prop-4',
         name: 'Downtown Plaza',
         address: '321 Commerce Blvd, Downtown',
         type: 'commercial',
@@ -56,6 +60,7 @@ export const properties: Property[] = [
 export const tenants: Tenant[] = [
     {
         id: '1',
+        _id: 'mock-tenant-1',
         name: 'Sarah Wilson',
         email: 'sarah.w@email.com',
         phone: '(555) 123-4567',
@@ -69,6 +74,7 @@ export const tenants: Tenant[] = [
     },
     {
         id: '2',
+        _id: 'mock-tenant-2',
         name: 'Michael Chen',
         email: 'mchen@email.com',
         phone: '(555) 234-5678',
@@ -82,6 +88,7 @@ export const tenants: Tenant[] = [
     },
     {
         id: '3',
+        _id: 'mock-tenant-3',
         name: 'Emily Rodriguez',
         email: 'emily.r@email.com',
         phone: '(555) 345-6789',
@@ -99,6 +106,7 @@ export const tenants: Tenant[] = [
 export const maintenanceRequests: MaintenanceRequest[] = [
     {
         id: '1',
+        _id: 'mock-mr-1',
         propertyId: '1',
         unitNumber: '2A',
         tenantName: 'Michael Chen',
@@ -111,6 +119,7 @@ export const maintenanceRequests: MaintenanceRequest[] = [
     },
     {
         id: '2',
+        _id: 'mock-mr-2',
         propertyId: '1',
         unitNumber: '4B',
         tenantName: 'Sarah Wilson',
@@ -123,6 +132,7 @@ export const maintenanceRequests: MaintenanceRequest[] = [
     },
     {
         id: '3',
+        _id: 'mock-mr-3',
         propertyId: '2',
         unitNumber: '3C',
         tenantName: 'Emily Rodriguez',
@@ -139,6 +149,7 @@ export const maintenanceRequests: MaintenanceRequest[] = [
 export const payments: Payment[] = [
     {
         id: '1',
+        _id: 'mock-pay-1',
         tenantId: '1',
         tenantName: 'Sarah Wilson',
         propertyName: 'Sunset Apartments - 4B',
@@ -149,6 +160,7 @@ export const payments: Payment[] = [
     },
     {
         id: '2',
+        _id: 'mock-pay-2',
         tenantId: '3',
         tenantName: 'Emily Rodriguez',
         propertyName: 'Oak Street Condos - 3C',
@@ -159,6 +171,7 @@ export const payments: Payment[] = [
     },
     {
         id: '3',
+        _id: 'mock-pay-3',
         tenantId: '2',
         tenantName: 'Michael Chen',
         propertyName: 'Sunset Apartments - 2A',
