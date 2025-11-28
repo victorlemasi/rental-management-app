@@ -21,7 +21,8 @@ const Tenants = () => {
         leaseEnd: '',
         monthlyRent: 0,
         status: 'active',
-        paymentStatus: 'pending'
+        paymentStatus: 'pending',
+        password: ''
     });
 
     useEffect(() => {
@@ -61,7 +62,8 @@ const Tenants = () => {
                 leaseEnd: '',
                 monthlyRent: 0,
                 status: 'active',
-                paymentStatus: 'pending'
+                paymentStatus: 'pending',
+                password: ''
             });
         } catch (err) {
             console.error('Failed to create tenant:', err);
@@ -221,6 +223,17 @@ const Tenants = () => {
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Leave blank for default: tenant123"
                         />
                     </div>
 

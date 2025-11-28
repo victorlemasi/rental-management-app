@@ -21,7 +21,7 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           <Route path="/" element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'manager']}>
               <Layout />
             </ProtectedRoute>
           }>
@@ -34,7 +34,7 @@ function App() {
           </Route>
 
           <Route path="/tenant-dashboard" element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['tenant']}>
               <TenantDashboard />
             </ProtectedRoute>
           } />

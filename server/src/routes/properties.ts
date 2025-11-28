@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
 import Property from '../models/Property.js';
+import { auth, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all properties
-router.get('/', async (req: Request, res: Response) => {
+// Get all properties - Protected but accessible by all roles
+router.get('/', auth, async (req: Request, res: Response) => {
     try {
         const properties = await Property.find().sort({ createdAt: -1 });
         res.json(properties);
@@ -13,8 +14,8 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-// Get single property
-router.get('/:id', async (req: Request, res: Response) => {
+// Get single property - Protected but accessible by all roles
+router.get('/:id', auth, async (req: Request, res: Response) => {
     try {
         const property = await Property.findById(req.params.id);
         if (!property) {
@@ -26,8 +27,8 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// Create property
-router.post('/', async (req: Request, res: Response) => {
+// Create property - Admin/Manager only
+router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
     try {
         const property = new Property(req.body);
         const savedProperty = await property.save();
@@ -37,8 +38,8 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
-// Update property
-router.put('/:id', async (req: Request, res: Response) => {
+// Update property - Admin/Manager only
+router.put('/:id', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
     try {
         const property = await Property.findByIdAndUpdate(
             req.params.id,
@@ -54,8 +55,8 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// Delete property
-router.delete('/:id', async (req: Request, res: Response) => {
+// Delete property - Admin/Manager only
+router.delete('/:id', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
     try {
         const property = await Property.findByIdAndDelete(req.params.id);
         if (!property) {

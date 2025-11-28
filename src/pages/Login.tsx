@@ -9,6 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loginType, setLoginType] = useState<'manager' | 'tenant'>('manager');
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -19,6 +20,15 @@ const Login = () => {
 
         try {
             const data = await authAPI.login({ email, password });
+
+            // Verify role matches login type (optional UX enforcement)
+            if (loginType === 'tenant' && data.user.role !== 'tenant') {
+                throw new Error('Please use the Landlord login for manager accounts');
+            }
+            if (loginType === 'manager' && data.user.role === 'tenant') {
+                throw new Error('Please use the Tenant login for tenant accounts');
+            }
+
             login(data.token, data.user);
 
             if (data.user.role === 'tenant') {
@@ -44,8 +54,35 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Welcome Back</h2>
-                    <p className="text-gray-500 text-center mb-8">Sign in to your account</p>
+                    <div className="flex bg-gray-100 p-1 rounded-lg mb-8">
+                        <button
+                            onClick={() => setLoginType('manager')}
+                            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'manager'
+                                    ? 'bg-white text-primary-600 shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            Landlord
+                        </button>
+                        <button
+                            onClick={() => setLoginType('tenant')}
+                            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'tenant'
+                                    ? 'bg-white text-primary-600 shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            Tenant
+                        </button>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                        {loginType === 'manager' ? 'Landlord Login' : 'Tenant Portal'}
+                    </h2>
+                    <p className="text-gray-500 text-center mb-8">
+                        {loginType === 'manager'
+                            ? 'Manage your properties and tenants'
+                            : 'View your lease and submit requests'}
+                    </p>
 
                     {error && (
                         <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm text-center">
@@ -64,7 +101,7 @@ const Login = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                    placeholder="admin@example.com"
+                                    placeholder={loginType === 'manager' ? "admin@example.com" : "tenant@example.com"}
                                 />
                             </div>
                         </div>

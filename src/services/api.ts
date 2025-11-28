@@ -3,13 +3,17 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 // Properties API
 export const propertiesAPI = {
     getAll: async () => {
-        const response = await fetch(`${API_BASE_URL}/properties`);
+        const response = await fetch(`${API_BASE_URL}/properties`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch properties');
         return response.json();
     },
 
     getById: async (id: string) => {
-        const response = await fetch(`${API_BASE_URL}/properties/${id}`);
+        const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch property');
         return response.json();
     },
@@ -17,7 +21,7 @@ export const propertiesAPI = {
     create: async (data: any) => {
         const response = await fetch(`${API_BASE_URL}/properties`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to create property');
@@ -27,7 +31,7 @@ export const propertiesAPI = {
     update: async (id: string, data: any) => {
         const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to update property');
@@ -37,6 +41,7 @@ export const propertiesAPI = {
     delete: async (id: string) => {
         const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
             method: 'DELETE',
+            headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to delete property');
         return response.json();
@@ -45,14 +50,26 @@ export const propertiesAPI = {
 
 // Tenants API
 export const tenantsAPI = {
+    getMe: async () => {
+        const response = await fetch(`${API_BASE_URL}/tenants/me`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch tenant profile');
+        return response.json();
+    },
+
     getAll: async () => {
-        const response = await fetch(`${API_BASE_URL}/tenants`);
+        const response = await fetch(`${API_BASE_URL}/tenants`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch tenants');
         return response.json();
     },
 
     getById: async (id: string) => {
-        const response = await fetch(`${API_BASE_URL}/tenants/${id}`);
+        const response = await fetch(`${API_BASE_URL}/tenants/${id}`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch tenant');
         return response.json();
     },
@@ -60,7 +77,7 @@ export const tenantsAPI = {
     create: async (data: any) => {
         const response = await fetch(`${API_BASE_URL}/tenants`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to create tenant');
@@ -70,7 +87,7 @@ export const tenantsAPI = {
     update: async (id: string, data: any) => {
         const response = await fetch(`${API_BASE_URL}/tenants/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to update tenant');
@@ -80,6 +97,7 @@ export const tenantsAPI = {
     delete: async (id: string) => {
         const response = await fetch(`${API_BASE_URL}/tenants/${id}`, {
             method: 'DELETE',
+            headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to delete tenant');
         return response.json();
@@ -88,14 +106,26 @@ export const tenantsAPI = {
 
 // Maintenance API
 export const maintenanceAPI = {
+    getMyRequests: async () => {
+        const response = await fetch(`${API_BASE_URL}/maintenance/my-requests`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch my maintenance requests');
+        return response.json();
+    },
+
     getAll: async () => {
-        const response = await fetch(`${API_BASE_URL}/maintenance`);
+        const response = await fetch(`${API_BASE_URL}/maintenance`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch maintenance requests');
         return response.json();
     },
 
     getById: async (id: string) => {
-        const response = await fetch(`${API_BASE_URL}/maintenance/${id}`);
+        const response = await fetch(`${API_BASE_URL}/maintenance/${id}`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch maintenance request');
         return response.json();
     },
@@ -103,7 +133,7 @@ export const maintenanceAPI = {
     create: async (data: any) => {
         const response = await fetch(`${API_BASE_URL}/maintenance`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to create maintenance request');
@@ -113,7 +143,7 @@ export const maintenanceAPI = {
     update: async (id: string, data: any) => {
         const response = await fetch(`${API_BASE_URL}/maintenance/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to update maintenance request');
@@ -123,6 +153,7 @@ export const maintenanceAPI = {
     delete: async (id: string) => {
         const response = await fetch(`${API_BASE_URL}/maintenance/${id}`, {
             method: 'DELETE',
+            headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to delete maintenance request');
         return response.json();
@@ -132,13 +163,17 @@ export const maintenanceAPI = {
 // Payments API
 export const paymentsAPI = {
     getAll: async () => {
-        const response = await fetch(`${API_BASE_URL}/payments`);
+        const response = await fetch(`${API_BASE_URL}/payments`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch payments');
         return response.json();
     },
 
     getById: async (id: string) => {
-        const response = await fetch(`${API_BASE_URL}/payments/${id}`);
+        const response = await fetch(`${API_BASE_URL}/payments/${id}`, {
+            headers: getHeaders(),
+        });
         if (!response.ok) throw new Error('Failed to fetch payment');
         return response.json();
     },
@@ -146,7 +181,7 @@ export const paymentsAPI = {
     create: async (data: any) => {
         const response = await fetch(`${API_BASE_URL}/payments`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to create payment');
@@ -156,7 +191,7 @@ export const paymentsAPI = {
     update: async (id: string, data: any) => {
         const response = await fetch(`${API_BASE_URL}/payments/${id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to update payment');
@@ -204,6 +239,19 @@ export const authAPI = {
 
 // M-PESA API
 export const mpesaAPI = {
+    initiateSTKPush: async (data: { phoneNumber: string; amount: number; email: string }) => {
+        const response = await fetch(`${API_BASE_URL}/mpesa/stk-push`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to initiate STK Push');
+        }
+        return response.json();
+    },
+
     checkStatus: async (transactionId: string) => {
         const response = await fetch(`${API_BASE_URL}/mpesa/status`, {
             method: 'POST',
