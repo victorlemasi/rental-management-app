@@ -71,6 +71,8 @@ export const tenants: Tenant[] = [
         monthlyRent: 1200,
         status: 'active',
         paymentStatus: 'paid',
+        balance: 0,
+        currentMonth: '2024-11',
     },
     {
         id: '2',
@@ -85,6 +87,8 @@ export const tenants: Tenant[] = [
         monthlyRent: 1500,
         status: 'active',
         paymentStatus: 'pending',
+        balance: 1500,
+        currentMonth: '2024-11',
     },
     {
         id: '3',
@@ -99,6 +103,8 @@ export const tenants: Tenant[] = [
         monthlyRent: 1800,
         status: 'active',
         paymentStatus: 'paid',
+        balance: 0,
+        currentMonth: '2024-11',
     },
 ];
 
