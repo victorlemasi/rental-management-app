@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
@@ -30,7 +30,7 @@ router.post('/register', [
     body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     body('name').trim().notEmpty().withMessage('Name is required'),
-], async (req, res) => {
+], async (req: Request, res: Response) => {
     // Handle validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -89,7 +89,7 @@ router.post('/login',
         body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
         body('password').notEmpty().withMessage('Password is required'),
     ],
-    async (req, res) => {
+    async (req: Request, res: Response) => {
         // Handle validation errors
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
