@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
 import dotenv from 'dotenv';
 import connectDB from './config/database.js';
 import propertyRoutes from './routes/properties.js';
@@ -42,6 +43,9 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' })); // Increased limit for base64 images
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Sanitize user input to prevent NoSQL injection
+app.use(mongoSanitize());
 
 // Routes
 app.use('/api/auth', authRoutes);

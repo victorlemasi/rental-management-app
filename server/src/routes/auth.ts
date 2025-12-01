@@ -1,12 +1,42 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
 import { User } from '../models/User.js';
 
 const router = express.Router();
 
+// Rate limiter for login attempts - 5 attempts per 15 minutes
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 login requests per windowMs
+    message: 'Too many login attempts, please try again after 15 minutes',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Rate limiter for password reset - 3 attempts per hour
+const passwordResetLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3, // Limit each IP to 3 password reset requests per hour
+    message: 'Too many password reset attempts, please try again after an hour',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // Register
-router.post('/register', async (req, res) => {
+router.post('/register', [
+    body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    body('name').trim().notEmpty().withMessage('Name is required'),
+], async (req, res) => {
+    // Handle validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     console.log('Register request received:', req.body);
     try {
         const { email, password, name } = req.body;
@@ -53,38 +83,50 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+router.post('/login',
+    loginLimiter, // Rate limiting
+    [
+        body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+        body('password').notEmpty().withMessage('Password is required'),
+    ],
+    async (req, res) => {
+        // Handle validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+        try {
+            const { email, password } = req.body;
+
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(400).json({ message: 'Invalid credentials' });
+            }
+
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Invalid credentials' });
+            }
+
+            if (!process.env.JWT_SECRET) {
+                throw new Error('JWT_SECRET is not defined');
+            }
+
+            const token = jwt.sign(
+                { userId: user._id, role: user.role },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+        } catch (error) {
+            res.status(500).json({ message: 'Error logging in' });
         }
-
-        if (!process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET is not defined');
-        }
-
-        const token = jwt.sign(
-            { userId: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
-
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-    } catch (error) {
-        res.status(500).json({ message: 'Error logging in' });
-    }
-});
+    });
 
 // Forgot Password
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', passwordResetLimiter, async (req, res) => {
     try {
         const { email } = req.body;
 
