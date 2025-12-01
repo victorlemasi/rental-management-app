@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Building2, Users, Wrench, DollarSign, AlertTriangle, PieChart as PieChartIcon } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
 import RevenueChart from '../components/RevenueChart';
@@ -10,6 +11,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 
 const Dashboard = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [expiringLeases, setExpiringLeases] = useState<Tenant[]>([]);
     const [occupancyData, setOccupancyData] = useState<{ name: string; value: number }[]>([]);
     const [loading, setLoading] = useState(true);
@@ -145,6 +147,46 @@ const Dashboard = () => {
                     icon={DollarSign}
                     color="bg-purple-500"
                 />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button
+                    onClick={() => navigate('/properties')}
+                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                >
+                    <div className="p-3 bg-blue-50 text-blue-600 rounded-full group-hover:bg-blue-100 transition-colors dark:bg-blue-900/30 dark:text-blue-400">
+                        <Building2 className="w-6 h-6" />
+                    </div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Add Property</span>
+                </button>
+                <button
+                    onClick={() => navigate('/tenants')}
+                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                >
+                    <div className="p-3 bg-green-50 text-green-600 rounded-full group-hover:bg-green-100 transition-colors dark:bg-green-900/30 dark:text-green-400">
+                        <Users className="w-6 h-6" />
+                    </div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Add Tenant</span>
+                </button>
+                <button
+                    onClick={() => navigate('/financials')}
+                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                >
+                    <div className="p-3 bg-purple-50 text-purple-600 rounded-full group-hover:bg-purple-100 transition-colors dark:bg-purple-900/30 dark:text-purple-400">
+                        <DollarSign className="w-6 h-6" />
+                    </div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Record Payment</span>
+                </button>
+                <button
+                    onClick={() => navigate('/maintenance')}
+                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                >
+                    <div className="p-3 bg-orange-50 text-orange-600 rounded-full group-hover:bg-orange-100 transition-colors dark:bg-orange-900/30 dark:text-orange-400">
+                        <Wrench className="w-6 h-6" />
+                    </div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Maintenance</span>
+                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
