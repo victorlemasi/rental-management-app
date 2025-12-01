@@ -9,8 +9,10 @@ export interface ITenant extends Document {
     leaseStart: Date;
     leaseEnd: Date;
     monthlyRent: number;
+    balance: number;
+    currentMonth: string;
     status: 'active' | 'pending' | 'expired';
-    paymentStatus: 'paid' | 'pending' | 'overdue';
+    paymentStatus: 'paid' | 'pending' | 'overdue' | 'partial';
     createdAt: Date;
     updatedAt: Date;
 }
@@ -25,6 +27,8 @@ const TenantSchema: Schema = new Schema(
         leaseStart: { type: Date, required: true },
         leaseEnd: { type: Date, required: true },
         monthlyRent: { type: Number, required: true },
+        balance: { type: Number, default: 0 },
+        currentMonth: { type: String, default: () => new Date().toISOString().slice(0, 7) }, // YYYY-MM format
         status: {
             type: String,
             required: true,
@@ -34,7 +38,7 @@ const TenantSchema: Schema = new Schema(
         paymentStatus: {
             type: String,
             required: true,
-            enum: ['paid', 'pending', 'overdue'],
+            enum: ['paid', 'pending', 'overdue', 'partial'],
             default: 'pending'
         }
     },

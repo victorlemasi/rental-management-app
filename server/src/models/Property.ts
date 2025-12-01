@@ -11,6 +11,9 @@ export interface IProperty extends Document {
     imageUrl?: string;
     amenities: string[];
     yearBuilt: number;
+    paymentAccountNumber?: string;
+    paymentAccountName?: string;
+    user: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -35,7 +38,10 @@ const PropertySchema: Schema = new Schema(
         },
         imageUrl: { type: String },
         amenities: [{ type: String }],
-        yearBuilt: { type: Number, required: true }
+        yearBuilt: { type: Number, required: true },
+        paymentAccountNumber: { type: String },
+        paymentAccountName: { type: String },
+        user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
     },
     {
         timestamps: true

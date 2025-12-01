@@ -8,15 +8,25 @@ const PropertyCard = ({ property, onDelete }: { property: Property; onDelete: (i
     const occupancyRate = Math.round((property.occupiedUnits / property.units) * 100);
 
     const statusColors = {
-        active: 'bg-green-100 text-green-700',
-        maintenance: 'bg-orange-100 text-orange-700',
-        vacant: 'bg-gray-100 text-gray-700',
+        active: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+        maintenance: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+        vacant: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow group">
-            <div className="h-48 bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center relative">
-                <Building2 className="w-20 h-20 text-white opacity-50" />
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow group dark:bg-gray-800 dark:border-gray-700">
+            <div className="h-48 relative overflow-hidden">
+                {property.imageUrl ? (
+                    <img
+                        src={property.imageUrl}
+                        alt={property.name}
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="h-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+                        <Building2 className="w-20 h-20 text-white opacity-50" />
+                    </div>
+                )}
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
@@ -24,7 +34,7 @@ const PropertyCard = ({ property, onDelete }: { property: Property; onDelete: (i
                             onDelete(property._id);
                         }
                     }}
-                    className="absolute top-4 right-4 p-2 bg-white/90 rounded-lg text-red-600 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+                    className="absolute top-4 right-4 p-2 bg-white/90 rounded-lg text-red-600 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:bg-gray-900/90 dark:hover:bg-gray-900 dark:text-red-400"
                 >
                     <Trash2 className="w-4 h-4" />
                 </button>
@@ -33,8 +43,8 @@ const PropertyCard = ({ property, onDelete }: { property: Property; onDelete: (i
             <div className="p-6">
                 <div className="flex items-start justify-between mb-3">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900">{property.name}</h3>
-                        <div className="flex items-center gap-1 text-gray-500 text-sm mt-1">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{property.name}</h3>
+                        <div className="flex items-center gap-1 text-gray-500 text-sm mt-1 dark:text-gray-400">
                             <MapPin className="w-4 h-4" />
                             <span>{property.address}</span>
                         </div>
@@ -46,37 +56,37 @@ const PropertyCard = ({ property, onDelete }: { property: Property; onDelete: (i
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <p className="text-xs text-gray-500">Units</p>
-                        <p className="text-lg font-semibold text-gray-900">{property.units}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Units</p>
+                        <p className="text-lg font-semibold text-gray-900 dark:text-white">{property.units}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-500">Occupancy</p>
-                        <p className="text-lg font-semibold text-gray-900">{occupancyRate}%</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Occupancy</p>
+                        <p className="text-lg font-semibold text-gray-900 dark:text-white">{occupancyRate}%</p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-500">Type</p>
-                        <p className="text-sm font-medium text-gray-900 capitalize">{property.type}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Type</p>
+                        <p className="text-sm font-medium text-gray-900 capitalize dark:text-white">{property.type}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-gray-500">Monthly Revenue</p>
-                        <p className="text-sm font-semibold text-primary-600">${property.monthlyRent.toLocaleString()}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Monthly Revenue</p>
+                        <p className="text-sm font-semibold text-primary-600 dark:text-primary-400">KSh {property.monthlyRent.toLocaleString()}</p>
                     </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                     {property.amenities.slice(0, 3).map((amenity) => (
-                        <span key={amenity} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                        <span key={amenity} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded dark:bg-gray-700 dark:text-gray-300">
                             {amenity}
                         </span>
                     ))}
                     {property.amenities.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded dark:bg-gray-700 dark:text-gray-300">
                             +{property.amenities.length - 3} more
                         </span>
                     )}
                 </div>
 
-                <button className="w-full py-2 bg-primary-50 text-primary-700 rounded-lg font-medium hover:bg-primary-100 transition-colors">
+                <button className="w-full py-2 bg-primary-50 text-primary-700 rounded-lg font-medium hover:bg-primary-100 transition-colors dark:bg-primary-900/30 dark:text-primary-400 dark:hover:bg-primary-900/50">
                     View Details
                 </button>
             </div>
@@ -98,12 +108,33 @@ const Properties = () => {
         units: 1,
         monthlyRent: 0,
         yearBuilt: new Date().getFullYear(),
-        amenities: ''
+        paymentAccountNumber: '',
+        paymentAccountName: '',
+        amenities: '',
+        imageUrl: ''
     });
+    const [imagePreview, setImagePreview] = useState<string>('');
 
     useEffect(() => {
         fetchProperties();
     }, []);
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5000000) { // 5MB limit
+                alert('Image size should be less than 5MB');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setFormData({ ...formData, imageUrl: base64String });
+                setImagePreview(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const fetchProperties = async () => {
         try {
@@ -138,8 +169,12 @@ const Properties = () => {
                 units: 1,
                 monthlyRent: 0,
                 yearBuilt: new Date().getFullYear(),
-                amenities: ''
+                paymentAccountNumber: '',
+                paymentAccountName: '',
+                amenities: '',
+                imageUrl: ''
             });
+            setImagePreview('');
         } catch (err) {
             console.error('Failed to create property:', err);
             alert('Failed to create property');
@@ -168,7 +203,7 @@ const Properties = () => {
             <div className="flex items-center justify-center h-64">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p className="text-gray-500">Loading properties...</p>
+                    <p className="text-gray-500 dark:text-gray-400">Loading properties...</p>
                 </div>
             </div>
         );
@@ -176,9 +211,9 @@ const Properties = () => {
 
     if (error) {
         return (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                <h3 className="text-red-800 font-semibold mb-2">Error Loading Properties</h3>
-                <p className="text-red-600">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 dark:bg-red-900/20 dark:border-red-800">
+                <h3 className="text-red-800 font-semibold mb-2 dark:text-red-300">Error Loading Properties</h3>
+                <p className="text-red-600 dark:text-red-400">{error}</p>
                 <button
                     onClick={fetchProperties}
                     className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -193,8 +228,8 @@ const Properties = () => {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
-                    <p className="text-gray-500 mt-1">Manage your rental properties • Connected to MongoDB Atlas</p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Properties</h1>
+                    <p className="text-gray-500 mt-1 dark:text-gray-400">Manage your rental properties • Connected to MongoDB Atlas</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -205,22 +240,22 @@ const Properties = () => {
                 </button>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-gray-200">
+            <div className="bg-white p-4 rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                         <input
                             type="text"
                             placeholder="Search properties..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                         />
                     </div>
                     <select
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     >
                         <option value="all">All Types</option>
                         <option value="apartment">Apartment</option>
@@ -243,8 +278,8 @@ const Properties = () => {
 
             {filteredProperties.length === 0 && !loading && (
                 <div className="text-center py-12">
-                    <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No properties found</p>
+                    <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4 dark:text-gray-600" />
+                    <p className="text-gray-500 dark:text-gray-400">No properties found</p>
                 </div>
             )}
 
@@ -255,36 +290,56 @@ const Properties = () => {
             >
                 <form onSubmit={handleAddProperty} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Property Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Property Name</label>
                         <input
                             type="text"
                             required
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             placeholder="e.g. Sunset Apartments"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Address</label>
                         <input
                             type="text"
                             required
                             value={formData.address}
                             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             placeholder="e.g. 123 Main St"
                         />
                     </div>
 
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Property Image</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        />
+                        {imagePreview && (
+                            <div className="mt-2">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="w-full h-48 object-cover rounded-lg"
+                                />
+                            </div>
+                        )}
+                        <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">Max size: 5MB. Supported formats: JPG, PNG, GIF</p>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Type</label>
                             <select
                                 value={formData.type}
                                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             >
                                 <option value="apartment">Apartment</option>
                                 <option value="house">House</option>
@@ -293,58 +348,85 @@ const Properties = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Year Built</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Year Built</label>
                             <input
                                 type="number"
                                 required
                                 value={formData.yearBuilt}
                                 onChange={(e) => setFormData({ ...formData, yearBuilt: parseInt(e.target.value) })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Total Units</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Total Units</label>
                             <input
                                 type="number"
                                 required
                                 min="1"
                                 value={formData.units}
                                 onChange={(e) => setFormData({ ...formData, units: parseInt(e.target.value) })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Rent ($)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Monthly Rent ($)</label>
                             <input
                                 type="number"
                                 required
                                 min="0"
                                 value={formData.monthlyRent}
                                 onChange={(e) => setFormData({ ...formData, monthlyRent: parseInt(e.target.value) })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Amenities (comma separated)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Amenities (comma separated)</label>
                         <input
                             type="text"
                             value={formData.amenities}
                             onChange={(e) => setFormData({ ...formData, amenities: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                             placeholder="e.g. Parking, Gym, Pool"
                         />
+                    </div>
+
+                    <div className="border-t border-gray-200 pt-4 mt-4 dark:border-gray-700">
+                        <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-gray-300">Payment Account Details (Optional)</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Account Name</label>
+                                <input
+                                    type="text"
+                                    value={formData.paymentAccountName}
+                                    onChange={(e) => setFormData({ ...formData, paymentAccountName: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                    placeholder="e.g. John Doe Properties"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Account Number</label>
+                                <input
+                                    type="text"
+                                    value={formData.paymentAccountNumber}
+                                    onChange={(e) => setFormData({ ...formData, paymentAccountNumber: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                    placeholder="e.g. 1234567890"
+                                />
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Tenants will see these details for bank transfers</p>
+                        </div>
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6">
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-300 dark:hover:bg-gray-800"
                         >
                             Cancel
                         </button>

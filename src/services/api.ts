@@ -266,6 +266,53 @@ export const mpesaAPI = {
     },
 };
 
+// Notifications API
+export const notificationsAPI = {
+    getMyNotifications: async () => {
+        const response = await fetch(`${API_BASE_URL}/notifications/my-notifications`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch notifications');
+        return response.json();
+    },
+
+    getAll: async () => {
+        const response = await fetch(`${API_BASE_URL}/notifications`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch notifications');
+        return response.json();
+    },
+
+    create: async (data: any) => {
+        const response = await fetch(`${API_BASE_URL}/notifications`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to create notification');
+        return response.json();
+    },
+
+    markAsRead: async (id: string) => {
+        const response = await fetch(`${API_BASE_URL}/notifications/${id}/read`, {
+            method: 'PUT',
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to mark notification as read');
+        return response.json();
+    },
+
+    delete: async (id: string) => {
+        const response = await fetch(`${API_BASE_URL}/notifications/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to delete notification');
+        return response.json();
+    },
+};
+
 // Helper to get headers with token
 const getHeaders = () => {
     const token = localStorage.getItem('token');

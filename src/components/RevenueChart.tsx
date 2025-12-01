@@ -12,8 +12,8 @@ const data = [
 
 const RevenueChart = () => {
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[400px]">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Revenue Overview</h3>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[400px] dark:bg-gray-800 dark:border-gray-700">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 dark:text-white">Revenue Overview</h3>
             <div className="h-[320px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>
@@ -23,12 +23,12 @@ const RevenueChart = () => {
                                 <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} tickFormatter={(value) => `$${value}`} />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" strokeOpacity={0.2} />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af' }} />
+                        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af' }} tickFormatter={(value) => `$${value}`} />
                         <Tooltip
-                            contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                            itemStyle={{ color: '#0ea5e9' }}
+                            contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                            itemStyle={{ color: '#38bdf8' }}
                         />
                         <Area type="monotone" dataKey="revenue" stroke="#0ea5e9" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
                     </AreaChart>

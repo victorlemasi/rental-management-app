@@ -4,8 +4,8 @@ import StatsCard from '../components/StatsCard';
 import RevenueChart from '../components/RevenueChart';
 import RecentActivity from '../components/RecentActivity';
 import { useAuth } from '../context/AuthContext';
-import { tenantsAPI, propertiesAPI } from '../services/api';
-import type { Tenant, Property } from '../types';
+import { tenantsAPI, propertiesAPI, maintenanceAPI, paymentsAPI } from '../services/api';
+import type { Tenant, Property, MaintenanceRequest, Payment } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const Dashboard = () => {
@@ -13,14 +13,37 @@ const Dashboard = () => {
     const [expiringLeases, setExpiringLeases] = useState<Tenant[]>([]);
     const [occupancyData, setOccupancyData] = useState<{ name: string; value: number }[]>([]);
     const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState({
+        totalProperties: 0,
+        totalTenants: 0,
+        maintenanceRequests: 0,
+        totalRevenue: 0
+    });
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [tenants, properties] = await Promise.all([
+                const [tenants, properties, maintenanceRequests, payments] = await Promise.all([
                     tenantsAPI.getAll(),
-                    propertiesAPI.getAll()
+                    propertiesAPI.getAll(),
+                    maintenanceAPI.getAll(),
+                    paymentsAPI.getAll()
                 ]);
+
+                // Calculate stats
+                const totalProperties = properties.length;
+                const totalTenants = tenants.length;
+                const pendingMaintenance = maintenanceRequests.filter(
+                    (req: MaintenanceRequest) => req.status === 'pending' || req.status === 'in-progress'
+                ).length;
+                const totalRevenue = payments.reduce((sum: number, payment: Payment) => sum + payment.amount, 0);
+
+                setStats({
+                    totalProperties,
+                    totalTenants,
+                    maintenanceRequests: pendingMaintenance,
+                    totalRevenue
+                });
 
                 // Lease Alerts Logic
                 const now = new Date();
@@ -55,27 +78,27 @@ const Dashboard = () => {
 
     const COLORS = ['#10B981', '#EF4444'];
 
-    if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
+    if (loading) return <div className="p-8 text-center dark:text-white">Loading dashboard...</div>;
 
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-500 mt-1">Welcome back {user?.name}, here's what's happening today.</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+                <p className="text-gray-500 mt-1 dark:text-gray-400">Welcome back {user?.name}, here's what's happening today.</p>
             </div>
 
             {/* Alerts Section */}
             {expiringLeases.length > 0 && (
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg dark:bg-yellow-900/20 dark:border-yellow-600">
                     <div className="flex items-start">
                         <div className="flex-shrink-0">
-                            <AlertTriangle className="h-5 w-5 text-yellow-400" />
+                            <AlertTriangle className="h-5 w-5 text-yellow-400 dark:text-yellow-500" />
                         </div>
                         <div className="ml-3">
-                            <h3 className="text-sm font-medium text-yellow-800">
+                            <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                                 Leases Expiring Soon ({expiringLeases.length})
                             </h3>
-                            <div className="mt-2 text-sm text-yellow-700">
+                            <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                                 <ul className="list-disc pl-5 space-y-1">
                                     {expiringLeases.map(tenant => (
                                         <li key={tenant._id}>
@@ -92,7 +115,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatsCard
                     label="Total Properties"
-                    value="12"
+                    value={stats.totalProperties.toString()}
                     trend="+2"
                     trendUp={true}
                     icon={Building2}
@@ -100,23 +123,23 @@ const Dashboard = () => {
                 />
                 <StatsCard
                     label="Total Tenants"
-                    value="48"
+                    value={stats.totalTenants.toString()}
                     trend="+5"
                     trendUp={true}
                     icon={Users}
                     color="bg-green-500"
                 />
                 <StatsCard
-                    label="Maintenance Requests"
-                    value="3"
-                    trend="-1"
-                    trendUp={true}
+                    label="Open Requests"
+                    value={stats.maintenanceRequests.toString()}
+                    trend={stats.maintenanceRequests > 0 ? `-${stats.maintenanceRequests}` : "0"}
+                    trendUp={stats.maintenanceRequests === 0}
                     icon={Wrench}
                     color="bg-orange-500"
                 />
                 <StatsCard
                     label="Total Revenue"
-                    value="$54,200"
+                    value={`KSh ${stats.totalRevenue.toLocaleString()}`}
                     trend="+12%"
                     trendUp={true}
                     icon={DollarSign}
@@ -127,9 +150,9 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     <RevenueChart />
-                    <div className="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                            <PieChartIcon className="w-5 h-5 text-primary-600" />
+                    <div className="bg-white p-6 rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
+                            <PieChartIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                             Occupancy Rate
                         </h3>
                         <div className="h-64">
@@ -149,7 +172,10 @@ const Dashboard = () => {
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
-                                    <Tooltip />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }}
+                                        itemStyle={{ color: '#fff' }}
+                                    />
                                     <Legend />
                                 </PieChart>
                             </ResponsiveContainer>

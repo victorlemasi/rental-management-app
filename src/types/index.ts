@@ -11,6 +11,8 @@ export interface Property {
     imageUrl?: string;
     amenities: string[];
     yearBuilt: number;
+    paymentAccountNumber?: string;
+    paymentAccountName?: string;
 }
 
 export interface Tenant {
@@ -24,8 +26,10 @@ export interface Tenant {
     leaseStart: string;
     leaseEnd: string;
     monthlyRent: number;
+    balance: number;
+    currentMonth: string;
     status: 'active' | 'pending' | 'expired';
-    paymentStatus: 'paid' | 'pending' | 'overdue';
+    paymentStatus: 'paid' | 'pending' | 'overdue' | 'partial';
 }
 
 export interface MaintenanceRequest {
