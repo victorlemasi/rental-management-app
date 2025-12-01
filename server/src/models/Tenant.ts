@@ -13,6 +13,8 @@ export interface ITenant extends Document {
     currentMonth: string;
     status: 'active' | 'pending' | 'expired';
     paymentStatus: 'paid' | 'pending' | 'overdue' | 'partial';
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -40,7 +42,9 @@ const TenantSchema: Schema = new Schema(
             required: true,
             enum: ['paid', 'pending', 'overdue', 'partial'],
             default: 'pending'
-        }
+        },
+        resetPasswordToken: { type: String },
+        resetPasswordExpires: { type: Date }
     },
     {
         timestamps: true

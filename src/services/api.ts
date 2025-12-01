@@ -235,6 +235,32 @@ export const authAPI = {
         }
         return response.json();
     },
+
+    forgotPassword: async (email: string) => {
+        const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to process request');
+        }
+        return response.json();
+    },
+
+    resetPassword: async (data: { email: string; token: string; newPassword: string }) => {
+        const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to reset password');
+        }
+        return response.json();
+    },
 };
 
 // M-PESA API
