@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import Tenant from '../models/Tenant.js';
 import Property from '../models/Property.js';
 import { User } from '../models/User.js';
+import RentHistory from '../models/RentHistory.js';
 import { auth, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -203,6 +204,33 @@ router.delete('/:id', auth, authorize(['admin', 'manager']), async (req: Request
         res.json({ message: 'Tenant deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting tenant', error });
+    }
+});
+
+// Get tenant rent history
+router.get('/:id/rent-history', auth, async (req: Request, res: Response) => {
+    try {
+        const tenant = await Tenant.findById(req.params.id);
+        if (!tenant) {
+            return res.status(404).json({ message: 'Tenant not found' });
+        }
+
+        // Check access rights (Admin/Manager or the tenant themselves)
+        const isSelf = (req as any).user.role === 'tenant' && (req as any).user.email === tenant.email;
+        const isAdminOrManager = ['admin', 'manager'].includes((req as any).user.role);
+
+        if (!isSelf && !isAdminOrManager) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        // Fetch rent history for the last 12 months
+        const rentHistory = await RentHistory.find({ tenantId: tenant._id })
+            .sort({ month: -1 })
+            .limit(12);
+
+        res.json(rentHistory);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching rent history', error });
     }
 });
 

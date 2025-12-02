@@ -13,6 +13,7 @@ const TenantDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [newRequest, setNewRequest] = useState({ title: '', description: '', priority: 'medium' });
     const [requests, setRequests] = useState<any[]>([]);
+    const [rentHistory, setRentHistory] = useState<any[]>([]);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -29,6 +30,12 @@ const TenantDashboard = () => {
                 setTenant(tenantData);
                 setRequests(requestsData);
                 setNotifications(notificationsData);
+
+                // Fetch rent history if tenant data is available
+                if (tenantData?._id) {
+                    const history = await tenantsAPI.getRentHistory(tenantData._id);
+                    setRentHistory(history);
+                }
             } catch (error) {
                 console.error('Failed to fetch dashboard data', error);
             } finally {
@@ -116,6 +123,7 @@ const TenantDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column - Info */}
                     <div className="lg:col-span-2 space-y-8">
+
                         {/* Lease Info */}
                         <div className="bg-white rounded-xl shadow-sm p-6 dark:bg-gray-900 dark:border dark:border-gray-800">
                             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
@@ -169,7 +177,64 @@ const TenantDashboard = () => {
                             )}
                         </div>
 
-                        {/* Maintenance Request Form */}
+                        {/* Payment History Section */}
+                        <div className="bg-white rounded-xl shadow-sm p-6 dark:bg-gray-900 dark:border dark:border-gray-800">
+                            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
+                                <DollarSign className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                                Payment History (Last 12 Months)
+                            </h2>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead>
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Month</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Amount Due</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Paid</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Status</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Due Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+                                        {rentHistory.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={5} className="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                                    No payment history found.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            rentHistory.map((record) => (
+                                                <tr key={record._id}>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                        {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                        KSh {record.amount.toLocaleString()}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 dark:text-green-400">
+                                                        KSh {record.amountPaid.toLocaleString()}
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap">
+                                                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                                            record.status === 'partial' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                                                record.status === 'overdue' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                                                    'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                                                            }`}>
+                                                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                        {new Date(record.dueDate).toLocaleDateString()}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+
                         <div className="bg-white rounded-xl shadow-sm p-6 dark:bg-gray-900 dark:border dark:border-gray-800">
                             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
                                 <Wrench className="w-5 h-5 text-primary-600 dark:text-primary-400" />

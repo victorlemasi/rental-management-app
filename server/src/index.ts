@@ -12,6 +12,8 @@ import { authRoutes } from './routes/auth.js';
 import { mpesaRoutes } from './routes/mpesa.js';
 import notificationRoutes from './routes/notifications.js';
 
+import { initRentScheduler, generateMonthlyRent } from './services/rentGenerator.js';
+
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,9 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
+
+// Initialize Rent Scheduler
+initRentScheduler();
 
 // Middleware
 app.use(helmet({
@@ -64,6 +69,12 @@ app.get('/api/health', (req, res) => {
 // Root route
 app.get('/', (req, res) => {
     res.send('Rental Management API is running');
+});
+
+// Manual trigger for rent generation (Admin only - protected in real app)
+app.post('/api/admin/generate-rent', async (req, res) => {
+    await generateMonthlyRent();
+    res.json({ message: 'Rent generation triggered successfully' });
 });
 
 // Error handling middleware

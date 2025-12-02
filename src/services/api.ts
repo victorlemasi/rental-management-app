@@ -102,6 +102,14 @@ export const tenantsAPI = {
         if (!response.ok) throw new Error('Failed to delete tenant');
         return response.json();
     },
+
+    getRentHistory: async (id: string) => {
+        const response = await fetch(`${API_BASE_URL}/tenants/${id}/rent-history`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch rent history');
+        return response.json();
+    },
 };
 
 // Maintenance API
