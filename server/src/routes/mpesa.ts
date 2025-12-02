@@ -1,6 +1,8 @@
 import express from 'express';
-import { auth } from '../middleware/auth.js';
 import { mpesaDarajaService } from '../services/mpesa-daraja.service.js';
+import { auth } from '../middleware/auth.js';
+import Tenant from '../models/Tenant.js';
+import RentHistory from '../models/RentHistory.js';
 
 const router = express.Router();
 
@@ -78,8 +80,68 @@ router.post('/callback', async (req, res) => {
                 console.log('Payment successful!');
                 console.log('Callback metadata:', CallbackMetadata);
 
-                // TODO: Update payment record in database
-                // Extract amount, phone number, transaction ID from CallbackMetadata
+                // Extract payment details
+                const metadata = stkCallback.CallbackMetadata.Item;
+                const amountItem = metadata.find((item: any) => item.Name === 'Amount');
+                const mpesaReceiptItem = metadata.find((item: any) => item.Name === 'MpesaReceiptNumber');
+                const phoneItem = metadata.find((item: any) => item.Name === 'PhoneNumber');
+
+                if (amountItem && mpesaReceiptItem && phoneItem) {
+                    const amount = Number(amountItem.Value);
+                    const transactionId = mpesaReceiptItem.Value;
+                    const phoneNumber = String(phoneItem.Value);
+
+                    console.log(`Processing payment: ${amount} from ${phoneNumber} (${transactionId})`);
+
+                    // Find tenant by phone number
+                    // Note: M-Pesa returns 254... format, ensure DB matches or normalize
+                    const tenant = await Tenant.findOne({
+                        phone: { $regex: new RegExp(phoneNumber.slice(-9)) } // Match last 9 digits to be safe
+                    });
+
+                    if (tenant) {
+                        const currentMonth = tenant.currentMonth || new Date().toISOString().slice(0, 7);
+
+                        // Find or create rent history for the current month
+                        let rentHistory = await RentHistory.findOne({
+                            tenantId: tenant._id,
+                            month: currentMonth
+                        });
+
+                        if (rentHistory) {
+                            // Update existing record
+                            rentHistory.amountPaid += amount;
+
+                            // Update status
+                            if (rentHistory.amountPaid >= rentHistory.amount) {
+                                rentHistory.status = 'paid';
+                            } else if (rentHistory.amountPaid > 0) {
+                                rentHistory.status = 'partial';
+                            }
+
+                            await rentHistory.save();
+                        } else {
+                            // Should ideally exist if rent was generated, but handle edge case?
+                            // For now, we assume rent history exists if they are paying
+                            console.warn(`No rent history found for tenant ${tenant._id} for month ${currentMonth}`);
+                        }
+
+                        // Update tenant balance
+                        tenant.balance -= amount;
+
+                        // Update tenant payment status
+                        if (tenant.balance <= 0) {
+                            tenant.paymentStatus = 'paid';
+                        } else {
+                            tenant.paymentStatus = 'partial';
+                        }
+
+                        await tenant.save();
+                        console.log(`Payment recorded for tenant ${tenant.name}`);
+                    } else {
+                        console.warn(`No tenant found with phone number ${phoneNumber}`);
+                    }
+                }
             } else {
                 // Payment failed or cancelled
                 console.log('Payment failed:', ResultDesc);

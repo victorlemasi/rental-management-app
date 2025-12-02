@@ -66,31 +66,19 @@ const Notifications = () => {
         }
     };
 
-    const handleShareToWhatsApp = (notification: any) => {
-        // Get recipient tenants
-        let recipientTenants: Tenant[] = [];
-        if (notification.recipientType === 'all') {
-            recipientTenants = tenants;
-        } else {
-            recipientTenants = tenants.filter(t => notification.recipientIds.includes(t._id));
-        }
-
+    const handleShareToWhatsApp = async (notification: any) => {
         // Format message
         const message = `*${notification.title}*\n\n${notification.message}\n\n_Sent via RentFlow_`;
 
-        // If single tenant, send directly
-        if (recipientTenants.length === 1) {
-            const phone = recipientTenants[0].phone.replace(/[^0-9]/g, '');
-            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        } else {
-            // For multiple tenants, open WhatsApp Web with message (user will need to select contacts)
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            alert(`Message prepared for ${recipientTenants.length} tenants. Please select contacts in WhatsApp.`);
+        try {
+            await navigator.clipboard.writeText(message);
+            window.open('https://wa.me/', '_blank');
+            alert('Message copied to clipboard! WhatsApp opened. Please paste the message to your desired contacts.');
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy message to clipboard. Please copy it manually.');
         }
     };
-
 
     if (loading) return <div className="p-8 text-center dark:text-white">Loading...</div>;
 
@@ -177,9 +165,11 @@ const Notifications = () => {
                         <input
                             type="text"
                             required
+                            autoComplete="off"
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
                             placeholder="Notification title"
                         />
                     </div>
@@ -189,45 +179,49 @@ const Notifications = () => {
                         <textarea
                             required
                             rows={4}
+                            autoComplete="off"
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-gray-900 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
                             placeholder="Your message to tenants"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Type</label>
+                        <label className="block text-sm font-bold text-black mb-1 dark:text-white">Type</label>
                         <select
                             value={formData.type}
                             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-black bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         >
-                            <option value="info">Info</option>
-                            <option value="announcement">Announcement</option>
-                            <option value="warning">Warning</option>
-                            <option value="urgent">Urgent</option>
+                            <option value="info" className="text-black bg-white dark:text-white dark:bg-gray-800">Info</option>
+                            <option value="announcement" className="text-black bg-white dark:text-white dark:bg-gray-800">Announcement</option>
+                            <option value="warning" className="text-black bg-white dark:text-white dark:bg-gray-800">Warning</option>
+                            <option value="urgent" className="text-black bg-white dark:text-white dark:bg-gray-800">Urgent</option>
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Recipients</label>
+                        <label className="block text-sm font-bold text-black mb-1 dark:text-white">Recipients</label>
                         <select
                             value={formData.recipientType}
                             onChange={(e) => setFormData({ ...formData, recipientType: e.target.value, recipientIds: [] })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-black bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                         >
-                            <option value="all">All Tenants</option>
-                            <option value="specific">Specific Tenants</option>
+                            <option value="all" className="text-black bg-white dark:text-white dark:bg-gray-800">All Tenants</option>
+                            <option value="specific" className="text-black bg-white dark:text-white dark:bg-gray-800">Specific Tenants</option>
                         </select>
                     </div>
 
                     {formData.recipientType === 'specific' && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Select Tenants</label>
-                            <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto dark:border-gray-700">
+                            <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto dark:border-gray-700 bg-white dark:bg-gray-800">
                                 {tenants.map((tenant) => (
-                                    <label key={tenant._id} className="flex items-center gap-2 py-2 hover:bg-gray-50 px-2 rounded cursor-pointer dark:hover:bg-gray-800">
+                                    <label key={tenant._id} className="flex items-center gap-2 py-2 hover:bg-gray-50 px-2 rounded cursor-pointer dark:hover:bg-gray-700">
                                         <input
                                             type="checkbox"
                                             checked={formData.recipientIds.includes(tenant._id)}
@@ -244,7 +238,8 @@ const Notifications = () => {
                                                     });
                                                 }
                                             }}
-                                            className="rounded text-primary-600 focus:ring-primary-500"
+                                            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
+                                            className="rounded text-primary-600 focus:ring-primary-500 border-gray-300"
                                         />
                                         <span className="text-sm text-gray-900 dark:text-gray-300">{tenant.name} - Unit {tenant.unitNumber}</span>
                                     </label>
@@ -262,6 +257,44 @@ const Notifications = () => {
                             Cancel
                         </button>
                         <button
+                            type="button"
+                            onClick={async () => {
+                                // Get selected tenants
+                                let recipientTenants: Tenant[] = [];
+                                if (formData.recipientType === 'all') {
+                                    recipientTenants = tenants;
+                                } else {
+                                    recipientTenants = tenants.filter(t => formData.recipientIds.includes(t._id));
+                                }
+
+                                if (recipientTenants.length === 0) {
+                                    alert('Please select at least one recipient');
+                                    return;
+                                }
+
+                                if (!formData.title || !formData.message) {
+                                    alert('Please fill in title and message');
+                                    return;
+                                }
+
+                                // Format message
+                                const message = `*${formData.title}*\n\n${formData.message}\n\n_Sent via RentFlow_`;
+
+                                try {
+                                    await navigator.clipboard.writeText(message);
+                                    window.open('https://wa.me/', '_blank');
+                                    alert('Message copied to clipboard! WhatsApp opened. Please paste the message to your desired contacts.');
+                                } catch (err) {
+                                    console.error('Failed to copy text: ', err);
+                                    alert('Failed to copy message to clipboard. Please copy it manually.');
+                                }
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                            <Share2 className="w-4 h-4" />
+                            Share via WhatsApp
+                        </button>
+                        <button
                             type="submit"
                             className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                         >
@@ -271,7 +304,7 @@ const Notifications = () => {
                     </div>
                 </form>
             </Modal>
-        </div>
+        </div >
     );
 };
 
