@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Trash2 } from 'lucide-react';
+import { Plus, Search, Filter, Trash2, History } from 'lucide-react';
 import { tenantsAPI, propertiesAPI } from '../services/api';
 import type { Tenant, Property } from '../types';
 import Modal from '../components/Modal';
+import RentHistoryModal from '../components/RentHistoryModal';
 
 const Tenants = () => {
     const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -11,6 +12,8 @@ const Tenants = () => {
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [historyModalOpen, setHistoryModalOpen] = useState(false);
+    const [selectedTenant, setSelectedTenant] = useState<{ id: string; name: string } | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -80,6 +83,11 @@ const Tenants = () => {
             console.error('Failed to delete tenant:', err);
             alert('Failed to delete tenant');
         }
+    };
+
+    const handleViewHistory = (tenant: Tenant) => {
+        setSelectedTenant({ id: tenant._id, name: tenant.name });
+        setHistoryModalOpen(true);
     };
 
     const filteredTenants = tenants.filter((tenant) =>
@@ -217,12 +225,22 @@ const Tenants = () => {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button
-                                            onClick={() => handleDeleteTenant(tenant._id)}
-                                            className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => handleViewHistory(tenant)}
+                                                className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/30"
+                                                title="View Rent History"
+                                            >
+                                                <History className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteTenant(tenant._id)}
+                                                className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
+                                                title="Delete Tenant"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -360,6 +378,13 @@ const Tenants = () => {
                     </div>
                 </form>
             </Modal>
+
+            <RentHistoryModal
+                isOpen={historyModalOpen}
+                onClose={() => setHistoryModalOpen(false)}
+                tenantId={selectedTenant?.id || null}
+                tenantName={selectedTenant?.name || ''}
+            />
         </div>
     );
 };
