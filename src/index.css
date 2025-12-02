@@ -19,9 +19,3 @@
     color: var(--color-gray-900);
   }
 }
-
-/* Force dark mode styles when 'dark' class is present on html/body */
-:root.dark body {
-  background-color: var(--color-gray-950);
-  color: var(--color-white);
-}

@@ -37,23 +37,8 @@ router.get('/', auth, authorize(['admin', 'manager']), async (req: Request, res:
             .populate('propertyId')
             .sort({ createdAt: -1 });
 
-        // Check and update balances for new month
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        const updates = tenants.map(async (tenant) => {
-            if (tenant.currentMonth !== currentMonth && tenant.paymentStatus !== 'paid') {
-                // New month started and previous month wasn't fully paid
-                await Tenant.findByIdAndUpdate(tenant._id, {
-                    balance: tenant.monthlyRent,
-                    currentMonth: currentMonth,
-                    paymentStatus: 'pending'
-                });
-                // Update the tenant object for response
-                tenant.balance = tenant.monthlyRent;
-                tenant.currentMonth = currentMonth;
-                tenant.paymentStatus = 'pending';
-            }
-        });
-        await Promise.all(updates);
+        // Logic for lazy rent generation removed to prevent double-charging and errors. 
+        // Rent generation is handled by the cron job or manual trigger.
 
         res.json(tenants);
     } catch (error) {

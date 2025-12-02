@@ -143,16 +143,23 @@ const Financials = () => {
 
     const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
     const pendingPayments = payments.filter(p => p.status === 'pending').length;
+
+    // Calculate Average Rent
+    const activeTenants = tenants.filter(t => t.status === 'active');
+    const averageRent = activeTenants.length > 0
+        ? activeTenants.reduce((sum, t) => sum + t.monthlyRent, 0) / activeTenants.length
+        : 0;
+
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-    if (loading) return <div className="p-8 text-center dark:text-white">Loading financials...</div>;
+    if (loading) return <div className="p-8 text-center">Loading financials...</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Financial Overview</h1>
-                    <p className="text-gray-500 mt-1 dark:text-gray-400">Manage payments and view financial reports</p>
+                    <h1 className="text-2xl font-bold text-gray-900">Financial Overview</h1>
+                    <p className="text-gray-500 mt-1">Manage payments and view financial reports</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -182,8 +189,8 @@ const Financials = () => {
                 />
                 <StatsCard
                     label="Average Rent"
-                    value="$1,250"
-                    trend="+5%"
+                    value={`KSh ${Math.round(averageRent).toLocaleString()}`}
+                    trend="0%"
                     trendUp={true}
                     icon={TrendingUp}
                     color="bg-blue-500"
@@ -192,9 +199,9 @@ const Financials = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Revenue Trend Chart */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
-                        <TrendingUp className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-primary-600" />
                         Revenue Trends
                     </h3>
                     <div className="h-64">
@@ -214,9 +221,9 @@ const Financials = () => {
                 </div>
 
                 {/* Payment Methods Chart */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
-                        <CreditCard className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <CreditCard className="w-5 h-5 text-primary-600" />
                         Payment Methods
                     </h3>
                     <div className="h-64">
@@ -247,60 +254,60 @@ const Financials = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Payment History</h2>
+            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="p-6 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-900">Payment History</h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-gray-900/50">
+                        <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Date</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Tenant</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Property</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Amount</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Method</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Status</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Actions</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                        <tbody className="bg-white divide-y divide-gray-200">
                             {payments.map((payment) => (
-                                <tr key={payment._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                <tr key={payment._id} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {new Date(payment.date).toLocaleDateString()}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {payment.tenantName}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {payment.propertyName}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         KSh {payment.amount.toLocaleString()}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize dark:text-gray-400">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
                                         {payment.method.replace('-', ' ')}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            ${payment.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                                                payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
+                                            ${payment.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    'bg-red-100 text-red-800'}`}>
                                             {payment.status}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
                                         <button
                                             onClick={() => generateReceipt(payment)}
-                                            className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/30"
+                                            className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors"
                                             title="Download Receipt"
                                         >
                                             <Download className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => handleDeletePayment(payment._id)}
-                                            className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
+                                            className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors"
                                             title="Delete Payment"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -320,12 +327,12 @@ const Financials = () => {
             >
                 <form onSubmit={handleAddPayment} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Tenant</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Tenant</label>
                         <select
                             required
                             value={formData.tenantId}
                             onChange={(e) => setFormData({ ...formData, tenantId: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         >
                             <option value="">Select Tenant</option>
                             {tenants.map(t => (
@@ -335,33 +342,33 @@ const Financials = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Amount ($)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Amount (KSh)</label>
                         <input
                             type="number"
                             required
                             value={formData.amount}
                             onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
                         <input
                             type="date"
                             required
                             value={formData.date}
                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Method</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Method</label>
                         <select
                             value={formData.method}
                             onChange={(e) => setFormData({ ...formData, method: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         >
                             <option value="bank-transfer">Bank Transfer</option>
                             <option value="credit-card">Credit Card</option>
@@ -371,11 +378,11 @@ const Financials = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Status</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select
                             value={formData.status}
                             onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         >
                             <option value="completed">Completed</option>
                             <option value="pending">Pending</option>
@@ -387,7 +394,7 @@ const Financials = () => {
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-300 dark:hover:bg-gray-800"
+                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>

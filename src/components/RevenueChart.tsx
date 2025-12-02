@@ -12,8 +12,8 @@ const data = [
 
 const RevenueChart = () => {
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[400px] dark:bg-gray-800 dark:border-gray-700">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 dark:text-white">Revenue Overview</h3>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[400px]">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Revenue Overview</h3>
             <div className="h-[320px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>

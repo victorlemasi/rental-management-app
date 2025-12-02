@@ -17,8 +17,9 @@ const TransactionVerification = () => {
         setResult(null);
 
         try {
-            const data = await mpesaAPI.checkStatus(transactionId);
-            setResult(data);
+            const response = await mpesaAPI.checkStatus(transactionId);
+            // Backend wraps the M-Pesa response in a 'data' property
+            setResult(response.data || response);
         } catch (err: any) {
             setError(err.message || 'Failed to verify transaction');
         } finally {

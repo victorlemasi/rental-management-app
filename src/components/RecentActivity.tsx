@@ -40,7 +40,7 @@ const RecentActivity = () => {
                             description: `${payment.tenantName} paid KSh ${payment.amount.toLocaleString()}`,
                             time: new Date(payment.date),
                             icon: DollarSign,
-                            color: 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400',
+                            color: 'bg-green-100 text-green-600',
                         });
                     });
 
@@ -58,7 +58,7 @@ const RecentActivity = () => {
                             description: `${request.title} - Unit ${request.unitNumber}`,
                             time: new Date(request.createdAt),
                             icon: Wrench,
-                            color: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
+                            color: 'bg-orange-100 text-orange-600',
                         });
                     });
 
@@ -76,7 +76,7 @@ const RecentActivity = () => {
                             description: `${tenant.name} - Unit ${tenant.unitNumber}`,
                             time: new Date(tenant.leaseStart),
                             icon: User,
-                            color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
+                            color: 'bg-blue-100 text-blue-600',
                         });
                     });
 
@@ -112,18 +112,18 @@ const RecentActivity = () => {
 
     if (loading) {
         return (
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full dark:bg-gray-800 dark:border-gray-700">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 dark:text-white">Recent Activity</h3>
-                <div className="text-center text-gray-500 dark:text-gray-400">Loading...</div>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+                <div className="text-center text-gray-500">Loading...</div>
             </div>
         );
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full dark:bg-gray-800 dark:border-gray-700">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 dark:text-white">Recent Activity</h3>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
             {activities.length === 0 ? (
-                <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+                <div className="text-center text-gray-500 py-8">
                     No recent activity
                 </div>
             ) : (
@@ -134,9 +134,9 @@ const RecentActivity = () => {
                                 <activity.icon className="w-5 h-5" />
                             </div>
                             <div>
-                                <p className="font-medium text-gray-900 dark:text-white">{activity.title}</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">{activity.description}</p>
-                                <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">{getTimeAgo(activity.time)}</p>
+                                <p className="font-medium text-gray-900">{activity.title}</p>
+                                <p className="text-sm text-gray-500">{activity.description}</p>
+                                <p className="text-xs text-gray-400 mt-1">{getTimeAgo(activity.time)}</p>
                             </div>
                         </div>
                     ))}

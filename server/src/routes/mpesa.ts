@@ -180,4 +180,28 @@ router.post('/query', auth, async (req, res) => {
     }
 });
 
+// Query transaction status (GET method with path parameter)
+router.get('/query/:checkoutRequestId', auth, async (req, res) => {
+    try {
+        const { checkoutRequestId } = req.params;
+
+        if (!checkoutRequestId) {
+            return res.status(400).json({ message: 'Checkout Request ID is required' });
+        }
+
+        const response = await mpesaDarajaService.queryTransaction(checkoutRequestId);
+
+        res.json({
+            success: true,
+            data: response
+        });
+    } catch (error: any) {
+        console.error('Query error:', error);
+        res.status(500).json({
+            message: error.message || 'Error querying transaction',
+            success: false
+        });
+    }
+});
+
 export const mpesaRoutes = router;

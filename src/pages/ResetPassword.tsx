@@ -63,18 +63,18 @@ const ResetPassword = () => {
 
     if (!token || !email) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-950">
-                <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden dark:bg-gray-900">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
                     <div className="p-8 text-center">
                         <div className="flex justify-center mb-4">
-                            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                                <AlertCircle className="w-10 h-10 text-red-600 dark:text-red-400" />
+                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <AlertCircle className="w-10 h-10 text-red-600" />
                             </div>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-white">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
                             Invalid Reset Link
                         </h3>
-                        <p className="text-gray-600 mb-6 dark:text-gray-400">
+                        <p className="text-gray-600 mb-6">
                             This password reset link is invalid or has expired.
                         </p>
                         <Link
@@ -90,11 +90,11 @@ const ResetPassword = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-gray-950">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden dark:bg-gray-900">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
                 <div className="p-8">
                     <div className="flex justify-center mb-8">
-                        <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
+                        <div className="flex items-center gap-2 text-primary-600">
                             <Building2 className="w-8 h-8" />
                             <span className="text-2xl font-bold">PropManage</span>
                         </div>
@@ -102,32 +102,32 @@ const ResetPassword = () => {
 
                     {!success ? (
                         <>
-                            <h2 className="text-2xl font-bold text-gray-900 text-center mb-2 dark:text-white">
+                            <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
                                 Reset Password
                             </h2>
-                            <p className="text-gray-500 text-center mb-8 dark:text-gray-400">
+                            <p className="text-gray-500 text-center mb-8">
                                 Enter your new password below
                             </p>
 
                             {error && (
-                                <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm text-center dark:bg-red-900/20 dark:text-red-400">
+                                <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm text-center">
                                     {error}
                                 </div>
                             )}
 
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         New Password
                                     </label>
                                     <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                         <input
                                             type="password"
                                             required
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                             placeholder="••••••••"
                                             minLength={6}
                                         />
@@ -135,17 +135,17 @@ const ResetPassword = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Confirm Password
                                     </label>
                                     <div className="relative">
-                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                         <input
                                             type="password"
                                             required
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                             placeholder="••••••••"
                                             minLength={6}
                                         />
@@ -168,9 +168,9 @@ const ResetPassword = () => {
                                 </button>
                             </form>
 
-                            <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                            <div className="mt-6 text-center text-sm text-gray-500">
                                 Remember your password?{' '}
-                                <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium dark:text-primary-400 dark:hover:text-primary-300">
+                                <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
                                     Sign in
                                 </Link>
                             </div>
@@ -178,18 +178,18 @@ const ResetPassword = () => {
                     ) : (
                         <div className="text-center py-8">
                             <div className="flex justify-center mb-4">
-                                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                                    <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+                                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                    <CheckCircle className="w-10 h-10 text-green-600" />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-white">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">
                                 Password Reset Successful!
                             </h3>
-                            <p className="text-gray-600 mb-6 dark:text-gray-400">
+                            <p className="text-gray-600 mb-6">
                                 Your password has been reset successfully. Redirecting to login...
                             </p>
                             <div className="flex justify-center">
-                                <Loader2 className="w-6 h-6 animate-spin text-primary-600 dark:text-primary-400" />
+                                <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
                             </div>
                         </div>
                     )}

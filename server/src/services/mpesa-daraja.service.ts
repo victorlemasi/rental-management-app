@@ -130,7 +130,7 @@ class MpesaDarajaService {
             return response.data;
         } catch (error: any) {
             console.error('Query error:', error.response?.data || error.message);
-            throw new Error('Failed to query transaction status');
+            throw new Error(error.response?.data?.errorMessage || 'Failed to query transaction status');
         }
     }
 

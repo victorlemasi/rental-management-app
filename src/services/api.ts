@@ -301,35 +301,6 @@ export const authAPI = {
     },
 };
 
-// M-PESA API
-export const mpesaAPI = {
-    initiateSTKPush: async (data: { phoneNumber: string; amount: number; email: string }) => {
-        const response = await fetch(`${API_BASE_URL}/mpesa/stk-push`, {
-            method: 'POST',
-            headers: getHeaders(),
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to initiate STK Push');
-        }
-        return response.json();
-    },
-
-    checkStatus: async (transactionId: string) => {
-        const response = await fetch(`${API_BASE_URL}/mpesa/status`, {
-            method: 'POST',
-            headers: getHeaders(),
-            body: JSON.stringify({ transactionId }),
-        });
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to check transaction status');
-        }
-        return response.json();
-    },
-};
-
 // Notifications API
 export const notificationsAPI = {
     getMyNotifications: async () => {
@@ -373,6 +344,31 @@ export const notificationsAPI = {
             headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to delete notification');
+        return response.json();
+    },
+};
+
+// M-Pesa API
+export const mpesaAPI = {
+    stkPush: async (data: { phoneNumber: string; amount: number; accountReference: string }) => {
+        const response = await fetch(`${API_BASE_URL}/mpesa/stk-push`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to initiate M-Pesa payment');
+        return response.json();
+    },
+
+    checkStatus: async (checkoutRequestId: string) => {
+        const response = await fetch(`${API_BASE_URL}/mpesa/query/${checkoutRequestId}`, {
+            method: 'GET',
+            headers: getHeaders(),
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.message || 'Failed to check transaction status');
+        }
         return response.json();
     },
 };

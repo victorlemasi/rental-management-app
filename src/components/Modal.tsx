@@ -33,12 +33,12 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
                 className="absolute inset-0 bg-black/50"
                 onClick={onClose}
             />
-            <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden dark:bg-gray-900">
-                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
+            <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
                     <button
                         onClick={onClose}
-                        className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors dark:hover:text-gray-300 dark:hover:bg-gray-800"
+                        className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>

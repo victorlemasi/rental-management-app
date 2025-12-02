@@ -24,9 +24,9 @@ const Sidebar = () => {
 
     return (
         <>
-            <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-10 dark:bg-gray-900 dark:border-gray-800">
+            <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-10">
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold text-primary-600 flex items-center gap-2 dark:text-primary-400">
+                    <h1 className="text-2xl font-bold text-primary-600 flex items-center gap-2">
                         <Building2 className="w-8 h-8" />
                         RentFlow
                     </h1>
@@ -41,8 +41,8 @@ const Sidebar = () => {
                                 cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
                                     isActive
-                                        ? "bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400"
-                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                                        ? "bg-primary-50 text-primary-700"
+                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 )
                             }
                         >
@@ -57,8 +57,8 @@ const Sidebar = () => {
                             cn(
                                 "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
                                 isActive
-                                    ? "bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                                    ? "bg-primary-50 text-primary-700"
+                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                             )
                         }
                     >
@@ -67,14 +67,14 @@ const Sidebar = () => {
                     </NavLink>
                 </nav>
 
-                <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+                <div className="p-4 border-t border-gray-200">
+                    <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors">
                         <Settings className="w-5 h-5" />
                         <span className="font-medium">Settings</span>
                     </button>
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-4 py-3 w-full text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-1 dark:text-red-400 dark:hover:bg-red-900/20"
+                        className="flex items-center gap-3 px-4 py-3 w-full text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-1"
                     >
                         <LogOut className="w-5 h-5" />
                         <span className="font-medium">Logout</span>
