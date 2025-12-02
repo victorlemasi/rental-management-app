@@ -188,7 +188,11 @@ const TenantDashboard = () => {
                                     <thead>
                                         <tr>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Month</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Amount Due</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Base Rent</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Water</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Elec</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Garbage</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Total Due</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Paid</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Status</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">Due Date</th>
@@ -197,36 +201,51 @@ const TenantDashboard = () => {
                                     <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
                                         {rentHistory.length === 0 ? (
                                             <tr>
-                                                <td colSpan={5} className="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                                <td colSpan={9} className="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                                     No payment history found.
                                                 </td>
                                             </tr>
                                         ) : (
-                                            rentHistory.map((record) => (
-                                                <tr key={record._id}>
-                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                                        {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                                        KSh {record.amount.toLocaleString()}
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 dark:text-green-400">
-                                                        KSh {record.amountPaid.toLocaleString()}
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap">
-                                                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                                                            record.status === 'partial' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                                                record.status === 'overdue' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                                                                    'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
-                                                            }`}>
-                                                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                        {new Date(record.dueDate).toLocaleDateString()}
-                                                    </td>
-                                                </tr>
-                                            ))
+                                            rentHistory.map((record) => {
+                                                const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0);
+                                                return (
+                                                    <tr key={record._id}>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                            {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                                            KSh {baseRent.toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                            {record.water ? `KSh ${record.water.toLocaleString()}` : '-'}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                            {record.electricity ? `KSh ${record.electricity.toLocaleString()}` : '-'}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                            {record.garbage ? `KSh ${record.garbage.toLocaleString()}` : '-'}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                                            KSh {record.amount.toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 dark:text-green-400">
+                                                            KSh {record.amountPaid.toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap">
+                                                            <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                                                record.status === 'partial' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                                                    record.status === 'overdue' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                                                        'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                                                                }`}>
+                                                                {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                            {new Date(record.dueDate).toLocaleDateString()}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
                                         )}
                                     </tbody>
                                 </table>
@@ -379,13 +398,27 @@ const TenantDashboard = () => {
                                     </div>
                                 )}
 
-                                {/* Monthly Rent */}
+                                {/* Base Rent */}
                                 <div className="flex justify-between items-center">
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Monthly Rent</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Base Rent</p>
                                     <p className="text-lg font-semibold text-gray-900 dark:text-white">
                                         KSh {tenant?.monthlyRent.toLocaleString() || 0}
                                     </p>
                                 </div>
+
+                                {/* Utilities (Current Month) */}
+                                {rentHistory.find(r => r.month === tenant?.currentMonth) && (
+                                    <div className="flex justify-between items-center">
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Utilities</p>
+                                        <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            KSh {(
+                                                (rentHistory.find(r => r.month === tenant?.currentMonth)?.water || 0) +
+                                                (rentHistory.find(r => r.month === tenant?.currentMonth)?.electricity || 0) +
+                                                (rentHistory.find(r => r.month === tenant?.currentMonth)?.garbage || 0)
+                                            ).toLocaleString()}
+                                        </p>
+                                    </div>
+                                )}
 
                                 {/* Amount Paid */}
                                 <div className="flex justify-between items-center">

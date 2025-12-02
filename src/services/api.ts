@@ -110,6 +110,16 @@ export const tenantsAPI = {
         if (!response.ok) throw new Error('Failed to fetch rent history');
         return response.json();
     },
+
+    updateRentHistory: async (tenantId: string, historyId: string, data: { water?: number; electricity?: number; garbage?: number }) => {
+        const response = await fetch(`${API_BASE_URL}/tenants/${tenantId}/rent-history/${historyId}`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to update rent history');
+        return response.json();
+    },
 };
 
 // Maintenance API

@@ -234,4 +234,56 @@ router.get('/:id/rent-history', auth, async (req: Request, res: Response) => {
     }
 });
 
+// Update rent history (utilities) - Admin/Manager only
+router.put('/:id/rent-history/:historyId', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
+    try {
+        const tenant = await Tenant.findById(req.params.id);
+        if (!tenant) {
+            return res.status(404).json({ message: 'Tenant not found' });
+        }
+
+        const rentHistory = await RentHistory.findOne({ _id: req.params.historyId, tenantId: tenant._id });
+        if (!rentHistory) {
+            return res.status(404).json({ message: 'Rent history record not found' });
+        }
+
+        // Check ownership (via tenant's property)
+        const property = await Property.findOne({ _id: tenant.propertyId, user: (req as any).user.userId });
+        if (!property) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const { water, electricity, garbage } = req.body;
+
+        // Calculate old total utilities
+        const oldUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
+
+        // Calculate base rent (Total Amount - Old Utilities)
+        const baseRent = rentHistory.amount - oldUtilities;
+
+        // Update fields
+        if (water !== undefined) rentHistory.water = Number(water);
+        if (electricity !== undefined) rentHistory.electricity = Number(electricity);
+        if (garbage !== undefined) rentHistory.garbage = Number(garbage);
+
+        // Calculate new total utilities
+        const newUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
+
+        // Update total amount
+        rentHistory.amount = baseRent + newUtilities;
+
+        await rentHistory.save();
+
+        // Update Tenant Balance
+        // The difference in amount should be added/subtracted from the balance
+        const difference = newUtilities - oldUtilities;
+        tenant.balance += difference;
+        await tenant.save();
+
+        res.json(rentHistory);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating rent history', error });
+    }
+});
+
 export default router;

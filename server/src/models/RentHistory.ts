@@ -6,6 +6,9 @@ export interface IRentHistory extends Document {
     month: string; // Format: YYYY-MM
     amount: number;
     amountPaid: number;
+    water: number;
+    electricity: number;
+    garbage: number;
     status: 'paid' | 'pending' | 'partial' | 'overdue';
     dueDate: Date;
     createdAt: Date;
@@ -19,6 +22,9 @@ const RentHistorySchema: Schema = new Schema(
         month: { type: String, required: true }, // YYYY-MM
         amount: { type: Number, required: true },
         amountPaid: { type: Number, default: 0 },
+        water: { type: Number, default: 0 },
+        electricity: { type: Number, default: 0 },
+        garbage: { type: Number, default: 0 },
         status: {
             type: String,
             required: true,
