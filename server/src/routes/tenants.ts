@@ -286,4 +286,163 @@ router.put('/:id/rent-history/:historyId', auth, authorize(['admin', 'manager'])
     }
 });
 
+// Upsert current month utilities - Admin/Manager only
+router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
+    try {
+        const tenant = await Tenant.findById(req.params.id);
+        if (!tenant) {
+            return res.status(404).json({ message: 'Tenant not found' });
+        }
+
+        // Check ownership (via tenant's property)
+        const property = await Property.findOne({ _id: tenant.propertyId, user: (req as any).user.userId });
+        if (!property) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const { water, electricity, garbage } = req.body;
+        const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+        // Try to find existing record for current month
+        let rentHistory = await RentHistory.findOne({ tenantId: tenant._id, month: currentMonth });
+
+        if (rentHistory) {
+            // Update existing record
+            const oldUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
+            const baseRent = rentHistory.amount - oldUtilities;
+
+            rentHistory.water = Number(water) || 0;
+            rentHistory.electricity = Number(electricity) || 0;
+            rentHistory.garbage = Number(garbage) || 0;
+
+            const newUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
+            rentHistory.amount = baseRent + newUtilities;
+
+            await rentHistory.save();
+
+            // Update tenant balance
+            const difference = newUtilities - oldUtilities;
+            tenant.balance += difference;
+            await tenant.save();
+        } else {
+            // Create new record for current month
+            const dueDate = new Date();
+            dueDate.setDate(5); // Due on the 5th of the month
+            if (dueDate < new Date()) {
+                dueDate.setMonth(dueDate.getMonth() + 1); // Next month if already past due date
+            }
+
+            const utilities = (Number(water) || 0) + (Number(electricity) || 0) + (Number(garbage) || 0);
+            const totalAmount = tenant.monthlyRent + utilities;
+
+            rentHistory = await RentHistory.create({
+                tenantId: tenant._id,
+                propertyId: tenant.propertyId,
+                month: currentMonth,
+                amount: totalAmount,
+                amountPaid: 0,
+                status: 'pending',
+                dueDate: dueDate,
+                water: Number(water) || 0,
+                electricity: Number(electricity) || 0,
+                garbage: Number(garbage) || 0
+            });
+
+            // Update tenant balance and current month
+            tenant.balance += totalAmount;
+            tenant.currentMonth = currentMonth;
+            await tenant.save();
+        }
+
+        res.json(rentHistory);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating utilities', error });
+    }
+});
+
+// Record payment - Admin/Manager only
+router.post('/:id/record-payment', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
+    try {
+        const tenant = await Tenant.findById(req.params.id);
+        if (!tenant) {
+            return res.status(404).json({ message: 'Tenant not found' });
+        }
+
+        // Check ownership
+        const property = await Property.findOne({ _id: tenant.propertyId, user: (req as any).user.userId });
+        if (!property) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const { amount, month, transactionId } = req.body;
+        const paymentAmount = Number(amount);
+
+        if (!amount || paymentAmount <= 0) {
+            return res.status(400).json({ message: 'Invalid payment amount' });
+        }
+
+        // If month is provided, record for specific month. Otherwise use current month
+        const targetMonth = month || tenant.currentMonth || new Date().toISOString().slice(0, 7);
+
+        // Find or create rent history for the target month
+        let rentHistory = await RentHistory.findOne({ tenantId: tenant._id, month: targetMonth });
+
+        if (!rentHistory) {
+            return res.status(404).json({ message: 'Rent record not found for this month' });
+        }
+
+        // Calculate amounts
+        const previousAmountPaid = rentHistory.amountPaid;
+        const newTotalPaid = previousAmountPaid + paymentAmount;
+        const amountDue = rentHistory.amount;
+        const remainingBalance = amountDue - newTotalPaid;
+
+        // Update rent history
+        rentHistory.amountPaid = newTotalPaid;
+
+        // Update status based on payment
+        if (newTotalPaid >= amountDue) {
+            rentHistory.status = 'paid';
+        } else if (newTotalPaid > 0) {
+            rentHistory.status = 'partial';
+        }
+
+        await rentHistory.save();
+
+        // Update tenant balance (negative balance = overpayment/credit)
+        tenant.balance = tenant.balance - paymentAmount;
+
+        // Update payment status based on overall balance
+        if (tenant.balance <= 0) {
+            tenant.paymentStatus = 'paid';
+        } else if (tenant.balance < tenant.monthlyRent) {
+            tenant.paymentStatus = 'partial';
+        } else {
+            tenant.paymentStatus = 'overdue';
+        }
+
+        await tenant.save();
+
+        res.json({
+            success: true,
+            message: 'Payment recorded successfully',
+            rentHistory,
+            tenant: {
+                balance: tenant.balance,
+                paymentStatus: tenant.paymentStatus
+            },
+            paymentDetails: {
+                amountPaid: paymentAmount,
+                monthTotal: newTotalPaid,
+                monthDue: amountDue,
+                monthRemaining: remainingBalance,
+                overallBalance: tenant.balance
+            }
+        });
+    } catch (error) {
+        console.error('Payment recording error:', error);
+        res.status(500).json({ message: 'Error recording payment', error });
+    }
+});
+
 export default router;

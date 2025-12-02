@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Plus } from 'lucide-react';
+import { Send, Plus, Share2 } from 'lucide-react';
 import { notificationsAPI, tenantsAPI } from '../services/api';
 import type { Tenant } from '../types';
 import Modal from '../components/Modal';
@@ -66,6 +66,32 @@ const Notifications = () => {
         }
     };
 
+    const handleShareToWhatsApp = (notification: any) => {
+        // Get recipient tenants
+        let recipientTenants: Tenant[] = [];
+        if (notification.recipientType === 'all') {
+            recipientTenants = tenants;
+        } else {
+            recipientTenants = tenants.filter(t => notification.recipientIds.includes(t._id));
+        }
+
+        // Format message
+        const message = `*${notification.title}*\n\n${notification.message}\n\n_Sent via RentFlow_`;
+
+        // If single tenant, send directly
+        if (recipientTenants.length === 1) {
+            const phone = recipientTenants[0].phone.replace(/[^0-9]/g, '');
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        } else {
+            // For multiple tenants, open WhatsApp Web with message (user will need to select contacts)
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            alert(`Message prepared for ${recipientTenants.length} tenants. Please select contacts in WhatsApp.`);
+        }
+    };
+
+
     if (loading) return <div className="p-8 text-center dark:text-white">Loading...</div>;
 
     return (
@@ -117,12 +143,22 @@ const Notifications = () => {
                                             <span>{new Date(notification.createdAt).toLocaleString()}</span>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => handleDeleteNotification(notification._id)}
-                                        className="text-red-600 hover:text-red-900 text-sm font-medium dark:text-red-400 dark:hover:text-red-300"
-                                    >
-                                        Delete
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleShareToWhatsApp(notification)}
+                                            className="flex items-center gap-1 px-3 py-1 text-green-600 hover:bg-green-50 rounded-lg transition-colors text-sm font-medium dark:text-green-400 dark:hover:bg-green-900/20"
+                                            title="Share to WhatsApp"
+                                        >
+                                            <Share2 className="w-4 h-4" />
+                                            WhatsApp
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteNotification(notification._id)}
+                                            className="text-red-600 hover:text-red-900 text-sm font-medium dark:text-red-400 dark:hover:text-red-300"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))

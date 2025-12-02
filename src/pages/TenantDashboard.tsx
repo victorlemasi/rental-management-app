@@ -398,39 +398,87 @@ const TenantDashboard = () => {
                                     </div>
                                 )}
 
+
                                 {/* Base Rent */}
                                 <div className="flex justify-between items-center">
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Base Rent</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Rent Amount</p>
                                     <p className="text-lg font-semibold text-gray-900 dark:text-white">
                                         KSh {tenant?.monthlyRent.toLocaleString() || 0}
                                     </p>
                                 </div>
 
-                                {/* Utilities (Current Month) */}
-                                {rentHistory.find(r => r.month === tenant?.currentMonth) && (
-                                    <div className="flex justify-between items-center">
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Utilities</p>
-                                        <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                                            KSh {(
-                                                (rentHistory.find(r => r.month === tenant?.currentMonth)?.water || 0) +
-                                                (rentHistory.find(r => r.month === tenant?.currentMonth)?.electricity || 0) +
-                                                (rentHistory.find(r => r.month === tenant?.currentMonth)?.garbage || 0)
-                                            ).toLocaleString()}
-                                        </p>
-                                    </div>
-                                )}
+                                {/* Utilities Breakdown (Current Month) */}
+                                {(() => {
+                                    const currentMonthRecord = rentHistory.find(r => r.month === tenant?.currentMonth);
 
-                                {/* Amount Paid */}
-                                <div className="flex justify-between items-center">
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Amount Paid</p>
-                                    <p className="text-lg font-semibold text-green-600 dark:text-green-400">
-                                        KSh {((tenant?.monthlyRent || 0) - Math.max(0, tenant?.balance || 0)).toLocaleString()}
-                                    </p>
-                                </div>
+                                    const water = currentMonthRecord?.water || 0;
+                                    const electricity = currentMonthRecord?.electricity || 0;
+                                    const garbage = currentMonthRecord?.garbage || 0;
+                                    const totalUtilities = water + electricity + garbage;
+                                    const currentMonthTotal = (tenant?.monthlyRent || 0) + totalUtilities;
+                                    const amountPaid = currentMonthRecord?.amountPaid || 0;
+
+                                    return (
+                                        <>
+                                            {/* Utilities Header */}
+                                            <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400 mb-2">Utilities</p>
+
+                                                {/* Water */}
+                                                <div className="flex justify-between items-center text-sm mb-1">
+                                                    <p className="text-gray-600 dark:text-gray-400 pl-2">Water</p>
+                                                    <p className="font-medium text-gray-900 dark:text-white">
+                                                        KSh {water.toLocaleString()}
+                                                    </p>
+                                                </div>
+
+                                                {/* Electricity */}
+                                                <div className="flex justify-between items-center text-sm mb-1">
+                                                    <p className="text-gray-600 dark:text-gray-400 pl-2">Electricity</p>
+                                                    <p className="font-medium text-gray-900 dark:text-white">
+                                                        KSh {electricity.toLocaleString()}
+                                                    </p>
+                                                </div>
+
+                                                {/* Garbage */}
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <p className="text-gray-600 dark:text-gray-400 pl-2">Garbage</p>
+                                                    <p className="font-medium text-gray-900 dark:text-white">
+                                                        KSh {garbage.toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Total Utilities */}
+                                            <div className="flex justify-between items-center pt-2">
+                                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Utilities</p>
+                                                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                    KSh {totalUtilities.toLocaleString()}
+                                                </p>
+                                            </div>
+
+                                            {/* Current Month Total */}
+                                            <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
+                                                <p className="text-sm font-semibold text-gray-900 dark:text-white">Total (This Month)</p>
+                                                <p className="text-xl font-bold text-primary-600 dark:text-primary-400">
+                                                    KSh {currentMonthTotal.toLocaleString()}
+                                                </p>
+                                            </div>
+
+                                            {/* Amount Paid */}
+                                            <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
+                                                <p className="text-sm text-gray-600 dark:text-gray-400">Amount Paid</p>
+                                                <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+                                                    KSh {amountPaid.toLocaleString()}
+                                                </p>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
 
                                 {/* Balance Due */}
-                                <div className="bg-gray-50 rounded-lg p-4 dark:bg-gray-800">
-                                    <p className="text-sm text-gray-600 mb-2 dark:text-gray-400">Balance Due</p>
+                                <div className="bg-gray-50 rounded-lg p-4 dark:bg-gray-800 mt-4">
+                                    <p className="text-sm text-gray-600 mb-2 dark:text-gray-400">Amount Due</p>
                                     <p className={`text-3xl font-bold ${(tenant?.balance || 0) > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'}`}>
                                         KSh {Math.max(0, tenant?.balance || 0).toLocaleString()}
                                     </p>
@@ -445,6 +493,7 @@ const TenantDashboard = () => {
                                         </p>
                                     )}
                                 </div>
+
 
                                 {/* Payment Status Badge */}
                                 <div className="flex justify-center">

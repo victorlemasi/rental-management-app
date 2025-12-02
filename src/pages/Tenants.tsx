@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Trash2, History } from 'lucide-react';
+import { Plus, Search, Filter, Trash2, History, Zap } from 'lucide-react';
 import { tenantsAPI, propertiesAPI } from '../services/api';
 import type { Tenant, Property } from '../types';
 import Modal from '../components/Modal';
 import RentHistoryModal from '../components/RentHistoryModal';
+import AddUtilitiesModal from '../components/AddUtilitiesModal';
 
 const Tenants = () => {
     const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -13,7 +14,8 @@ const Tenants = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [historyModalOpen, setHistoryModalOpen] = useState(false);
-    const [selectedTenant, setSelectedTenant] = useState<{ id: string; name: string } | null>(null);
+    const [utilitiesModalOpen, setUtilitiesModalOpen] = useState(false);
+    const [selectedTenant, setSelectedTenant] = useState<{ id: string; name: string; monthlyRent: number } | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -86,8 +88,13 @@ const Tenants = () => {
     };
 
     const handleViewHistory = (tenant: Tenant) => {
-        setSelectedTenant({ id: tenant._id, name: tenant.name });
+        setSelectedTenant({ id: tenant._id, name: tenant.name, monthlyRent: tenant.monthlyRent });
         setHistoryModalOpen(true);
+    };
+
+    const handleAddUtilities = (tenant: Tenant) => {
+        setSelectedTenant({ id: tenant._id, name: tenant.name, monthlyRent: tenant.monthlyRent });
+        setUtilitiesModalOpen(true);
     };
 
     const filteredTenants = tenants.filter((tenant) =>
@@ -188,24 +195,50 @@ const Tenants = () => {
                                         <div className="text-sm font-medium text-gray-900 dark:text-white">KSh {tenant.monthlyRent.toLocaleString()}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                            KSh {Math.max(0, tenant.balance || 0).toLocaleString()}
+                                        <div className="text-sm space-y-1">
+                                            {/* Rent */}
+                                            <div className="flex justify-between gap-4">
+                                                <span className="text-gray-600 dark:text-gray-400">Rent:</span>
+                                                <span className="font-medium text-gray-900 dark:text-white">KSh {tenant.monthlyRent.toLocaleString()}</span>
+                                            </div>
+
+                                            {/* Utilities - Show if current month exists */}
+                                            {tenant.currentMonth && (() => {
+                                                // Note: We don't have rent history here in the main list
+                                                // This would require a separate API call per tenant
+                                                // For now, calculate from balance
+                                                const estimatedUtilities = Math.max(0, (tenant.balance || 0) - tenant.monthlyRent);
+                                                if (estimatedUtilities > 0) {
+                                                    return (
+                                                        <div className="flex justify-between gap-4 text-xs">
+                                                            <span className="text-gray-500 dark:text-gray-400">+ Utilities:</span>
+                                                            <span className="text-gray-700 dark:text-gray-300">KSh {estimatedUtilities.toLocaleString()}</span>
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
+
+                                            {/* Total Balance */}
+                                            <div className="flex justify-between gap-4 pt-1 border-t border-gray-200 dark:border-gray-700">
+                                                <span className="font-semibold text-gray-900 dark:text-white">
+                                                    {tenant.balance > 0 ? 'Arrears:' : tenant.balance < 0 ? 'Overpayment:' : 'Balance:'}
+                                                </span>
+                                                <span className={`font-bold ${tenant.balance > 0 ? 'text-red-600 dark:text-red-400' :
+                                                        tenant.balance < 0 ? 'text-green-600 dark:text-green-400' :
+                                                            'text-gray-900 dark:text-white'
+                                                    }`}>
+                                                    {tenant.balance < 0 ? '-' : ''}KSh {Math.abs(tenant.balance || 0).toLocaleString()}
+                                                </span>
+                                            </div>
+
+                                            {/* Current Month */}
+                                            {tenant.currentMonth && (
+                                                <div className="text-xs text-gray-500 dark:text-gray-400 text-center pt-1">
+                                                    {new Date(tenant.currentMonth + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                                </div>
+                                            )}
                                         </div>
-                                        {tenant.currentMonth && (
-                                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                                                {new Date(tenant.currentMonth + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                                            </div>
-                                        )}
-                                        {tenant.balance > 0 && tenant.balance < tenant.monthlyRent && (
-                                            <div className="text-xs text-orange-600 dark:text-orange-400">
-                                                Due: KSh {tenant.balance.toLocaleString()}
-                                            </div>
-                                        )}
-                                        {tenant.balance < 0 && (
-                                            <div className="text-xs text-green-600 dark:text-green-400">
-                                                Overpaid: KSh {Math.abs(tenant.balance).toLocaleString()}
-                                            </div>
-                                        )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
@@ -226,6 +259,13 @@ const Tenants = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => handleAddUtilities(tenant)}
+                                                className="text-yellow-600 hover:text-yellow-900 p-2 hover:bg-yellow-50 rounded-full transition-colors dark:text-yellow-400 dark:hover:text-yellow-300 dark:hover:bg-yellow-900/30"
+                                                title="Add Utilities"
+                                            >
+                                                <Zap className="w-4 h-4" />
+                                            </button>
                                             <button
                                                 onClick={() => handleViewHistory(tenant)}
                                                 className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/30"
@@ -384,6 +424,17 @@ const Tenants = () => {
                 onClose={() => setHistoryModalOpen(false)}
                 tenantId={selectedTenant?.id || null}
                 tenantName={selectedTenant?.name || ''}
+            />
+
+            <AddUtilitiesModal
+                isOpen={utilitiesModalOpen}
+                onClose={() => {
+                    setUtilitiesModalOpen(false);
+                    fetchData();
+                }}
+                tenantId={selectedTenant?.id || null}
+                tenantName={selectedTenant?.name || ''}
+                monthlyRent={selectedTenant?.monthlyRent || 0}
             />
         </div>
     );

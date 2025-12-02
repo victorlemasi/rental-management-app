@@ -1,5 +1,5 @@
 import { useNavigate, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, Users, Wrench, Wallet, Settings, LogOut, CheckCircle, Bell } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, Wrench, Wallet, Receipt, Settings, LogOut, CheckCircle, Bell } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../context/AuthContext';
 
@@ -18,6 +18,7 @@ const Sidebar = () => {
         { icon: Users, label: 'Tenants', path: '/tenants' },
         { icon: Wrench, label: 'Maintenance', path: '/maintenance' },
         { icon: Wallet, label: 'Financials', path: '/financials' },
+        { icon: Receipt, label: 'Payments', path: '/payments' },
         { icon: CheckCircle, label: 'Verify Transaction', path: '/verify-transaction' },
     ];
 

@@ -7,6 +7,7 @@ import Properties from './pages/Properties';
 import Tenants from './pages/Tenants';
 import Maintenance from './pages/Maintenance';
 import Financials from './pages/Financials';
+import Payments from './pages/Payments';
 import Notifications from './pages/Notifications';
 import TransactionVerification from './pages/TransactionVerification';
 import Login from './pages/Login';
@@ -38,6 +39,7 @@ function App() {
               <Route path="tenants" element={<Tenants />} />
               <Route path="maintenance" element={<Maintenance />} />
               <Route path="financials" element={<Financials />} />
+              <Route path="payments" element={<Payments />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="verify-transaction" element={<TransactionVerification />} />
             </Route>

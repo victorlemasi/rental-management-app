@@ -120,6 +120,26 @@ export const tenantsAPI = {
         if (!response.ok) throw new Error('Failed to update rent history');
         return response.json();
     },
+
+    upsertCurrentMonthUtilities: async (tenantId: string, data: { water: number; electricity: number; garbage: number }) => {
+        const response = await fetch(`${API_BASE_URL}/tenants/${tenantId}/rent-history/current`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to update utilities');
+        return response.json();
+    },
+
+    recordPayment: async (tenantId: string, data: { amount: number; month?: string; transactionId?: string }) => {
+        const response = await fetch(`${API_BASE_URL}/tenants/${tenantId}/record-payment`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to record payment');
+        return response.json();
+    },
 };
 
 // Maintenance API
