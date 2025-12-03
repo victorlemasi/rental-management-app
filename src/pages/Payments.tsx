@@ -151,7 +151,11 @@ const Payments = () => {
                                         return (
                                             <tr key={record._id} className="hover:bg-gray-50">
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                    {(() => {
+                                                        const [year, month] = record.month.split('-');
+                                                        const date = new Date(parseInt(year), parseInt(month) - 1, 15);
+                                                        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                                                    })()}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                     KSh {baseRent.toLocaleString()}

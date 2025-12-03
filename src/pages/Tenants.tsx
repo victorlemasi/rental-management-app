@@ -9,6 +9,7 @@ import AddUtilitiesModal from '../components/AddUtilitiesModal';
 const Tenants = () => {
     const [tenants, setTenants] = useState<Tenant[]>([]);
     const [properties, setProperties] = useState<Property[]>([]);
+    const [rentHistories, setRentHistories] = useState<any>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +44,19 @@ const Tenants = () => {
             ]);
             setTenants(tenantsData);
             setProperties(propertiesData);
+
+            // Fetch rent history for each tenant
+            const histories: any = {};
+            for (const tenant of tenantsData) {
+                try {
+                    const history = await tenantsAPI.getRentHistory(tenant._id);
+                    histories[tenant._id] = history;
+                } catch (error) {
+                    console.error(`Failed to fetch history for tenant ${tenant._id}`, error);
+                    histories[tenant._id] = [];
+                }
+            }
+            setRentHistories(histories);
         } catch (err) {
             setError('Failed to load data');
             console.error(err);
@@ -162,6 +176,7 @@ const Tenants = () => {
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lease Period</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rent</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Previous Month</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance Due</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
@@ -193,6 +208,50 @@ const Tenants = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900">KSh {tenant.monthlyRent.toLocaleString()}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        {(() => {
+                                            const history = rentHistories[tenant._id] || [];
+                                            // Exclude current month (first record) to show only previous months
+                                            const previousMonths = history.slice(1);
+
+                                            if (previousMonths.length === 0) {
+                                                return <div className="text-sm text-gray-400">No previous data</div>;
+                                            }
+
+                                            return (
+                                                <div className="text-sm space-y-2 max-h-32 overflow-y-auto">
+                                                    {previousMonths.map((record: any) => {
+                                                        const balance = record.amount - record.amountPaid;
+                                                        return (
+                                                            <div key={record._id} className="border-b border-gray-100 pb-2 last:border-0">
+                                                                <div className="text-xs font-medium text-gray-700 mb-1">
+                                                                    {(() => {
+                                                                        const [year, month] = record.month.split('-');
+                                                                        const date = new Date(parseInt(year), parseInt(month) - 1, 15);
+                                                                        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                                                                    })()}
+                                                                </div>
+                                                                <div className="flex justify-between gap-2 text-xs">
+                                                                    <span className="text-gray-500">Due:</span>
+                                                                    <span>KSh {record.amount.toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between gap-2 text-xs">
+                                                                    <span className="text-gray-500">Paid:</span>
+                                                                    <span className="text-green-600">KSh {record.amountPaid.toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between gap-2 text-xs font-semibold">
+                                                                    <span>Balance:</span>
+                                                                    <span className={balance > 0 ? 'text-red-600' : balance < 0 ? 'text-green-600' : 'text-gray-900'}>
+                                                                        KSh {Math.abs(balance).toLocaleString()}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            );
+                                        })()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm space-y-1">
