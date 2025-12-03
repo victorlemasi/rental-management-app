@@ -111,7 +111,7 @@ export const tenantsAPI = {
         return response.json();
     },
 
-    updateRentHistory: async (tenantId: string, historyId: string, data: { water?: number; electricity?: number; garbage?: number }) => {
+    updateRentHistory: async (tenantId: string, historyId: string, data: { water?: number; electricity?: number; garbage?: number; security?: number }) => {
         const response = await fetch(`${API_BASE_URL}/tenants/${tenantId}/rent-history/${historyId}`, {
             method: 'PUT',
             headers: getHeaders(),
@@ -121,7 +121,7 @@ export const tenantsAPI = {
         return response.json();
     },
 
-    upsertCurrentMonthUtilities: async (tenantId: string, data: { water: number; electricity: number; garbage: number }) => {
+    upsertCurrentMonthUtilities: async (tenantId: string, data: { water: number; electricity: number; garbage: number; security: number }) => {
         const response = await fetch(`${API_BASE_URL}/tenants/${tenantId}/rent-history/current`, {
             method: 'POST',
             headers: getHeaders(),

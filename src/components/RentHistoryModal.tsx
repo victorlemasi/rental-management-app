@@ -82,6 +82,7 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Water</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Elec</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Garbage</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Security</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -91,14 +92,14 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
                         <tbody className="bg-white divide-y divide-gray-200">
                             {history.length === 0 ? (
                                 <tr>
-                                    <td colSpan={9} className="px-4 py-4 text-center text-sm text-gray-500">
+                                    <td colSpan={10} className="px-4 py-4 text-center text-sm text-gray-500">
                                         No payment history found.
                                     </td>
                                 </tr>
                             ) : (
                                 history.map((record) => {
                                     const isEditing = editingId === record._id;
-                                    const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0);
+                                    const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0) - (record.security || 0);
 
                                     return (
                                         <tr key={record._id}>
@@ -143,6 +144,9 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
                                                 ) : (
                                                     (record.garbage || 0).toLocaleString()
                                                 )}
+                                            </td>
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                {(record.security || 0).toLocaleString()}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                                                 {record.amount.toLocaleString()}

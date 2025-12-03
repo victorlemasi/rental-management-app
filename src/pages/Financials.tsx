@@ -20,6 +20,7 @@ const Financials = () => {
         tenantId: '',
         amount: 0,
         date: new Date().toISOString().split('T')[0],
+        month: new Date().toISOString().slice(0, 7),
         method: 'bank-transfer',
         status: 'completed'
     });
@@ -86,6 +87,7 @@ const Financials = () => {
                 tenantId: '',
                 amount: 0,
                 date: new Date().toISOString().split('T')[0],
+                month: new Date().toISOString().slice(0, 7),
                 method: 'bank-transfer',
                 status: 'completed'
             });
@@ -359,6 +361,17 @@ const Financials = () => {
                             required
                             value={formData.date}
                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Payment For Month</label>
+                        <input
+                            type="month"
+                            required
+                            value={formData.month}
+                            onChange={(e) => setFormData({ ...formData, month: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         />
                     </div>

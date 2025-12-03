@@ -73,22 +73,31 @@ const TenantDashboard = () => {
             alert('Failed to submit request');
         }
     };
-
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!tenant || !phoneNumber) return;
+        if (!tenant) return;
 
         setPaymentLoading(true);
         try {
-            await mpesaAPI.initiateSTKPush({
-                phoneNumber,
+            // Format phone number (remove leading 0 or +254, ensure it starts with 254)
+            let formattedPhone = phoneNumber.replace(/\D/g, '');
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '254' + formattedPhone.substring(1);
+            } else if (!formattedPhone.startsWith('254')) {
+                formattedPhone = '254' + formattedPhone;
+            }
+
+            await mpesaAPI.stkPush({
+                phoneNumber: formattedPhone,
                 amount: tenant.monthlyRent,
-                email: tenant.email
+                accountReference: tenant.unitNumber
             });
-            alert('STK Push sent! Check your phone to complete payment.');
+
+            alert('Payment initiated! Please check your phone to complete the transaction.');
             setShowPaymentModal(false);
             setPhoneNumber('');
         } catch (error: any) {
+            console.error('Payment error:', error);
             alert(error.message || 'Failed to initiate payment');
         } finally {
             setPaymentLoading(false);
@@ -192,6 +201,7 @@ const TenantDashboard = () => {
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Water</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Elec</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Garbage</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Security</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Due</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -201,13 +211,13 @@ const TenantDashboard = () => {
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {rentHistory.length === 0 ? (
                                             <tr>
-                                                <td colSpan={9} className="px-4 py-4 text-center text-sm text-gray-500">
+                                                <td colSpan={10} className="px-4 py-4 text-center text-sm text-gray-500">
                                                     No payment history found.
                                                 </td>
                                             </tr>
                                         ) : (
                                             rentHistory.map((record) => {
-                                                const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0);
+                                                const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0) - (record.security || 0);
                                                 return (
                                                     <tr key={record._id}>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
@@ -217,18 +227,21 @@ const TenantDashboard = () => {
                                                             KSh {baseRent.toLocaleString()}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                            {record.water ? `KSh ${record.water.toLocaleString()}` : '-'}
+                                                            KSh {(record.water || 0).toLocaleString()}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                            {record.electricity ? `KSh ${record.electricity.toLocaleString()}` : '-'}
+                                                            KSh {(record.electricity || 0).toLocaleString()}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                            {record.garbage ? `KSh ${record.garbage.toLocaleString()}` : '-'}
+                                                            KSh {(record.garbage || 0).toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                                            KSh {(record.security || 0).toLocaleString()}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                                                             KSh {record.amount.toLocaleString()}
                                                         </td>
-                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600">
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 font-medium">
                                                             KSh {record.amountPaid.toLocaleString()}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap">
@@ -389,14 +402,12 @@ const TenantDashboard = () => {
                             </h2>
                             <div className="space-y-6">
                                 {/* Current Month */}
-                                {tenant?.currentMonth && (
-                                    <div className="text-center pb-4 border-b border-gray-200">
-                                        <p className="text-sm text-gray-500 mb-1">Current Period</p>
-                                        <p className="text-lg font-semibold text-gray-900">
-                                            {new Date(tenant.currentMonth + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                                        </p>
-                                    </div>
-                                )}
+                                <div className="text-center pb-4 border-b border-gray-200">
+                                    <p className="text-sm text-gray-500 mb-1">Current Period</p>
+                                    <p className="text-lg font-semibold text-gray-900">
+                                        {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                    </p>
+                                </div>
 
 
                                 {/* Base Rent */}
@@ -409,12 +420,15 @@ const TenantDashboard = () => {
 
                                 {/* Utilities Breakdown (Current Month) */}
                                 {(() => {
-                                    const currentMonthRecord = rentHistory.find(r => r.month === tenant?.currentMonth);
+                                    // Use actual current calendar month instead of tenant.currentMonth
+                                    const currentMonth = new Date().toISOString().slice(0, 7);
+                                    const currentMonthRecord = rentHistory.find(r => r.month === currentMonth);
 
                                     const water = currentMonthRecord?.water || 0;
                                     const electricity = currentMonthRecord?.electricity || 0;
                                     const garbage = currentMonthRecord?.garbage || 0;
-                                    const totalUtilities = water + electricity + garbage;
+                                    const security = currentMonthRecord?.security || 0;
+                                    const totalUtilities = water + electricity + garbage + security;
                                     const currentMonthTotal = (tenant?.monthlyRent || 0) + totalUtilities;
                                     const amountPaid = currentMonthRecord?.amountPaid || 0;
 
@@ -441,10 +455,18 @@ const TenantDashboard = () => {
                                                 </div>
 
                                                 {/* Garbage */}
-                                                <div className="flex justify-between items-center text-sm">
+                                                <div className="flex justify-between items-center text-sm mb-1">
                                                     <p className="text-gray-600 pl-2">Garbage</p>
                                                     <p className="font-medium text-gray-900">
                                                         KSh {garbage.toLocaleString()}
+                                                    </p>
+                                                </div>
+
+                                                {/* Security */}
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <p className="text-gray-600 pl-2">Security</p>
+                                                    <p className="font-medium text-gray-900">
+                                                        KSh {security.toLocaleString()}
                                                     </p>
                                                 </div>
                                             </div>
@@ -471,6 +493,25 @@ const TenantDashboard = () => {
                                                 <p className="text-lg font-semibold text-green-600">
                                                     KSh {amountPaid.toLocaleString()}
                                                 </p>
+                                            </div>
+
+                                            {/* Amount Due */}
+                                            <div className="flex justify-between items-center pt-2">
+                                                <p className="text-sm text-gray-600">Amount Due</p>
+                                                <p className="text-lg font-semibold text-red-600">
+                                                    KSh {Math.max(0, currentMonthTotal - amountPaid).toLocaleString()}
+                                                </p>
+                                            </div>
+
+                                            {/* Payment Status */}
+                                            <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                <p className="text-sm font-medium text-gray-700">Payment Status</p>
+                                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${(currentMonthTotal - amountPaid) <= 0
+                                                        ? 'bg-green-100 text-green-800'
+                                                        : 'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                    {(currentMonthTotal - amountPaid) <= 0 ? 'PAID' : 'PENDING'}
+                                                </span>
                                             </div>
                                         </>
                                     );
@@ -542,59 +583,61 @@ const TenantDashboard = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </main>
+                </div >
+            </main >
 
             {/* Payment Modal */}
-            {showPaymentModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-                        <h3 className="text-xl font-semibold text-gray-900 mb-4">Pay Rent with M-Pesa</h3>
-                        <form onSubmit={handlePayment} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Phone Number
-                                </label>
-                                <input
-                                    type="tel"
-                                    required
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    placeholder="254712345678"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                />
-                                <p className="text-xs text-gray-500 mt-1">Format: 254XXXXXXXXX</p>
-                            </div>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm text-gray-600">Amount to Pay</p>
-                                <p className="text-2xl font-bold text-gray-900">
-                                    KSh {tenant?.monthlyRent || 0}
-                                </p>
-                            </div>
-                            <div className="flex gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setShowPaymentModal(false);
-                                        setPhoneNumber('');
-                                    }}
-                                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={paymentLoading}
-                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {paymentLoading ? 'Processing...' : 'Pay Now'}
-                                </button>
-                            </div>
-                        </form>
+            {
+                showPaymentModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-4">Pay Rent with M-Pesa</h3>
+                            <form onSubmit={handlePayment} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Phone Number
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        required
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        placeholder="254712345678"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Format: 254XXXXXXXXX</p>
+                                </div>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <p className="text-sm text-gray-600">Amount to Pay</p>
+                                    <p className="text-2xl font-bold text-gray-900">
+                                        KSh {tenant?.monthlyRent || 0}
+                                    </p>
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowPaymentModal(false);
+                                            setPhoneNumber('');
+                                        }}
+                                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={paymentLoading}
+                                        className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {paymentLoading ? 'Processing...' : 'Pay Now'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

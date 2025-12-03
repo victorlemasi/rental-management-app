@@ -202,11 +202,9 @@ const Tenants = () => {
                                                 <span className="font-medium text-gray-900">KSh {tenant.monthlyRent.toLocaleString()}</span>
                                             </div>
 
-                                            {/* Utilities - Show if current month exists */}
-                                            {tenant.currentMonth && (() => {
-                                                // Note: We don't have rent history here in the main list
-                                                // This would require a separate API call per tenant
-                                                // For now, calculate from balance
+                                            {/* Utilities - Show estimated from balance */}
+                                            {(() => {
+                                                // Calculate estimated utilities from balance
                                                 const estimatedUtilities = Math.max(0, (tenant.balance || 0) - tenant.monthlyRent);
                                                 if (estimatedUtilities > 0) {
                                                     return (
@@ -232,12 +230,10 @@ const Tenants = () => {
                                                 </span>
                                             </div>
 
-                                            {/* Current Month */}
-                                            {tenant.currentMonth && (
-                                                <div className="text-xs text-gray-500 text-center pt-1">
-                                                    {new Date(tenant.currentMonth + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                                                </div>
-                                            )}
+                                            {/* Current Month - Always show current calendar month */}
+                                            <div className="text-xs text-gray-500 text-center pt-1">
+                                                {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                            </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">

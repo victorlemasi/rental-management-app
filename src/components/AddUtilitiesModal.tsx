@@ -15,10 +15,11 @@ const AddUtilitiesModal: React.FC<AddUtilitiesModalProps> = ({ isOpen, onClose, 
     const [values, setValues] = useState({
         water: 0,
         electricity: 0,
-        garbage: 0
+        garbage: 0,
+        security: 0
     });
 
-    const totalUtilities = values.water + values.electricity + values.garbage;
+    const totalUtilities = values.water + values.electricity + values.garbage + values.security;
     const totalAmount = monthlyRent + totalUtilities;
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +30,7 @@ const AddUtilitiesModal: React.FC<AddUtilitiesModalProps> = ({ isOpen, onClose, 
         try {
             await tenantsAPI.upsertCurrentMonthUtilities(tenantId, values);
             // Reset values
-            setValues({ water: 0, electricity: 0, garbage: 0 });
+            setValues({ water: 0, electricity: 0, garbage: 0, security: 0 });
             onClose();
         } catch (error) {
             console.error('Failed to update utilities:', error);
@@ -40,7 +41,7 @@ const AddUtilitiesModal: React.FC<AddUtilitiesModalProps> = ({ isOpen, onClose, 
     };
 
     const handleClose = () => {
-        setValues({ water: 0, electricity: 0, garbage: 0 });
+        setValues({ water: 0, electricity: 0, garbage: 0, security: 0 });
         onClose();
     };
 
@@ -51,10 +52,16 @@ const AddUtilitiesModal: React.FC<AddUtilitiesModalProps> = ({ isOpen, onClose, 
             title={`Add Utilities - ${tenantName}`}
         >
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                    <p className="text-sm text-blue-700">
-                        Adding utilities for <strong>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong>.
-                        These amounts will be added to the base rent.
+                {/* Month Indicator - Prominent */}
+                <div className="bg-primary-50 border-2 border-primary-200 p-4 rounded-lg mb-4">
+                    <p className="text-center">
+                        <span className="text-sm text-primary-700 block mb-1">Adding Utilities For:</span>
+                        <span className="text-xl font-bold text-primary-900">
+                            {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                        </span>
+                    </p>
+                    <p className="text-xs text-primary-600 text-center mt-2">
+                        These utilities will be added to the base rent for this month.
                     </p>
                 </div>
 
@@ -95,6 +102,17 @@ const AddUtilitiesModal: React.FC<AddUtilitiesModalProps> = ({ isOpen, onClose, 
                         min="0"
                         value={values.garbage}
                         onChange={(e) => setValues({ ...values, garbage: Number(e.target.value) })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Security (KSh)</label>
+                    <input
+                        type="number"
+                        min="0"
+                        value={values.security}
+                        onChange={(e) => setValues({ ...values, security: Number(e.target.value) })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                 </div>

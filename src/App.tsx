@@ -15,6 +15,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TenantDashboard from './pages/TenantDashboard';
+import DebugTenantData from './pages/DebugTenantData';
 
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -47,6 +48,12 @@ function App() {
             <Route path="/tenant-dashboard" element={
               <ProtectedRoute allowedRoles={['tenant']}>
                 <TenantDashboard />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/debug-tenant" element={
+              <ProtectedRoute allowedRoles={['tenant']}>
+                <DebugTenantData />
               </ProtectedRoute>
             } />
 

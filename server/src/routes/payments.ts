@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import Payment from '../models/Payment.js';
 import Tenant from '../models/Tenant.js';
 import Property from '../models/Property.js';
+import RentHistory from '../models/RentHistory.js';
 import { auth, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -77,31 +78,57 @@ router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res
 
         // Update tenant balance and status if payment is completed
         if (savedPayment.status === 'completed') {
-            // Get current month from payment date
-            const paymentMonth = new Date(savedPayment.date).toISOString().slice(0, 7);
-            const tenantMonth = tenant.currentMonth || new Date().toISOString().slice(0, 7);
+            // Get month from request body or derive from payment date
+            const paymentMonth = req.body.month || new Date(savedPayment.date).toISOString().slice(0, 7);
 
-            let currentBalance = tenant.balance || 0;
-
-            // If payment is for a new month, reset balance to monthly rent
-            if (paymentMonth !== tenantMonth) {
-                currentBalance = tenant.monthlyRent;
-            }
-
-            // Deduct payment from balance
-            const newBalance = currentBalance - savedPayment.amount;
-            let newStatus = 'pending';
-            if (newBalance <= 0) {
-                newStatus = 'paid';
-            } else if (newBalance < tenant.monthlyRent) {
-                newStatus = 'partial';
-            }
-
-            await Tenant.findByIdAndUpdate(tenant._id, {
-                balance: newBalance,
-                currentMonth: paymentMonth,
-                paymentStatus: newStatus
+            // 1. Update or Create RentHistory for the specific month
+            let rentHistory = await RentHistory.findOne({
+                tenantId: tenant._id,
+                month: paymentMonth
             });
+
+            if (rentHistory) {
+                rentHistory.amountPaid += savedPayment.amount;
+
+                // Update status based on total paid for that month
+                if (rentHistory.amountPaid >= rentHistory.amount) {
+                    rentHistory.status = 'paid';
+                } else if (rentHistory.amountPaid > 0) {
+                    rentHistory.status = 'partial';
+                }
+
+                await rentHistory.save();
+            } else {
+                // Create new record if it doesn't exist
+                const dueDate = new Date(paymentMonth + '-05'); // Default to 5th of the month
+
+                rentHistory = await RentHistory.create({
+                    tenantId: tenant._id,
+                    propertyId: tenant.propertyId,
+                    month: paymentMonth,
+                    amount: tenant.monthlyRent, // Start with base rent
+                    amountPaid: savedPayment.amount,
+                    status: savedPayment.amount >= tenant.monthlyRent ? 'paid' : 'partial',
+                    dueDate: dueDate,
+                    water: 0,
+                    electricity: 0,
+                    garbage: 0,
+                    security: 0
+                });
+            }
+
+            // 2. Update Tenant Balance (Global)
+            // Simply deduct the payment amount from the current balance
+            tenant.balance -= savedPayment.amount;
+
+            // Update tenant global payment status
+            if (tenant.balance <= 0) {
+                tenant.paymentStatus = 'paid';
+            } else {
+                tenant.paymentStatus = 'partial';
+            }
+
+            await tenant.save();
         }
 
         res.status(201).json(savedPayment);

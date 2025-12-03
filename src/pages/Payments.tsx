@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { tenantsAPI, propertiesAPI } from '../services/api';
 import { DollarSign, Search, Download } from 'lucide-react';
 import type { Tenant, Property } from '../types';

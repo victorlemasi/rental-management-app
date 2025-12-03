@@ -201,8 +201,15 @@ router.get('/:id/rent-history', auth, async (req: Request, res: Response) => {
         }
 
         // Check access rights (Admin/Manager or the tenant themselves)
-        const isSelf = (req as any).user.role === 'tenant' && (req as any).user.email === tenant.email;
         const isAdminOrManager = ['admin', 'manager'].includes((req as any).user.role);
+
+        // For tenants, check if they're requesting their own data
+        let isSelf = false;
+        if ((req as any).user.role === 'tenant') {
+            // Get the user from JWT to compare email
+            const user = await User.findById((req as any).user.userId);
+            isSelf = user?.email === tenant.email;
+        }
 
         if (!isSelf && !isAdminOrManager) {
             return res.status(403).json({ message: 'Access denied' });
@@ -238,10 +245,10 @@ router.put('/:id/rent-history/:historyId', auth, authorize(['admin', 'manager'])
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const { water, electricity, garbage } = req.body;
+        const { water, electricity, garbage, security } = req.body;
 
         // Calculate old total utilities
-        const oldUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
+        const oldUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage + (rentHistory.security || 0);
 
         // Calculate base rent (Total Amount - Old Utilities)
         const baseRent = rentHistory.amount - oldUtilities;
@@ -250,9 +257,10 @@ router.put('/:id/rent-history/:historyId', auth, authorize(['admin', 'manager'])
         if (water !== undefined) rentHistory.water = Number(water);
         if (electricity !== undefined) rentHistory.electricity = Number(electricity);
         if (garbage !== undefined) rentHistory.garbage = Number(garbage);
+        if (security !== undefined) rentHistory.security = Number(security);
 
         // Calculate new total utilities
-        const newUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
+        const newUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage + (rentHistory.security || 0);
 
         // Update total amount
         rentHistory.amount = baseRent + newUtilities;
@@ -285,28 +293,39 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const { water, electricity, garbage } = req.body;
-        const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+        const { water, electricity, garbage, security } = req.body;
+        // Use the actual calendar month to ensure we are updating the current period
+        const currentMonth = new Date().toISOString().slice(0, 7);
 
-        // Try to find existing record for current month
+        // Try to find existing record for the ACTUAL current month
         let rentHistory = await RentHistory.findOne({ tenantId: tenant._id, month: currentMonth });
+
+        // If no record for current month, look for the most recent pending/partial record
+        if (!rentHistory) {
+            rentHistory = await RentHistory.findOne({
+                tenantId: tenant._id,
+                status: { $in: ['pending', 'partial'] }
+            }).sort({ month: -1 });
+        }
 
         if (rentHistory) {
             // Update existing record
-            const oldUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
-            const baseRent = rentHistory.amount - oldUtilities;
+            const oldTotalAmount = rentHistory.amount;
 
             rentHistory.water = Number(water) || 0;
             rentHistory.electricity = Number(electricity) || 0;
             rentHistory.garbage = Number(garbage) || 0;
+            rentHistory.security = Number(security) || 0;
 
-            const newUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage;
-            rentHistory.amount = baseRent + newUtilities;
+            const newUtilities = rentHistory.water + rentHistory.electricity + rentHistory.garbage + rentHistory.security;
+
+            // Always recalculate total from Tenant's Base Rent + New Utilities
+            rentHistory.amount = tenant.monthlyRent + newUtilities;
 
             await rentHistory.save();
 
-            // Update tenant balance
-            const difference = newUtilities - oldUtilities;
+            // Update tenant balance by the difference in TOTAL amount
+            const difference = rentHistory.amount - oldTotalAmount;
             tenant.balance += difference;
             await tenant.save();
         } else {
@@ -317,7 +336,7 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
                 dueDate.setMonth(dueDate.getMonth() + 1); // Next month if already past due date
             }
 
-            const utilities = (Number(water) || 0) + (Number(electricity) || 0) + (Number(garbage) || 0);
+            const utilities = (Number(water) || 0) + (Number(electricity) || 0) + (Number(garbage) || 0) + (Number(security) || 0);
             const totalAmount = tenant.monthlyRent + utilities;
 
             rentHistory = await RentHistory.create({
@@ -330,7 +349,8 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
                 dueDate: dueDate,
                 water: Number(water) || 0,
                 electricity: Number(electricity) || 0,
-                garbage: Number(garbage) || 0
+                garbage: Number(garbage) || 0,
+                security: Number(security) || 0
             });
 
             // Update tenant balance and current month
