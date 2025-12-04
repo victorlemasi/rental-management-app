@@ -1,0 +1,52 @@
+# Render Deployment Configuration
+# This file defines the infrastructure for deploying the Rental Management App on Render
+
+services:
+  # Backend API Service
+  - type: web
+    name: rental-app-backend
+    runtime: node
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false  # Set this in Render dashboard
+      - key: CLIENT_URL
+        sync: false  # Set this in Render dashboard (your frontend URL)
+      - key: MPESA_CONSUMER_KEY
+        sync: false
+      - key: MPESA_CONSUMER_SECRET
+        sync: false
+      - key: MPESA_SHORTCODE
+        sync: false
+      - key: MPESA_PASSKEY
+        sync: false
+      - key: MPESA_CALLBACK_URL
+        sync: false
+      - key: MPESA_ENVIRONMENT
+        value: sandbox
+    healthCheckPath: /api/health
+
+  # Frontend Static Site
+  - type: web
+    name: rental-app-frontend
+    runtime: static
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false  # Set this to your backend URL + /api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

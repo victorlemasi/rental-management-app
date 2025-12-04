@@ -31,8 +31,11 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false, // Allow cross-origin requests
 })); // Security headers
 
-// CORS configuration - restrict to specific origin
-const allowedOrigins = process.env.CLIENT_URL ? [process.env.CLIENT_URL] : ['http://localhost:5173'];
+// CORS configuration - support multiple origins
+const allowedOrigins = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+    : ['http://localhost:5173'];
+
 app.use(cors({
     origin: (origin, callback) => {
         // Allow requests with no origin (like mobile apps or curl requests)

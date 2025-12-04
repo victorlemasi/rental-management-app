@@ -1,0 +1,23 @@
+{
+    "name": "RentFlow - Rental Management System",
+    "short_name": "RentFlow",
+    "description": "Comprehensive rental property management system for landlords and property managers",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0ea5e9",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/vite.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "business",
+        "productivity"
+    ],
+    "screenshots": []
+}

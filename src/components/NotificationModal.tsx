@@ -3,6 +3,8 @@ import { X, Send, Users, Building2 } from 'lucide-react';
 import { tenantsAPI, propertiesAPI } from '../services/api';
 import type { Tenant, Property } from '../types';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 interface NotificationModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -54,7 +56,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose }
             }
 
             // Send to backend
-            const response = await fetch('http://localhost:5000/api/notifications/send', {
+            const response = await fetch(`${API_BASE_URL}/notifications/send`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

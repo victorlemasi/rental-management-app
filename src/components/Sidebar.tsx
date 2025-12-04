@@ -1,15 +1,24 @@
 import { useNavigate, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, Users, Wrench, Wallet, Receipt, Settings, LogOut, CheckCircle, Bell } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, Wrench, Wallet, Receipt, Settings, LogOut, CheckCircle, Bell, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../context/AuthContext';
 
-const Sidebar = () => {
+interface SidebarProps {
+    isMobileMenuOpen: boolean;
+    setIsMobileMenuOpen: (open: boolean) => void;
+}
+
+const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
         navigate('/login');
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
     };
 
     const navItems = [
@@ -24,12 +33,32 @@ const Sidebar = () => {
 
     return (
         <>
-            <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-10">
-                <div className="p-6">
+            {/* Mobile Overlay */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                    onClick={closeMobileMenu}
+                />
+            )}
+
+            {/* Sidebar */}
+            <aside className={cn(
+                "w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50 transition-transform duration-300",
+                "lg:translate-x-0",
+                isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            )}>
+                <div className="p-6 flex items-center justify-between">
                     <h1 className="text-2xl font-bold text-primary-600 flex items-center gap-2">
                         <Building2 className="w-8 h-8" />
                         RentFlow
                     </h1>
+                    {/* Mobile Close Button */}
+                    <button
+                        onClick={closeMobileMenu}
+                        className="lg:hidden p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
                 </div>
 
                 <nav className="flex-1 px-4 space-y-2 mt-4">
@@ -37,6 +66,7 @@ const Sidebar = () => {
                         <NavLink
                             key={item.path}
                             to={item.path}
+                            onClick={closeMobileMenu}
                             className={({ isActive }) =>
                                 cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
@@ -53,6 +83,7 @@ const Sidebar = () => {
 
                     <NavLink
                         to="/notifications"
+                        onClick={closeMobileMenu}
                         className={({ isActive }) =>
                             cn(
                                 "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
