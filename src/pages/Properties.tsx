@@ -3,6 +3,7 @@ import { Plus, Search, Building2, MapPin, Trash2 } from 'lucide-react';
 import { propertiesAPI } from '../services/api';
 import type { Property } from '../types';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
 
 const PropertyCard = ({ property, onDelete }: { property: Property; onDelete: (id: string) => void }) => {
     const occupancyRate = Math.round((property.occupiedUnits / property.units) * 100);
@@ -114,6 +115,7 @@ const Properties = () => {
         imageUrl: ''
     });
     const [imagePreview, setImagePreview] = useState<string>('');
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
     useEffect(() => {
         fetchProperties();
@@ -175,9 +177,10 @@ const Properties = () => {
                 imageUrl: ''
             });
             setImagePreview('');
+            setToast({ message: 'Property added successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to create property:', err);
-            alert('Failed to create property');
+            setToast({ message: 'Failed to create property', type: 'error' });
         }
     };
 
@@ -185,9 +188,10 @@ const Properties = () => {
         try {
             await propertiesAPI.delete(id);
             setProperties(properties.filter(p => p._id !== id));
+            setToast({ message: 'Property deleted successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to delete property:', err);
-            alert('Failed to delete property');
+            setToast({ message: 'Failed to delete property', type: 'error' });
         }
     };
 
@@ -226,6 +230,13 @@ const Properties = () => {
 
     return (
         <div className="space-y-6">
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Properties</h1>

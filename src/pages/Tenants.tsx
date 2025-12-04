@@ -3,6 +3,7 @@ import { Plus, Search, Filter, Trash2, History, Zap } from 'lucide-react';
 import { tenantsAPI, propertiesAPI } from '../services/api';
 import type { Tenant, Property } from '../types';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
 import RentHistoryModal from '../components/RentHistoryModal';
 import AddUtilitiesModal from '../components/AddUtilitiesModal';
 
@@ -17,6 +18,7 @@ const Tenants = () => {
     const [historyModalOpen, setHistoryModalOpen] = useState(false);
     const [utilitiesModalOpen, setUtilitiesModalOpen] = useState(false);
     const [selectedTenant, setSelectedTenant] = useState<{ id: string; name: string; monthlyRent: number } | null>(null);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -84,9 +86,10 @@ const Tenants = () => {
                 paymentStatus: 'pending',
                 password: ''
             });
+            setToast({ message: 'Tenant added successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to create tenant:', err);
-            alert('Failed to create tenant');
+            setToast({ message: 'Failed to create tenant', type: 'error' });
         }
     };
 
@@ -95,9 +98,10 @@ const Tenants = () => {
         try {
             await tenantsAPI.delete(id);
             setTenants(tenants.filter(t => t._id !== id));
+            setToast({ message: 'Tenant deleted successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to delete tenant:', err);
-            alert('Failed to delete tenant');
+            setToast({ message: 'Failed to delete tenant', type: 'error' });
         }
     };
 
@@ -128,6 +132,13 @@ const Tenants = () => {
 
     return (
         <div className="space-y-6">
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Tenants</h1>

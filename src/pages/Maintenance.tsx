@@ -3,6 +3,7 @@ import { AlertCircle, Clock, CheckCircle, XCircle, Plus, Trash2 } from 'lucide-r
 import { maintenanceAPI, propertiesAPI } from '../services/api';
 import type { MaintenanceRequest, Property } from '../types';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
 
 const Maintenance = () => {
     const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
@@ -11,6 +12,7 @@ const Maintenance = () => {
     const [error, setError] = useState<string | null>(null);
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
     const [formData, setFormData] = useState({
         propertyId: '',
         unitNumber: '',
@@ -57,9 +59,10 @@ const Maintenance = () => {
                 priority: 'medium',
                 status: 'pending'
             });
+            setToast({ message: 'Maintenance request created successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to create request:', err);
-            alert('Failed to create request');
+            setToast({ message: 'Failed to create maintenance request', type: 'error' });
         }
     };
 
@@ -68,9 +71,10 @@ const Maintenance = () => {
         try {
             await maintenanceAPI.delete(id);
             setRequests(requests.filter(r => r._id !== id));
+            setToast({ message: 'Maintenance request deleted successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to delete request:', err);
-            alert('Failed to delete request');
+            setToast({ message: 'Failed to delete request', type: 'error' });
         }
     };
 
@@ -78,9 +82,10 @@ const Maintenance = () => {
         try {
             await maintenanceAPI.update(id, { status: newStatus });
             setRequests(requests.map(r => r._id === id ? { ...r, status: newStatus as any } : r));
+            setToast({ message: 'Status updated successfully!', type: 'success' });
         } catch (err) {
             console.error('Failed to update status:', err);
-            alert('Failed to update status');
+            setToast({ message: 'Failed to update status', type: 'error' });
         }
     };
 
@@ -113,6 +118,13 @@ const Maintenance = () => {
 
     return (
         <div className="space-y-6">
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Maintenance Requests</h1>

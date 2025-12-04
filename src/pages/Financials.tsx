@@ -4,6 +4,7 @@ import { paymentsAPI, tenantsAPI } from '../services/api';
 import type { Payment, Tenant } from '../types';
 import StatsCard from '../components/StatsCard';
 import Modal from '../components/Modal';
+import Toast from '../components/Toast';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
@@ -15,6 +16,7 @@ const Financials = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [revenueData, setRevenueData] = useState<any[]>([]);
     const [paymentMethodData, setPaymentMethodData] = useState<any[]>([]);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
     const [formData, setFormData] = useState({
         tenantId: '',
@@ -91,8 +93,10 @@ const Financials = () => {
                 method: 'bank-transfer',
                 status: 'completed'
             });
+            setToast({ message: 'Payment recorded successfully!', type: 'success' });
         } catch (error) {
             console.error('Failed to create payment', error);
+            setToast({ message: 'Failed to record payment', type: 'error' });
         }
     };
 
@@ -102,8 +106,10 @@ const Financials = () => {
             await paymentsAPI.delete(id);
             setPayments(payments.filter(p => p._id !== id));
             processAnalytics(payments.filter(p => p._id !== id));
+            setToast({ message: 'Payment deleted successfully!', type: 'success' });
         } catch (error) {
             console.error('Failed to delete payment', error);
+            setToast({ message: 'Failed to delete payment', type: 'error' });
         }
     };
 
@@ -158,6 +164,13 @@ const Financials = () => {
 
     return (
         <div className="space-y-6">
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Financial Overview</h1>
