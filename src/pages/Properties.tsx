@@ -229,7 +229,7 @@ const Properties = () => {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
-                    <p className="text-gray-500 mt-1">Manage your rental properties • Connected to MongoDB Atlas</p>
+                    <p className="text-gray-500 mt-1">Manage your rental properties</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
