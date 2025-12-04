@@ -7,15 +7,15 @@ import { User } from '../models/User.js';
 
 const router = express.Router();
 
-// Rate limiter for login attempts - 10 attempts per 10 minutes
+// Rate limiter for login attempts - 15 attempts per 15 minutes
 const loginLimiter = rateLimit({
-    windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 10, // Limit each IP to 10 login requests per windowMs
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 15, // Limit each IP to 15 login requests per windowMs
     standardHeaders: true,
     legacyHeaders: false,
     handler: (req, res) => {
         res.status(429).json({
-            message: 'Too many login attempts, please try again after 10 minutes'
+            message: 'Too many login attempts, please try again after 15 minutes'
         });
     }
 });
