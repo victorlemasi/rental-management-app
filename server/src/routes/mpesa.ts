@@ -100,8 +100,10 @@ router.post('/callback', async (req, res) => {
                     });
 
                     if (tenant) {
-                        // Use actual calendar month for payment attribution
-                        const currentMonth = new Date().toISOString().slice(0, 7);
+                        // Use actual calendar month for payment attribution (Adjust for EAT: UTC+3)
+                        const now = new Date();
+                        const eatDate = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+                        const currentMonth = eatDate.toISOString().slice(0, 7);
 
                         // Find or create rent history for the current month
                         let rentHistory = await RentHistory.findOne({

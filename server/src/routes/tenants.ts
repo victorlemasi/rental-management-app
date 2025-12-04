@@ -120,8 +120,10 @@ router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res
         const tenant = new Tenant(tenantData);
         const savedTenant = await tenant.save();
 
-        // Create initial RentHistory record for current month
-        const currentMonth = new Date().toISOString().slice(0, 7);
+        // Create initial RentHistory record for current month (Adjust for EAT: UTC+3)
+        const now = new Date();
+        const eatDate = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+        const currentMonth = eatDate.toISOString().slice(0, 7);
         const dueDate = new Date();
         dueDate.setDate(5); // Due on the 5th
         if (dueDate < new Date()) {
@@ -316,8 +318,10 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
         }
 
         const { water, electricity, garbage, security } = req.body;
-        // Use the actual calendar month to ensure we are updating the current period
-        const currentMonth = new Date().toISOString().slice(0, 7);
+        // Use the actual calendar month to ensure we are updating the current period (Adjust for EAT: UTC+3)
+        const now = new Date();
+        const eatDate = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+        const currentMonth = eatDate.toISOString().slice(0, 7);
 
         // Try to find existing record for the ACTUAL current month
         let rentHistory = await RentHistory.findOne({ tenantId: tenant._id, month: currentMonth });
@@ -421,8 +425,11 @@ router.post('/:id/record-payment', auth, authorize(['admin', 'manager']), async 
             return res.status(400).json({ message: 'Invalid payment amount' });
         }
 
-        // If month is provided, record for specific month. Otherwise use current month
-        const targetMonth = month || tenant.currentMonth || new Date().toISOString().slice(0, 7);
+        // If month is provided, record for specific month. Otherwise use current month (Adjust for EAT: UTC+3)
+        const now = new Date();
+        const eatDate = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+        const currentMonth = eatDate.toISOString().slice(0, 7);
+        const targetMonth = month || tenant.currentMonth || currentMonth;
 
         // Find or create rent history for the target month
         let rentHistory = await RentHistory.findOne({ tenantId: tenant._id, month: targetMonth });
