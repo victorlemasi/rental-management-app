@@ -384,9 +384,9 @@ const Financials = () => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         >
                             <option value="bank-transfer">Bank Transfer</option>
+                            <option value="mpesa">M-Pesa</option>
                             <option value="credit-card">Credit Card</option>
                             <option value="cash">Cash</option>
-                            <option value="check">Check</option>
                         </select>
                     </div>
 
