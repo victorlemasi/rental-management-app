@@ -120,6 +120,28 @@ router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res
         const tenant = new Tenant(tenantData);
         const savedTenant = await tenant.save();
 
+        // Create initial RentHistory record for current month
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        const dueDate = new Date();
+        dueDate.setDate(5); // Due on the 5th
+        if (dueDate < new Date()) {
+            dueDate.setMonth(dueDate.getMonth() + 1);
+        }
+
+        await RentHistory.create({
+            tenantId: savedTenant._id,
+            propertyId: savedTenant.propertyId,
+            month: currentMonth,
+            amount: savedTenant.monthlyRent,
+            amountPaid: 0,
+            status: 'pending',
+            dueDate: dueDate
+        });
+
+        // Update tenant with current month
+        savedTenant.currentMonth = currentMonth;
+        await savedTenant.save();
+
         res.status(201).json({ tenant: savedTenant, message: 'Tenant created successfully' });
     } catch (error) {
         console.error('Error creating tenant:', error);
@@ -339,6 +361,19 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
             const utilities = (Number(water) || 0) + (Number(electricity) || 0) + (Number(garbage) || 0) + (Number(security) || 0);
             const totalAmount = tenant.monthlyRent + utilities;
 
+            // Check if we should add the full amount or just utilities
+            // If tenant was created this month AND balance equals monthly rent
+            // Then rent is likely already in the balance (from creation)
+            const createdDate = new Date(tenant.createdAt);
+            const isCreatedThisMonth = createdDate.toISOString().slice(0, 7) === currentMonth;
+
+            let amountToAdd = totalAmount;
+
+            // If rent is already in balance (new tenant case), only add utilities
+            if (isCreatedThisMonth && Math.abs(tenant.balance - tenant.monthlyRent) < 1) {
+                amountToAdd = utilities;
+            }
+
             rentHistory = await RentHistory.create({
                 tenantId: tenant._id,
                 propertyId: tenant.propertyId,
@@ -354,7 +389,7 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
             });
 
             // Update tenant balance and current month
-            tenant.balance += totalAmount;
+            tenant.balance += amountToAdd;
             tenant.currentMonth = currentMonth;
             await tenant.save();
         }
