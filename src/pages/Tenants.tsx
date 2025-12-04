@@ -255,31 +255,10 @@ const Tenants = () => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm space-y-1">
-                                            {/* Rent */}
+                                            {/* Total Balance Due */}
                                             <div className="flex justify-between gap-4">
-                                                <span className="text-gray-600">Rent:</span>
-                                                <span className="font-medium text-gray-900">KSh {tenant.monthlyRent.toLocaleString()}</span>
-                                            </div>
-
-                                            {/* Utilities - Show estimated from balance */}
-                                            {(() => {
-                                                // Calculate estimated utilities from balance
-                                                const estimatedUtilities = Math.max(0, (tenant.balance || 0) - tenant.monthlyRent);
-                                                if (estimatedUtilities > 0) {
-                                                    return (
-                                                        <div className="flex justify-between gap-4 text-xs">
-                                                            <span className="text-gray-500">+ Utilities:</span>
-                                                            <span className="text-gray-700">KSh {estimatedUtilities.toLocaleString()}</span>
-                                                        </div>
-                                                    );
-                                                }
-                                                return null;
-                                            })()}
-
-                                            {/* Total Balance */}
-                                            <div className="flex justify-between gap-4 pt-1 border-t border-gray-200">
                                                 <span className="font-semibold text-gray-900">
-                                                    {tenant.balance > 0 ? 'Arrears:' : tenant.balance < 0 ? 'Overpayment:' : 'Balance:'}
+                                                    {tenant.balance > 0 ? 'Total Due:' : tenant.balance < 0 ? 'Overpayment:' : 'Balance:'}
                                                 </span>
                                                 <span className={`font-bold ${tenant.balance > 0 ? 'text-red-600' :
                                                     tenant.balance < 0 ? 'text-green-600' :
@@ -289,8 +268,15 @@ const Tenants = () => {
                                                 </span>
                                             </div>
 
-                                            {/* Current Month - Always show current calendar month */}
-                                            <div className="text-xs text-gray-500 text-center pt-1">
+                                            {/* Breakdown hint */}
+                                            {tenant.balance > 0 && (
+                                                <div className="text-xs text-gray-500 italic">
+                                                    (Includes rent + utilities)
+                                                </div>
+                                            )}
+
+                                            {/* Current Month */}
+                                            <div className="text-xs text-gray-500 text-center pt-1 border-t border-gray-200">
                                                 {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                             </div>
                                         </div>
