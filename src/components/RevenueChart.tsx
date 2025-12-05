@@ -43,7 +43,7 @@ const RevenueChart = () => {
 
                 // Convert to chart format
                 const chartData: MonthlyRevenue[] = Object.keys(monthlyData).map(monthKey => {
-                    const [year, month] = monthKey.split('-');
+                    const [_year, month] = monthKey.split('-');
                     const monthIndex = parseInt(month) - 1;
                     return {
                         name: months[monthIndex],
