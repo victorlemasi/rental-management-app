@@ -9,7 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [loginType, setLoginType] = useState<'manager' | 'tenant'>('manager');
+    const [loginType, setLoginType] = useState<'manager' | 'tenant'>('tenant');
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -56,15 +56,6 @@ const Login = () => {
 
                     <div className="flex bg-gray-100 p-1 rounded-lg mb-8">
                         <button
-                            onClick={() => setLoginType('manager')}
-                            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'manager'
-                                ? 'bg-white text-primary-600 shadow-sm'
-                                : 'text-gray-500 hover:text-gray-700'
-                                }`}
-                        >
-                            Landlord
-                        </button>
-                        <button
                             onClick={() => setLoginType('tenant')}
                             className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'tenant'
                                 ? 'bg-white text-primary-600 shadow-sm'
@@ -72,6 +63,15 @@ const Login = () => {
                                 }`}
                         >
                             Tenant
+                        </button>
+                        <button
+                            onClick={() => setLoginType('manager')}
+                            className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'manager'
+                                ? 'bg-white text-primary-600 shadow-sm'
+                                : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            Landlord
                         </button>
                     </div>
 
