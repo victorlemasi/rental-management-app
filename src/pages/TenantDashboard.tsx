@@ -226,7 +226,7 @@ const TenantDashboard = () => {
                                                 return (
                                                     <tr key={record._id}>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                            {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                            {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                             KSh {baseRent.toLocaleString()}
@@ -265,7 +265,7 @@ const TenantDashboard = () => {
                                                             </span>
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                            {new Date(record.dueDate).toLocaleDateString()}
+                                                            {new Date(record.dueDate).toLocaleDateString('en-US', { timeZone: 'UTC' })}
                                                         </td>
                                                     </tr>
                                                 );
