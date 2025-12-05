@@ -14,6 +14,7 @@ const Financials = () => {
     const [tenants, setTenants] = useState<Tenant[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMpesaModalOpen, setIsMpesaModalOpen] = useState(false);
     const [revenueData, setRevenueData] = useState<any[]>([]);
     const [paymentMethodData, setPaymentMethodData] = useState<any[]>([]);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
@@ -24,6 +25,15 @@ const Financials = () => {
         date: new Date().toISOString().split('T')[0],
         month: new Date().toISOString().slice(0, 7),
         method: 'bank-transfer',
+        status: 'completed'
+    });
+
+    const [mpesaFormData, setMpesaFormData] = useState({
+        tenantId: '',
+        amount: 0,
+        date: new Date().toISOString().split('T')[0],
+        month: new Date().toISOString().slice(0, 7),
+        method: 'mpesa',
         status: 'completed'
     });
 
@@ -97,6 +107,27 @@ const Financials = () => {
         } catch (error) {
             console.error('Failed to create payment', error);
             setToast({ message: 'Failed to record payment', type: 'error' });
+        }
+    };
+
+    const handleAddMpesaPayment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await paymentsAPI.create(mpesaFormData);
+            setIsMpesaModalOpen(false);
+            fetchData();
+            setMpesaFormData({
+                tenantId: '',
+                amount: 0,
+                date: new Date().toISOString().split('T')[0],
+                month: new Date().toISOString().slice(0, 7),
+                method: 'mpesa',
+                status: 'completed'
+            });
+            setToast({ message: 'M-Pesa payment recorded successfully!', type: 'success' });
+        } catch (error) {
+            console.error('Failed to create M-Pesa payment', error);
+            setToast({ message: 'Failed to record M-Pesa payment', type: 'error' });
         }
     };
 
@@ -176,13 +207,22 @@ const Financials = () => {
                     <h1 className="text-2xl font-bold text-gray-900">Financial Overview</h1>
                     <p className="text-gray-500 mt-1">Manage payments and view financial reports</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                >
-                    <Plus className="w-5 h-5" />
-                    Record Payment
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setIsMpesaModalOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                        <DollarSign className="w-5 h-5" />
+                        M-Pesa
+                    </button>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Record Payment
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -397,7 +437,6 @@ const Financials = () => {
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                         >
                             <option value="bank-transfer">Bank Transfer</option>
-                            <option value="mpesa">MPESA</option>
                             <option value="credit-card">Credit Card</option>
                             <option value="cash">Cash</option>
                         </select>
@@ -429,6 +468,91 @@ const Financials = () => {
                             className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                         >
                             Record Payment
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+
+            <Modal
+                isOpen={isMpesaModalOpen}
+                onClose={() => setIsMpesaModalOpen(false)}
+                title="Record M-Pesa Payment"
+            >
+                <form onSubmit={handleAddMpesaPayment} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Tenant</label>
+                        <select
+                            required
+                            value={mpesaFormData.tenantId}
+                            onChange={(e) => setMpesaFormData({ ...mpesaFormData, tenantId: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        >
+                            <option value="">Select Tenant</option>
+                            {tenants.map(t => (
+                                <option key={t._id} value={t._id}>{t.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Amount (KSh)</label>
+                        <input
+                            type="number"
+                            required
+                            value={mpesaFormData.amount}
+                            onChange={(e) => setMpesaFormData({ ...mpesaFormData, amount: parseInt(e.target.value) })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input
+                            type="date"
+                            required
+                            value={mpesaFormData.date}
+                            onChange={(e) => setMpesaFormData({ ...mpesaFormData, date: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Payment For Month</label>
+                        <input
+                            type="month"
+                            required
+                            value={mpesaFormData.month}
+                            onChange={(e) => setMpesaFormData({ ...mpesaFormData, month: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select
+                            value={mpesaFormData.status}
+                            onChange={(e) => setMpesaFormData({ ...mpesaFormData, status: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        >
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button
+                            type="button"
+                            onClick={() => setIsMpesaModalOpen(false)}
+                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                            Record M-Pesa Payment
                         </button>
                     </div>
                 </form>
