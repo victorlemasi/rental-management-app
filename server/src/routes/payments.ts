@@ -90,8 +90,8 @@ router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res
             if (rentHistory) {
                 rentHistory.amountPaid += savedPayment.amount;
 
-                // Update status based on total paid for that month
-                if (rentHistory.amountPaid >= rentHistory.amount) {
+                // Update status based on total paid for that month (including arrears)
+                if (rentHistory.amountPaid >= rentHistory.carriedForwardAmount) {
                     rentHistory.status = 'paid';
                 } else if (rentHistory.amountPaid > 0) {
                     rentHistory.status = 'partial';
@@ -108,6 +108,9 @@ router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res
                     month: paymentMonth,
                     amount: tenant.monthlyRent, // Start with base rent
                     amountPaid: savedPayment.amount,
+                    previousBalance: 0,
+                    creditBalance: 0,
+                    carriedForwardAmount: tenant.monthlyRent,
                     status: savedPayment.amount >= tenant.monthlyRent ? 'paid' : 'partial',
                     dueDate: dueDate,
                     water: 0,

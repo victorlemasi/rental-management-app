@@ -10,6 +10,9 @@ export interface IRentHistory extends Document {
     electricity: number;
     garbage: number;
     security: number;
+    previousBalance: number; // Arrears from previous month(s)
+    creditBalance: number; // Overpayment credit to apply to next month
+    carriedForwardAmount: number; // Total amount including arrears (after credits)
     status: 'paid' | 'pending' | 'partial' | 'overdue';
     dueDate: Date;
     createdAt: Date;
@@ -27,6 +30,9 @@ const RentHistorySchema: Schema = new Schema(
         electricity: { type: Number, default: 0 },
         garbage: { type: Number, default: 0 },
         security: { type: Number, default: 0 },
+        previousBalance: { type: Number, default: 0 }, // Arrears from previous month(s)
+        creditBalance: { type: Number, default: 0 }, // Overpayment credit from previous month
+        carriedForwardAmount: { type: Number, default: 0 }, // Total (rent + utilities + arrears - credits)
         status: {
             type: String,
             required: true,

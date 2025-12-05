@@ -21,8 +21,40 @@ export const generateMonthlyRent = async () => {
             });
 
             if (!existingRent) {
-                // Create new rent record
+                // Calculate previous month for arrears/credit check
+                const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                const previousMonth = prevDate.toISOString().slice(0, 7);
+
+                // Check for unpaid balance OR overpayment from previous month
+                const previousRent = await RentHistory.findOne({
+                    tenantId: tenant._id,
+                    month: previousMonth
+                });
+
+                let arrears = 0;
+                let creditAvailable = 0;
+
+                if (previousRent) {
+                    const balance = previousRent.amountPaid - previousRent.carriedForwardAmount;
+
+                    if (balance < 0) {
+                        // Unpaid balance (arrears)
+                        arrears = Math.abs(balance);
+                        console.log(`Tenant ${tenant.name}: Carrying forward arrears of KSh ${arrears} from ${previousMonth}`);
+                    } else if (balance > 0) {
+                        // Overpayment (credit)
+                        creditAvailable = balance;
+                        console.log(`Tenant ${tenant.name}: Applying credit of KSh ${creditAvailable} from ${previousMonth}`);
+                    }
+                }
+
+                // Create new rent record with arrears/credits
                 const dueDate = new Date(now.getFullYear(), now.getMonth(), 5); // Due on the 5th
+
+                // Calculate total: base rent + arrears - credit
+                const baseAmount = tenant.monthlyRent;
+                const totalBeforeCredit = baseAmount + arrears;
+                const totalAfterCredit = Math.max(0, totalBeforeCredit - creditAvailable);
 
                 await RentHistory.create({
                     tenantId: tenant._id,
@@ -30,14 +62,25 @@ export const generateMonthlyRent = async () => {
                     month: currentMonth,
                     amount: tenant.monthlyRent,
                     amountPaid: 0,
-                    status: 'pending',
+                    previousBalance: arrears,
+                    creditBalance: creditAvailable,
+                    carriedForwardAmount: totalAfterCredit,
+                    status: arrears > 0 ? 'overdue' : 'pending',
                     dueDate: dueDate
                 });
 
-                // Update tenant balance and current month
-                tenant.balance += tenant.monthlyRent;
+                // Update tenant balance
+                // If there's a credit, the tenant balance is reduced
+                // If there are arrears, only add current month's rent (arrears already in balance)
+                if (creditAvailable > 0) {
+                    // Apply credit to reduce balance
+                    tenant.balance = Math.max(0, tenant.balance - creditAvailable + tenant.monthlyRent);
+                } else {
+                    tenant.balance += tenant.monthlyRent;
+                }
+
                 tenant.currentMonth = currentMonth;
-                tenant.paymentStatus = 'pending';
+                tenant.paymentStatus = arrears > 0 ? 'overdue' : (creditAvailable >= baseAmount ? 'paid' : 'pending');
                 await tenant.save();
 
                 generatedCount++;

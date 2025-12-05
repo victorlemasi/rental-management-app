@@ -115,8 +115,8 @@ router.post('/callback', async (req, res) => {
                             // Update existing record
                             rentHistory.amountPaid += amount;
 
-                            // Update status
-                            if (rentHistory.amountPaid >= rentHistory.amount) {
+                            // Update status (check against total including arrears)
+                            if (rentHistory.amountPaid >= rentHistory.carriedForwardAmount) {
                                 rentHistory.status = 'paid';
                             } else if (rentHistory.amountPaid > 0) {
                                 rentHistory.status = 'partial';

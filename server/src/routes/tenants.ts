@@ -136,6 +136,9 @@ router.post('/', auth, authorize(['admin', 'manager']), async (req: Request, res
             month: currentMonth,
             amount: savedTenant.monthlyRent,
             amountPaid: 0,
+            previousBalance: 0,
+            creditBalance: 0,
+            carriedForwardAmount: savedTenant.monthlyRent,
             status: 'pending',
             dueDate: dueDate
         });
@@ -347,6 +350,9 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
 
             // Always recalculate total from Tenant's Base Rent + New Utilities
             rentHistory.amount = tenant.monthlyRent + newUtilities;
+            // Update carried forward amount (base + utilities + arrears - credits)
+            const totalBeforeCredit = rentHistory.amount + rentHistory.previousBalance;
+            rentHistory.carriedForwardAmount = Math.max(0, totalBeforeCredit - rentHistory.creditBalance);
 
             await rentHistory.save();
 
@@ -384,6 +390,9 @@ router.post('/:id/rent-history/current', auth, authorize(['admin', 'manager']), 
                 month: currentMonth,
                 amount: totalAmount,
                 amountPaid: 0,
+                previousBalance: 0,
+                creditBalance: 0,
+                carriedForwardAmount: totalAmount,
                 status: 'pending',
                 dueDate: dueDate,
                 water: Number(water) || 0,
@@ -438,17 +447,17 @@ router.post('/:id/record-payment', auth, authorize(['admin', 'manager']), async 
             return res.status(404).json({ message: 'Rent record not found for this month' });
         }
 
-        // Calculate amounts
+        // Calculate amounts (use carriedForwardAmount which includes arrears)
         const previousAmountPaid = rentHistory.amountPaid;
         const newTotalPaid = previousAmountPaid + paymentAmount;
-        const amountDue = rentHistory.amount;
+        const amountDue = rentHistory.carriedForwardAmount; // Use total including arrears
         const remainingBalance = amountDue - newTotalPaid;
 
         // Update rent history
         rentHistory.amountPaid = newTotalPaid;
 
-        // Update status based on payment
-        if (newTotalPaid >= amountDue) {
+        // Update status based on payment (check against total including arrears)
+        if (newTotalPaid >= rentHistory.carriedForwardAmount) {
             rentHistory.status = 'paid';
         } else if (newTotalPaid > 0) {
             rentHistory.status = 'partial';
