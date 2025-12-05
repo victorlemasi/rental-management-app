@@ -202,6 +202,8 @@ const TenantDashboard = () => {
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Elec</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Garbage</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Security</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Arrears</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Due</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -211,13 +213,16 @@ const TenantDashboard = () => {
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {rentHistory.length === 0 ? (
                                             <tr>
-                                                <td colSpan={10} className="px-4 py-4 text-center text-sm text-gray-500">
+                                                <td colSpan={12} className="px-4 py-4 text-center text-sm text-gray-500">
                                                     No payment history found.
                                                 </td>
                                             </tr>
                                         ) : (
                                             rentHistory.map((record) => {
                                                 const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0) - (record.security || 0);
+                                                const arrears = record.previousBalance || 0;
+                                                const credit = record.creditBalance || 0;
+                                                const totalDue = record.carriedForwardAmount !== undefined ? record.carriedForwardAmount : record.amount;
                                                 return (
                                                     <tr key={record._id}>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
@@ -238,8 +243,14 @@ const TenantDashboard = () => {
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                                                             KSh {(record.security || 0).toLocaleString()}
                                                         </td>
-                                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                            KSh {record.amount.toLocaleString()}
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-red-600 font-medium">
+                                                            {arrears > 0 ? `KSh ${arrears.toLocaleString()}` : '-'}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 font-medium">
+                                                            {credit > 0 ? `-KSh ${credit.toLocaleString()}` : '-'}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-gray-900">
+                                                            KSh {totalDue.toLocaleString()}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 font-medium">
                                                             KSh {record.amountPaid.toLocaleString()}
@@ -429,7 +440,11 @@ const TenantDashboard = () => {
                                     const garbage = currentMonthRecord?.garbage || 0;
                                     const security = currentMonthRecord?.security || 0;
                                     const totalUtilities = water + electricity + garbage + security;
-                                    const currentMonthTotal = (tenant?.monthlyRent || 0) + totalUtilities;
+                                    const arrears = currentMonthRecord?.previousBalance || 0;
+                                    const credit = currentMonthRecord?.creditBalance || 0;
+                                    const totalDue = currentMonthRecord?.carriedForwardAmount !== undefined
+                                        ? currentMonthRecord.carriedForwardAmount
+                                        : (tenant?.monthlyRent || 0) + totalUtilities;
                                     const amountPaid = currentMonthRecord?.amountPaid || 0;
 
                                     return (
@@ -470,6 +485,24 @@ const TenantDashboard = () => {
                                                     </p>
                                                 </div>
                                             </div>
+                                            {/* Arrears (if any) */}
+                                            {arrears > 0 && (
+                                                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                    <p className="text-sm font-medium text-red-700">Previous Arrears</p>
+                                                    <p className="text-lg font-semibold text-red-600">
+                                                        +KSh {arrears.toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {/* Credits (if any) */}
+                                            {credit > 0 && (
+                                                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                    <p className="text-sm font-medium text-green-700">Credit Applied</p>
+                                                    <p className="text-lg font-semibold text-green-600">
+                                                        -KSh {credit.toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            )}
 
                                             {/* Total Utilities */}
                                             <div className="flex justify-between items-center pt-2">
@@ -481,9 +514,9 @@ const TenantDashboard = () => {
 
                                             {/* Current Month Total */}
                                             <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                                                <p className="text-sm font-semibold text-gray-900">Total (This Month)</p>
+                                                <p className="text-sm font-semibold text-gray-900">Total Due</p>
                                                 <p className="text-xl font-bold text-primary-600">
-                                                    KSh {currentMonthTotal.toLocaleString()}
+                                                    KSh {totalDue.toLocaleString()}
                                                 </p>
                                             </div>
 
@@ -497,20 +530,20 @@ const TenantDashboard = () => {
 
                                             {/* Amount Due */}
                                             <div className="flex justify-between items-center pt-2">
-                                                <p className="text-sm text-gray-600">Amount Due</p>
+                                                <p className="text-sm text-gray-600">Outstanding</p>
                                                 <p className="text-lg font-semibold text-red-600">
-                                                    KSh {Math.max(0, currentMonthTotal - amountPaid).toLocaleString()}
+                                                    KSh {Math.max(0, totalDue - amountPaid).toLocaleString()}
                                                 </p>
                                             </div>
 
                                             {/* Payment Status */}
                                             <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                                                 <p className="text-sm font-medium text-gray-700">Payment Status</p>
-                                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${(currentMonthTotal - amountPaid) <= 0
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-yellow-100 text-yellow-800'
+                                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${(totalDue - amountPaid) <= 0
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-yellow-100 text-yellow-800'
                                                     }`}>
-                                                    {(currentMonthTotal - amountPaid) <= 0 ? 'PAID' : 'PENDING'}
+                                                    {(totalDue - amountPaid) <= 0 ? 'PAID' : 'PENDING'}
                                                 </span>
                                             </div>
                                         </>
