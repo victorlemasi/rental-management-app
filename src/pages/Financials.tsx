@@ -112,8 +112,10 @@ const Financials = () => {
 
     const handleAddMpesaPayment = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('M-Pesa Payment Form Data:', mpesaFormData);
         try {
-            await paymentsAPI.create(mpesaFormData);
+            const response = await paymentsAPI.create(mpesaFormData);
+            console.log('M-Pesa Payment created successfully:', response);
             setIsMpesaModalOpen(false);
             fetchData();
             setMpesaFormData({
@@ -125,9 +127,11 @@ const Financials = () => {
                 status: 'completed'
             });
             setToast({ message: 'M-Pesa payment recorded successfully!', type: 'success' });
-        } catch (error) {
-            console.error('Failed to create M-Pesa payment', error);
-            setToast({ message: 'Failed to record M-Pesa payment', type: 'error' });
+        } catch (error: any) {
+            console.error('Failed to create M-Pesa payment - Full Error:', error);
+            console.error('Error message:', error?.message);
+            const errorMsg = error?.message || 'Failed to record M-Pesa payment';
+            setToast({ message: errorMsg, type: 'error' });
         }
     };
 
