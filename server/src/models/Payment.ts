@@ -7,7 +7,7 @@ export interface IPayment extends Document {
     amount: number;
     date: Date;
     status: 'completed' | 'pending' | 'failed';
-    method: 'bank-transfer' | 'credit-card' | 'cash' | 'check';
+    method: 'bank-transfer' | 'credit-card' | 'cash' | 'check' | 'mpesa';
     createdAt: Date;
     updatedAt: Date;
 }
@@ -28,7 +28,7 @@ const PaymentSchema: Schema = new Schema(
         method: {
             type: String,
             required: true,
-            enum: ['bank-transfer', 'credit-card', 'cash', 'check']
+            enum: ['bank-transfer', 'credit-card', 'cash', 'check', 'mpesa']
         }
     },
     {
