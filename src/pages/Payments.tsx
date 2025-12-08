@@ -58,6 +58,81 @@ const Payments = () => {
             tenant.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
+    const exportToCSV = () => {
+        // Prepare CSV data
+        const csvRows = [];
+
+        // Header
+        csvRows.push([
+            'Tenant Name',
+            'Property',
+            'Unit',
+            'Month',
+            'Base Rent',
+            'Water',
+            'Electricity',
+            'Garbage',
+            'Security',
+            'Arrears',
+            'Credit Applied',
+            'Total Due',
+            'Amount Paid',
+            'Remaining Balance',
+            'Status',
+            'Due Date'
+        ].join(','));
+
+        // Data rows
+        filteredTenants.forEach(tenant => {
+            const history = rentHistories[tenant._id] || [];
+            const propertyName = getPropertyName(tenant.propertyId);
+
+            history.forEach((record: any) => {
+                const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0) - (record.security || 0);
+                const balance = record.carriedForwardAmount - record.amountPaid;
+
+                const [year, month] = record.month.split('-');
+                const date = new Date(parseInt(year), parseInt(month) - 1, 15);
+                const monthStr = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+                csvRows.push([
+                    `"${tenant.name}"`,
+                    `"${propertyName}"`,
+                    `"${tenant.unitNumber}"`,
+                    monthStr,
+                    baseRent,
+                    record.water || 0,
+                    record.electricity || 0,
+                    record.garbage || 0,
+                    record.security || 0,
+                    record.previousBalance || 0,
+                    record.creditBalance || 0,
+                    record.carriedForwardAmount,
+                    record.amountPaid,
+                    balance,
+                    record.status,
+                    new Date(record.dueDate).toLocaleDateString()
+                ].join(','));
+            });
+        });
+
+        // Create and download CSV file
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+
+        const now = new Date();
+        const timestamp = now.toISOString().split('T')[0]; // YYYY-MM-DD
+
+        link.setAttribute('href', url);
+        link.setAttribute('download', `payment-history-${timestamp}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     if (loading) {
         return <div className="p-8 text-center">Loading payment history...</div>;
     }
@@ -69,7 +144,10 @@ const Payments = () => {
                     <h1 className="text-2xl font-bold text-gray-900">Payment History</h1>
                     <p className="text-gray-500 mt-1">Track all tenant payments month-over-month</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                <button
+                    onClick={exportToCSV}
+                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                >
                     <Download className="w-5 h-5" />
                     Export
                 </button>
