@@ -111,7 +111,14 @@ const Payments = () => {
                     record.amountPaid,
                     balance,
                     record.status,
-                    new Date(record.dueDate).toLocaleDateString()
+                    (() => {
+                        try {
+                            const dueDate = new Date(record.dueDate);
+                            return !isNaN(dueDate.getTime()) ? dueDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A';
+                        } catch {
+                            return 'N/A';
+                        }
+                    })()
                 ].join(','));
             });
         });
