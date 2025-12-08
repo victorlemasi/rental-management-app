@@ -11,6 +11,7 @@ import paymentRoutes from './routes/payments.js';
 import { authRoutes } from './routes/auth.js';
 import { mpesaRoutes } from './routes/mpesa.js';
 import notificationRoutes from './routes/notifications.js';
+import userRoutes from './routes/users.js';
 
 import { initRentScheduler, generateMonthlyRent } from './services/rentGenerator.js';
 
@@ -63,6 +64,7 @@ app.use('/api/tenants', tenantRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

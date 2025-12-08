@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Lock, Bell, Moon, Sun, Monitor, Save, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { userAPI } from '../services/api';
+import Toast from '../components/Toast';
 
 const Settings = () => {
-    const { user } = useAuth();
+    const { user, login } = useAuth();
     const { theme, toggleTheme } = useTheme();
+    const [loading, setLoading] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
     // Form states
     const [profileData, setProfileData] = useState({
         name: user?.name || 'Admin User',
         email: user?.email || 'admin@example.com',
-        phone: '+254 712 345 678',
+        phone: '',
         role: user?.role || 'Administrator'
     });
 
@@ -28,26 +32,108 @@ const Settings = () => {
         monthlyReport: true
     });
 
+    // Fetch user profile and settings on mount
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const [profile, notifSettings] = await Promise.all([
+                    userAPI.getProfile(),
+                    userAPI.getNotificationSettings()
+                ]);
+
+                setProfileData({
+                    name: profile.name,
+                    email: profile.email,
+                    phone: profile.phone || '',
+                    role: profile.role
+                });
+
+                setNotifications(notifSettings);
+            } catch (error: any) {
+                console.error('Error fetching user data:', error);
+                setToast({ message: 'Failed to load user settings', type: 'error' });
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
     // Handlers
-    const handleProfileUpdate = (e: React.FormEvent) => {
+    const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would typically call an API to update the profile
-        alert('Profile updated successfully (Mock)');
+        setLoading(true);
+        try {
+            const response = await userAPI.updateProfile({
+                name: profileData.name,
+                email: profileData.email,
+                phone: profileData.phone
+            });
+
+            // Update the auth context with new user data
+            const token = localStorage.getItem('token');
+            if (token && response.user) {
+                login(token, response.user);
+            }
+
+            setToast({ message: 'Profile updated successfully!', type: 'success' });
+        } catch (error: any) {
+            setToast({ message: error.message || 'Failed to update profile', type: 'error' });
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handlePasswordUpdate = (e: React.FormEvent) => {
+    const handlePasswordUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         if (securityData.newPassword !== securityData.confirmPassword) {
-            alert('Passwords do not match');
+            setToast({ message: 'Passwords do not match', type: 'error' });
             return;
         }
-        // Here you would typically call an API to update the password
-        alert('Password updated successfully (Mock)');
-        setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        if (securityData.newPassword.length < 6) {
+            setToast({ message: 'Password must be at least 6 characters long', type: 'error' });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await userAPI.changePassword({
+                currentPassword: securityData.currentPassword,
+                newPassword: securityData.newPassword
+            });
+
+            setToast({ message: 'Password changed successfully!', type: 'success' });
+            setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (error: any) {
+            setToast({ message: error.message || 'Failed to change password', type: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleNotificationToggle = async (key: keyof typeof notifications) => {
+        const newSettings = { ...notifications, [key]: !notifications[key] };
+        setNotifications(newSettings);
+
+        try {
+            await userAPI.updateNotificationSettings(newSettings);
+            setToast({ message: 'Notification settings updated', type: 'success' });
+        } catch (error: any) {
+            // Revert on error
+            setNotifications(notifications);
+            setToast({ message: 'Failed to update notification settings', type: 'error' });
+        }
     };
 
     return (
         <div className="space-y-6">
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+
             <div>
                 <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
                 <p className="text-gray-500 mt-1">Manage your account settings and preferences</p>
@@ -139,9 +225,13 @@ const Settings = () => {
                                 </div>
                             </div>
                             <div className="flex justify-end pt-2">
-                                <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
                                     <Save className="w-4 h-4" />
-                                    Save Changes
+                                    {loading ? 'Saving...' : 'Save Changes'}
                                 </button>
                             </div>
                         </form>
@@ -184,8 +274,12 @@ const Settings = () => {
                                 </div>
                             </div>
                             <div className="flex justify-end pt-2">
-                                <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
-                                    Change Password
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? 'Changing...' : 'Change Password'}
                                 </button>
                             </div>
                         </form>
@@ -213,7 +307,7 @@ const Settings = () => {
                                         <input
                                             type="checkbox"
                                             checked={notifications[item.id as keyof typeof notifications]}
-                                            onChange={() => setNotifications({ ...notifications, [item.id]: !notifications[item.id as keyof typeof notifications] })}
+                                            onChange={() => handleNotificationToggle(item.id as keyof typeof notifications)}
                                             className="sr-only peer"
                                         />
                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>

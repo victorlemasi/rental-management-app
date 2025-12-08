@@ -21,6 +21,28 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'manager', 'tenant'],
         default: 'admin',
     },
+    phone: {
+        type: String,
+        default: '',
+    },
+    notificationSettings: {
+        email: {
+            type: Boolean,
+            default: true,
+        },
+        push: {
+            type: Boolean,
+            default: true,
+        },
+        sms: {
+            type: Boolean,
+            default: false,
+        },
+        monthlyReport: {
+            type: Boolean,
+            default: true,
+        },
+    },
     createdAt: {
         type: Date,
         default: Date.now,

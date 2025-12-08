@@ -301,6 +301,61 @@ export const authAPI = {
     },
 };
 
+// User Settings API
+export const userAPI = {
+    getProfile: async () => {
+        const response = await fetch(`${API_BASE_URL}/users/profile`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch user profile');
+        return response.json();
+    },
+
+    updateProfile: async (data: { name?: string; email?: string; phone?: string }) => {
+        const response = await fetch(`${API_BASE_URL}/users/profile`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to update profile');
+        }
+        return response.json();
+    },
+
+    changePassword: async (data: { currentPassword: string; newPassword: string }) => {
+        const response = await fetch(`${API_BASE_URL}/users/change-password`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to change password');
+        }
+        return response.json();
+    },
+
+    getNotificationSettings: async () => {
+        const response = await fetch(`${API_BASE_URL}/users/notification-settings`, {
+            headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error('Failed to fetch notification settings');
+        return response.json();
+    },
+
+    updateNotificationSettings: async (data: { email?: boolean; push?: boolean; sms?: boolean; monthlyReport?: boolean }) => {
+        const response = await fetch(`${API_BASE_URL}/users/notification-settings`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Failed to update notification settings');
+        return response.json();
+    },
+};
+
 // Notifications API
 export const notificationsAPI = {
     getMyNotifications: async () => {
