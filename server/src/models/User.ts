@@ -43,16 +43,27 @@ const userSchema = new mongoose.Schema({
             default: true,
         },
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    resetPasswordToken: {
+    status: {
         type: String,
+        enum: ['active', 'inactive', 'suspended'],
+        default: 'active',
     },
-    resetPasswordExpires: {
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    lastLogin: {
         type: Date,
     },
+    type: Date,
+    default: Date.now,
+},
+    resetPasswordToken: {
+    type: String,
+},
+    resetPasswordExpires: {
+    type: Date,
+},
 });
 
 export const User = mongoose.model('User', userSchema);

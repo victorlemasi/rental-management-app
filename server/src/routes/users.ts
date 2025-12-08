@@ -24,6 +24,10 @@ router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
             email: user.email,
             phone: user.phone || '',
             role: user.role,
+            createdAt: user.createdAt,
+            lastLogin: user.lastLogin,
+            status: user.status || 'active',
+            isVerified: user.isVerified || false,
             notificationSettings: user.notificationSettings || {
                 email: true,
                 push: true,

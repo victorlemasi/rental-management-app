@@ -17,7 +17,11 @@ const Settings = () => {
         name: user?.name || 'Admin User',
         email: user?.email || 'admin@example.com',
         phone: '',
-        role: user?.role || 'Administrator'
+        role: user?.role || 'Administrator',
+        status: 'active',
+        isVerified: false,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
     });
 
     const [securityData, setSecurityData] = useState({
@@ -46,7 +50,11 @@ const Settings = () => {
                     name: profile.name,
                     email: profile.email,
                     phone: profile.phone || '',
-                    role: profile.role
+                    role: profile.role,
+                    status: profile.status || 'active',
+                    isVerified: profile.isVerified || false,
+                    createdAt: profile.createdAt || new Date().toISOString(),
+                    lastLogin: profile.lastLogin || new Date().toISOString()
                 });
 
                 setNotifications(notifSettings);
@@ -158,8 +166,13 @@ const Settings = () => {
                         <h2 className="text-xl font-bold text-gray-900">{profileData.name}</h2>
                         <p className="text-sm text-gray-500 capitalize">{profileData.role}</p>
                         <div className="mt-4 flex justify-center gap-2">
-                            <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Active</span>
-                            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Verified</span>
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${profileData.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                }`}>
+                                {profileData.status}
+                            </span>
+                            {profileData.isVerified && (
+                                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Verified</span>
+                            )}
                         </div>
                     </div>
 
@@ -169,11 +182,20 @@ const Settings = () => {
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-600">Member Since</span>
-                                <span className="font-medium">Nov 2023</span>
+                                <span className="font-medium">
+                                    {new Date(profileData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-600">Last Login</span>
-                                <span className="font-medium">Today, 10:23 AM</span>
+                                <span className="font-medium text-sm text-right">
+                                    {new Date(profileData.lastLogin).toLocaleString('en-US', {
+                                        weekday: 'short',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        hour12: true
+                                    })}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-600">Security Level</span>
