@@ -50,8 +50,8 @@ const Settings = () => {
 
                 setNotifications(notifSettings);
             } catch (error: any) {
-                console.error('Error fetching user data:', error);
-                setToast({ message: 'Failed to load user settings', type: 'error' });
+                console.warn('Could not load user settings, using fallback data:', error);
+                // Silently fail and use auth context data - API endpoints may not exist yet in production
             }
         };
 
