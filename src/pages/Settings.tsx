@@ -80,7 +80,7 @@ const Settings = () => {
         } catch (error: any) {
             setToast({ message: error.message || 'Failed to update profile', type: 'error' });
         } finally {
-            setLoading(false);
+            setProfileLoading(false);
         }
     };
 
@@ -114,7 +114,7 @@ const Settings = () => {
         } catch (error: any) {
             setToast({ message: error.message || 'Failed to change password', type: 'error' });
         } finally {
-            setLoading(false);
+            setPasswordLoading(false);
         }
     };
 
