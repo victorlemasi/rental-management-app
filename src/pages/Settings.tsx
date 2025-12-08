@@ -8,7 +8,8 @@ import Toast from '../components/Toast';
 const Settings = () => {
     const { user, login } = useAuth();
     const { theme, toggleTheme } = useTheme();
-    const [loading, setLoading] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(false);
+    const [passwordLoading, setPasswordLoading] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
     // Form states
@@ -61,7 +62,7 @@ const Settings = () => {
     // Handlers
     const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        setProfileLoading(true);
         try {
             const response = await userAPI.updateProfile({
                 name: profileData.name,
@@ -85,6 +86,13 @@ const Settings = () => {
 
     const handlePasswordUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validate that all fields are filled
+        if (!securityData.currentPassword || !securityData.newPassword || !securityData.confirmPassword) {
+            setToast({ message: 'Please fill in all password fields', type: 'error' });
+            return;
+        }
+
         if (securityData.newPassword !== securityData.confirmPassword) {
             setToast({ message: 'Passwords do not match', type: 'error' });
             return;
@@ -94,7 +102,7 @@ const Settings = () => {
             return;
         }
 
-        setLoading(true);
+        setPasswordLoading(true);
         try {
             await userAPI.changePassword({
                 currentPassword: securityData.currentPassword,
@@ -232,11 +240,11 @@ const Settings = () => {
                             <div className="flex justify-end pt-2">
                                 <button
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={profileLoading}
                                     className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                                 >
                                     <Save className="w-4 h-4" />
-                                    {loading ? 'Saving...' : 'Save Changes'}
+                                    {profileLoading ? 'Saving...' : 'Save Changes'}
                                 </button>
                             </div>
                         </form>
@@ -286,11 +294,11 @@ const Settings = () => {
                             <div className="flex justify-end pt-2">
                                 <button
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={passwordLoading}
                                     className="flex items-center gap-2 px-5 py-2.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                                 >
                                     <Lock className="w-4 h-4" />
-                                    {loading ? 'Changing...' : 'Change Password'}
+                                    {passwordLoading ? 'Changing...' : 'Change Password'}
                                 </button>
                             </div>
                         </form>
