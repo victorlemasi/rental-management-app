@@ -147,6 +147,21 @@ const Settings = () => {
                 <p className="text-gray-500 mt-1">Manage your account settings and preferences</p>
             </div>
 
+            {/* Deployment Warning Banner */}
+            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg">
+                <div className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-400 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                        <h3 className="text-sm font-medium text-amber-800">Backend Deployment in Progress</h3>
+                        <div className="mt-1 text-sm text-amber-700">
+                            <p>The Settings API is currently being deployed. You can make changes, but they won't be saved until deployment completes. Please check back in a few minutes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column - Navigation/Summary */}
                 <div className="lg:col-span-1 space-y-6">
