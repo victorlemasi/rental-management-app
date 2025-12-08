@@ -195,6 +195,75 @@ const Financials = () => {
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
+    const exportToCSV = () => {
+        const csvRows = [];
+
+        // Add summary section
+        csvRows.push(['FINANCIAL SUMMARY']);
+        csvRows.push(['']);
+        csvRows.push(['Metric', 'Value']);
+        csvRows.push(['Total Revenue', `KSh ${totalRevenue.toLocaleString()}`]);
+        csvRows.push(['Pending Payments', pendingPayments.toString()]);
+        csvRows.push(['Average Rent', `KSh ${Math.round(averageRent).toLocaleString()}`]);
+        csvRows.push(['Total Payments', payments.length.toString()]);
+        csvRows.push(['Active Tenants', activeTenants.length.toString()]);
+        csvRows.push(['']);
+        csvRows.push(['']);
+
+        // Add revenue trends section
+        csvRows.push(['REVENUE TRENDS (Last 6 Months)']);
+        csvRows.push(['']);
+        csvRows.push(['Month', 'Revenue']);
+        revenueData.forEach(item => {
+            csvRows.push([item.name, item.value.toString()]);
+        });
+        csvRows.push(['']);
+        csvRows.push(['']);
+
+        // Add payment methods section
+        csvRows.push(['PAYMENT METHODS']);
+        csvRows.push(['']);
+        csvRows.push(['Method', 'Count']);
+        paymentMethodData.forEach(item => {
+            csvRows.push([item.name, item.value.toString()]);
+        });
+        csvRows.push(['']);
+        csvRows.push(['']);
+
+        // Add payment history section
+        csvRows.push(['PAYMENT HISTORY']);
+        csvRows.push(['']);
+        csvRows.push(['Date', 'Tenant', 'Property', 'Amount (KSh)', 'Payment Method', 'Status', 'Month']);
+
+        payments.forEach(payment => {
+            csvRows.push([
+                new Date(payment.date).toLocaleDateString(),
+                `"${payment.tenantName}"`,
+                `"${payment.propertyName}"`,
+                payment.amount.toString(),
+                payment.method.replace('-', ' '),
+                payment.status,
+                payment.month || 'N/A'
+            ]);
+        });
+
+        // Create CSV content
+        const csvContent = csvRows.map(row => row.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+
+        const now = new Date();
+        const timestamp = now.toISOString().split('T')[0];
+
+        link.setAttribute('href', url);
+        link.setAttribute('download', `financial-report-${timestamp}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     if (loading) return <div className="p-8 text-center">Loading financials...</div>;
 
     return (
@@ -212,6 +281,13 @@ const Financials = () => {
                     <p className="text-gray-500 mt-1">Manage payments and view financial reports</p>
                 </div>
                 <div className="flex items-center gap-3">
+                    <button
+                        onClick={exportToCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                        <Download className="w-5 h-5" />
+                        Export
+                    </button>
                     <button
                         onClick={() => setIsMpesaModalOpen(true)}
                         className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"

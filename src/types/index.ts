@@ -54,8 +54,9 @@ export interface Payment {
     propertyName: string;
     amount: number;
     date: string;
+    month?: string; // YYYY-MM format
     status: 'completed' | 'pending' | 'failed';
-    method: 'bank-transfer' | 'credit-card' | 'cash' | 'check';
+    method: 'bank-transfer' | 'credit-card' | 'cash' | 'check' | 'mpesa';
 }
 
 export interface User {
