@@ -91,9 +91,21 @@ const Payments = () => {
                 const baseRent = record.amount - (record.water || 0) - (record.electricity || 0) - (record.garbage || 0) - (record.security || 0);
                 const balance = record.carriedForwardAmount - record.amountPaid;
 
-                const [year, month] = record.month.split('-');
-                const date = new Date(parseInt(year), parseInt(month) - 1, 15);
-                const monthStr = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                // Format month more robustly
+                let monthStr = 'N/A';
+                try {
+                    if (record.month && typeof record.month === 'string') {
+                        const [year, month] = record.month.split('-');
+                        if (year && month) {
+                            const date = new Date(parseInt(year), parseInt(month) - 1, 15);
+                            if (!isNaN(date.getTime())) {
+                                monthStr = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                            }
+                        }
+                    }
+                } catch (e) {
+                    monthStr = record.month || 'N/A';
+                }
 
                 csvRows.push([
                     `"${tenant.name}"`,
