@@ -180,10 +180,15 @@ const Settings = () => {
                 {/* Right Column - Forms */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Profile Settings */}
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
-                        <div className="flex items-center gap-2 mb-6">
-                            <User className="w-5 h-5 text-gray-400" />
-                            <h2 className="text-lg font-semibold text-gray-900">Profile Information</h2>
+                    <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border-2 border-blue-200 p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-blue-100">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <User className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-blue-900">Profile Information</h2>
+                                <p className="text-xs text-blue-600">Update your personal details</p>
+                            </div>
                         </div>
                         <form onSubmit={handleProfileUpdate} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -228,7 +233,7 @@ const Settings = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                                 >
                                     <Save className="w-4 h-4" />
                                     {loading ? 'Saving...' : 'Save Changes'}
@@ -238,10 +243,15 @@ const Settings = () => {
                     </div>
 
                     {/* Security Settings */}
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
-                        <div className="flex items-center gap-2 mb-6">
-                            <Lock className="w-5 h-5 text-gray-400" />
-                            <h2 className="text-lg font-semibold text-gray-900">Security</h2>
+                    <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl border-2 border-amber-200 p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-amber-100">
+                            <div className="p-2 bg-amber-100 rounded-lg">
+                                <Lock className="w-5 h-5 text-amber-600" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-amber-900">Security Settings</h2>
+                                <p className="text-xs text-amber-600">Manage your password and security</p>
+                            </div>
                         </div>
                         <form onSubmit={handlePasswordUpdate} className="space-y-4">
                             <div>
@@ -277,8 +287,9 @@ const Settings = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                                 >
+                                    <Lock className="w-4 h-4" />
                                     {loading ? 'Changing...' : 'Change Password'}
                                 </button>
                             </div>
