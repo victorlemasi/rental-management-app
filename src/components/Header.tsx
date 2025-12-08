@@ -1,5 +1,6 @@
 import { Bell, Search, User, Menu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
     onMenuClick: () => void;
@@ -7,6 +8,7 @@ interface HeaderProps {
 
 const Header = ({ onMenuClick }: HeaderProps) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10">
@@ -47,7 +49,10 @@ const Header = ({ onMenuClick }: HeaderProps) => {
                         <p className="text-sm font-medium text-gray-900">{user?.name || 'Admin'}</p>
                         <p className="text-xs text-gray-500 capitalize">{user?.role || 'Manager'}</p>
                     </div>
-                    <button className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
+                    <button
+                        onClick={() => navigate('/settings')}
+                        className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
+                    >
                         <User className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
                 </div>

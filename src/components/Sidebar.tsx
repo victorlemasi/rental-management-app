@@ -99,10 +99,21 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                 </nav>
 
                 <div className="p-4 border-t border-gray-200">
-                    <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors">
+                    <NavLink
+                        to="/settings"
+                        onClick={closeMobileMenu}
+                        className={({ isActive }) =>
+                            cn(
+                                "flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors",
+                                isActive
+                                    ? "bg-primary-50 text-primary-700"
+                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                            )
+                        }
+                    >
                         <Settings className="w-5 h-5" />
                         <span className="font-medium">Settings</span>
-                    </button>
+                    </NavLink>
                     <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-3 w-full text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-1"

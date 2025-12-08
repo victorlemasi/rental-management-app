@@ -15,6 +15,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TenantDashboard from './pages/TenantDashboard';
+import Settings from './pages/Settings';
 import DebugTenantData from './pages/DebugTenantData';
 
 import { ThemeProvider } from './context/ThemeContext';
@@ -42,6 +43,7 @@ function App() {
               <Route path="financials" element={<Financials />} />
               <Route path="payments" element={<Payments />} />
               <Route path="notifications" element={<Notifications />} />
+              <Route path="settings" element={<Settings />} />
               <Route path="verify-transaction" element={<TransactionVerification />} />
             </Route>
 
