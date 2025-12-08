@@ -259,11 +259,11 @@ const Financials = () => {
                 payment.method.replace('-', ' '),
                 payment.status,
                 payment.month || 'N/A'
-            ]);
+            ].join(','));
         });
 
         // Create CSV content
-        const csvContent = csvRows.map(row => row.join(',')).join('\n');
+        const csvContent = csvRows.join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
