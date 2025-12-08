@@ -301,6 +301,20 @@ export const authAPI = {
     },
 };
 
+// Helper function to safely parse JSON and detect HTML responses
+const safeJsonParse = async (response: Response) => {
+    const text = await response.text();
+    // Check if response is HTML (indicates endpoint doesn't exist)
+    if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+        throw new Error('Settings API endpoints not available. Backend deployment may still be in progress.');
+    }
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error('Invalid response from server');
+    }
+};
+
 // User Settings API
 export const userAPI = {
     getProfile: async () => {
@@ -308,7 +322,7 @@ export const userAPI = {
             headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to fetch user profile');
-        return response.json();
+        return safeJsonParse(response);
     },
 
     updateProfile: async (data: { name?: string; email?: string; phone?: string }) => {
@@ -318,10 +332,10 @@ export const userAPI = {
             body: JSON.stringify(data),
         });
         if (!response.ok) {
-            const error = await response.json();
+            const error = await safeJsonParse(response);
             throw new Error(error.message || 'Failed to update profile');
         }
-        return response.json();
+        return safeJsonParse(response);
     },
 
     changePassword: async (data: { currentPassword: string; newPassword: string }) => {
@@ -331,10 +345,10 @@ export const userAPI = {
             body: JSON.stringify(data),
         });
         if (!response.ok) {
-            const error = await response.json();
+            const error = await safeJsonParse(response);
             throw new Error(error.message || 'Failed to change password');
         }
-        return response.json();
+        return safeJsonParse(response);
     },
 
     getNotificationSettings: async () => {
@@ -342,7 +356,7 @@ export const userAPI = {
             headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to fetch notification settings');
-        return response.json();
+        return safeJsonParse(response);
     },
 
     updateNotificationSettings: async (data: { email?: boolean; push?: boolean; sms?: boolean; monthlyReport?: boolean }) => {
@@ -352,7 +366,7 @@ export const userAPI = {
             body: JSON.stringify(data),
         });
         if (!response.ok) throw new Error('Failed to update notification settings');
-        return response.json();
+        return safeJsonParse(response);
     },
 };
 
