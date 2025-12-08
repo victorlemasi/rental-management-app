@@ -1,12 +1,17 @@
-import express from 'express';
+import express, { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User';
 import { auth } from '../middleware/auth';
 
+// Define AuthRequest interface to match the one in auth middleware
+interface AuthRequest extends express.Request {
+    user?: any;
+}
+
 const router = express.Router();
 
 // Get user profile
-router.get('/profile', auth, async (req, res) => {
+router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
     try {
         const user = await User.findById(req.user.userId).select('-password');
         if (!user) {
@@ -33,7 +38,7 @@ router.get('/profile', auth, async (req, res) => {
 });
 
 // Update user profile
-router.put('/profile', auth, async (req, res) => {
+router.put('/profile', auth, async (req: AuthRequest, res: Response) => {
     try {
         const { name, email, phone } = req.body;
         const user = await User.findById(req.user.userId);
@@ -76,7 +81,7 @@ router.put('/profile', auth, async (req, res) => {
 });
 
 // Change password
-router.post('/change-password', auth, async (req, res) => {
+router.post('/change-password', auth, async (req: AuthRequest, res: Response) => {
     try {
         const { currentPassword, newPassword } = req.body;
 
@@ -113,7 +118,7 @@ router.post('/change-password', auth, async (req, res) => {
 });
 
 // Get notification settings
-router.get('/notification-settings', auth, async (req, res) => {
+router.get('/notification-settings', auth, async (req: AuthRequest, res: Response) => {
     try {
         const user = await User.findById(req.user.userId);
         if (!user) {
@@ -135,7 +140,7 @@ router.get('/notification-settings', auth, async (req, res) => {
 });
 
 // Update notification settings
-router.put('/notification-settings', auth, async (req, res) => {
+router.put('/notification-settings', auth, async (req: AuthRequest, res: Response) => {
     try {
         const { email, push, sms, monthlyReport } = req.body;
         const user = await User.findById(req.user.userId);
