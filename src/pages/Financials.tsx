@@ -236,8 +236,23 @@ const Financials = () => {
         csvRows.push(['Date', 'Tenant', 'Property', 'Amount (KSh)', 'Payment Method', 'Status', 'Month']);
 
         payments.forEach(payment => {
+            // Format date more robustly
+            let formattedDate = 'N/A';
+            try {
+                const date = new Date(payment.date);
+                if (!isNaN(date.getTime())) {
+                    formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                }
+            } catch (e) {
+                formattedDate = payment.date || 'N/A';
+            }
+
             csvRows.push([
-                new Date(payment.date).toLocaleDateString(),
+                formattedDate,
                 `"${payment.tenantName}"`,
                 `"${payment.propertyName}"`,
                 payment.amount.toString(),
