@@ -282,13 +282,6 @@ const Financials = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={exportToCSV}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                    >
-                        <Download className="w-5 h-5" />
-                        Export
-                    </button>
-                    <button
                         onClick={() => setIsMpesaModalOpen(true)}
                         className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                     >
@@ -301,6 +294,13 @@ const Financials = () => {
                     >
                         <Plus className="w-5 h-5" />
                         Record Payment
+                    </button>
+                    <button
+                        onClick={exportToCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                        <Download className="w-5 h-5" />
+                        Export
                     </button>
                 </div>
             </div>
