@@ -38,10 +38,10 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
     // Tenant Navigation Items
     const tenantNavItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/tenant-dashboard' },
-        { icon: FileText, label: 'Lease Info', path: '/tenant-dashboard/lease' },
         { icon: Wrench, label: 'Maintenance', path: '/tenant-dashboard/maintenance' },
         { icon: Wallet, label: 'Payments', path: '/tenant-dashboard/payments' },
         { icon: Bell, label: 'Notifications', path: '/tenant-dashboard/notifications' },
+        { icon: FileText, label: 'Lease Info', path: '/tenant-dashboard/lease' },
     ];
 
     const navItems = user?.role === 'tenant' ? tenantNavItems : adminNavItems;
