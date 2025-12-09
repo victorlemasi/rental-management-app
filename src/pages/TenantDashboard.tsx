@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { tenantsAPI, maintenanceAPI, notificationsAPI } from '../services/api';
 import type { Tenant } from '../types';
@@ -101,8 +101,8 @@ const TenantDashboard = () => {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm whitespace-nowrap transition-all ${activeTab === tab.id
-                                            ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
-                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border-b-2 border-transparent'
+                                        ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border-b-2 border-transparent'
                                         }`}
                                 >
                                     <Icon className="w-5 h-5" />
