@@ -46,41 +46,8 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
     return (
         <div className="space-y-6">
             {/* Payment Options */}
+            {/* Payment Options */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* M-Pesa Payment */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border-2 border-green-300 overflow-hidden">
-                    <div className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-green-600 p-3 rounded-lg">
-                                <Smartphone className="w-8 h-8 text-white" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">M-Pesa Payment</h2>
-                                <p className="text-sm text-gray-600">Pay instantly with M-Pesa</p>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-lg p-4 mb-4">
-                            <p className="text-sm text-gray-600 mb-2">Amount to Pay</p>
-                            <p className="text-4xl font-bold text-green-600">
-                                KSh {tenant?.monthlyRent.toLocaleString() || 0}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => setShowPaymentModal(true)}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
-                        >
-                            Pay with M-Pesa
-                        </button>
-                        <div className="mt-4 bg-green-200 rounded-lg p-3">
-                            <p className="text-xs text-green-800 font-medium">
-                                ✓ Instant payment confirmation<br />
-                                ✓ Secure and encrypted transaction<br />
-                                ✓ No hidden fees
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
                 {/* Bank Transfer */}
                 {tenant?.propertyId && typeof tenant.propertyId === 'object' &&
                     (tenant.propertyId.paymentAccountNumber || tenant.propertyId.paymentAccountName) && (
@@ -129,6 +96,40 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                             </div>
                         </div>
                     )}
+
+                {/* M-Pesa Payment */}
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border-2 border-green-300 overflow-hidden">
+                    <div className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="bg-green-600 p-3 rounded-lg">
+                                <Smartphone className="w-8 h-8 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900">M-Pesa Payment</h2>
+                                <p className="text-sm text-gray-600">Pay instantly with M-Pesa</p>
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-lg p-4 mb-4">
+                            <p className="text-sm text-gray-600 mb-2">Amount to Pay</p>
+                            <p className="text-4xl font-bold text-green-600">
+                                KSh {tenant?.monthlyRent.toLocaleString() || 0}
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setShowPaymentModal(true)}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                            Pay with M-Pesa
+                        </button>
+                        <div className="mt-4 bg-green-200 rounded-lg p-3">
+                            <p className="text-xs text-green-800 font-medium">
+                                ✓ Instant payment confirmation<br />
+                                ✓ Secure and encrypted transaction<br />
+                                ✓ No hidden fees
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Payment Information */}
