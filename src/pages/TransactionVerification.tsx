@@ -40,11 +40,11 @@ const TransactionVerification = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Transaction Verification</h1>
-                <p className="text-gray-500 mt-1">Verify M-PESA transaction status</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Transaction Verification</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">Verify M-PESA transaction status</p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6">
                 <form onSubmit={handleVerify} className="flex gap-4 max-w-2xl">
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -53,7 +53,7 @@ const TransactionVerification = () => {
                             value={transactionId}
                             onChange={(e) => setTransactionId(e.target.value)}
                             placeholder="Enter M-PESA Receipt Number (e.g., NEF61H8J60)"
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
                         />
                     </div>
                     <button
@@ -66,14 +66,14 @@ const TransactionVerification = () => {
                 </form>
 
                 {error && (
-                    <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-3">
+                    <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg flex items-center gap-3">
                         <AlertCircle className="w-5 h-5" />
                         {error}
                     </div>
                 )}
 
                 {result && (
-                    <div className="mt-8 border-t border-gray-200 pt-6">
+                    <div className="mt-8 border-t border-gray-200 dark:border-slate-700 pt-6">
                         <div className={`flex items-center gap-3 p-4 rounded-lg mb-6 ${getStatusColor(result.ResponseCode)}`}>
                             {getStatusIcon(result.ResponseCode)}
                             <div>
@@ -83,19 +83,19 @@ const TransactionVerification = () => {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h3 className="text-sm font-medium text-gray-500 mb-4 flex items-center gap-2">
+                            <div className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
+                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
                                     <FileText className="w-4 h-4" />
                                     Transaction Details
                                 </h3>
                                 <dl className="space-y-3">
                                     <div className="flex justify-between">
-                                        <dt className="text-sm text-gray-600">Conversation ID</dt>
-                                        <dd className="text-sm font-medium">{result.ConversationID}</dd>
+                                        <dt className="text-sm text-gray-600 dark:text-gray-400">Conversation ID</dt>
+                                        <dd className="text-sm font-medium dark:text-gray-200">{result.ConversationID}</dd>
                                     </div>
                                     <div className="flex justify-between">
-                                        <dt className="text-sm text-gray-600">Originator ID</dt>
-                                        <dd className="text-sm font-medium">{result.OriginatorConversationID}</dd>
+                                        <dt className="text-sm text-gray-600 dark:text-gray-400">Originator ID</dt>
+                                        <dd className="text-sm font-medium dark:text-gray-200">{result.OriginatorConversationID}</dd>
                                     </div>
                                 </dl>
                             </div>
