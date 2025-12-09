@@ -10,6 +10,7 @@ export interface TenantContextType {
     rentHistory: any[];
     notifications: any[];
     setRequests: React.Dispatch<React.SetStateAction<any[]>>;
+    setNotifications: React.Dispatch<React.SetStateAction<any[]>>;
     loading: boolean;
 }
 
@@ -50,7 +51,7 @@ export const TenantDataWrapper = () => {
 
     if (loading) return <div className="p-8 text-center">Loading...</div>;
 
-    return <Outlet context={{ tenant, requests, rentHistory, notifications, setRequests, loading } satisfies TenantContextType} />;
+    return <Outlet context={{ tenant, requests, rentHistory, notifications, setRequests, setNotifications, loading } satisfies TenantContextType} />;
 };
 
 export const useTenantContext = () => {

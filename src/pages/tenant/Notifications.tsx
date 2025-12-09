@@ -3,9 +3,13 @@ import { Bell, AlertCircle, Info, CheckCircle, AlertTriangle } from 'lucide-reac
 
 interface NotificationsProps {
     notifications: any[];
+    onMarkAsRead?: (id: string) => void;
 }
 
-const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
+const Notifications: React.FC<NotificationsProps> = ({ notifications, onMarkAsRead }) => {
+    // Deduplicate notifications
+    const uniqueNotifications = Array.from(new Map(notifications.map(item => [item._id, item])).values());
+
     const getNotificationIcon = (type: string) => {
         switch (type) {
             case 'urgent':
@@ -58,9 +62,9 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
     };
 
     // Statistics
-    const urgentCount = notifications.filter(n => n.type === 'urgent').length;
-    const warningCount = notifications.filter(n => n.type === 'warning').length;
-    const totalUnread = notifications.filter(n => !n.read).length;
+    const urgentCount = uniqueNotifications.filter(n => n.type === 'urgent').length;
+    const warningCount = uniqueNotifications.filter(n => n.type === 'warning').length;
+    const totalUnread = uniqueNotifications.filter(n => !n.read).length;
 
     return (
         <div className="space-y-6">
@@ -70,7 +74,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-gray-600 mb-1">Total</p>
-                            <p className="text-3xl font-bold text-gray-900">{notifications.length}</p>
+                            <p className="text-3xl font-bold text-gray-900">{uniqueNotifications.length}</p>
                         </div>
                         <div className="bg-gray-100 p-3 rounded-lg">
                             <Bell className="w-6 h-6 text-gray-600" />
@@ -119,7 +123,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
                     <p className="text-sm text-gray-500 mt-1">Stay updated with important messages</p>
                 </div>
                 <div className="p-6">
-                    {notifications.length === 0 ? (
+                    {uniqueNotifications.length === 0 ? (
                         <div className="text-center py-12">
                             <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Bell className="w-8 h-8 text-gray-400" />
@@ -129,12 +133,14 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {notifications.map((notification) => {
+                            {uniqueNotifications.map((notification) => {
                                 const style = getNotificationStyle(notification.type);
                                 return (
                                     <div
                                         key={notification._id}
-                                        className={`border-l-4 ${style.border} ${style.bg} rounded-lg p-5 shadow-sm hover:shadow-md transition-all`}
+                                        onClick={() => !notification.read && onMarkAsRead?.(notification._id)}
+                                        className={`border-l-4 ${style.border} ${style.bg} rounded-lg p-5 shadow-sm hover:shadow-md transition-all ${!notification.read ? 'cursor-pointer hover:bg-opacity-80' : ''
+                                            }`}
                                     >
                                         <div className="flex items-start gap-4">
                                             <div className={`${style.icon} mt-1`}>
@@ -176,7 +182,7 @@ const Notifications: React.FC<NotificationsProps> = ({ notifications }) => {
                                                         <>
                                                             <span className="text-gray-400">•</span>
                                                             <span className="bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                                                NEW
+                                                                CLICK TO MARK READ
                                                             </span>
                                                         </>
                                                     )}

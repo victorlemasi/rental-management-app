@@ -32,6 +32,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
         { icon: Wallet, label: 'Financials', path: '/financials' },
         { icon: Receipt, label: 'Payments', path: '/payments' },
         { icon: CheckCircle, label: 'Verify Transaction', path: '/verify-transaction' },
+        { icon: Bell, label: 'Notifications', path: '/notifications' },
     ];
 
     // Tenant Navigation Items
@@ -94,22 +95,6 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                             <span className="font-medium">{item.label}</span>
                         </NavLink>
                     ))}
-
-                    <NavLink
-                        to="/notifications"
-                        onClick={closeMobileMenu}
-                        className={({ isActive }) =>
-                            cn(
-                                "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                                isActive
-                                    ? "bg-primary-50 text-primary-700"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                            )
-                        }
-                    >
-                        <Bell className="w-5 h-5" />
-                        <span className="font-medium">Notifications</span>
-                    </NavLink>
                 </nav>
 
                 <div className="p-4 border-t border-gray-200">
