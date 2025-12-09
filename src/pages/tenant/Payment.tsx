@@ -51,43 +51,43 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                 {/* Bank Transfer */}
                 {tenant?.propertyId && typeof tenant.propertyId === 'object' &&
                     (tenant.propertyId.paymentAccountNumber || tenant.propertyId.paymentAccountName) && (
-                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-sm border-2 border-blue-300 overflow-hidden">
+                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl shadow-sm border-2 border-blue-300 dark:border-blue-700 overflow-hidden">
                             <div className="p-6">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="bg-blue-600 p-3 rounded-lg">
                                         <Building2 className="w-8 h-8 text-white" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-bold text-gray-900">Bank Transfer</h2>
-                                        <p className="text-sm text-gray-600">Pay via bank or mobile money</p>
+                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Bank Transfer</h2>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300">Pay via bank or mobile money</p>
                                     </div>
                                 </div>
                                 <div className="space-y-3">
                                     {tenant.propertyId.paymentAccountName && (
-                                        <div className="bg-white rounded-lg p-4">
-                                            <p className="text-xs text-blue-700 font-semibold mb-1">ACCOUNT NAME</p>
-                                            <p className="text-lg font-bold text-gray-900">
+                                        <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
+                                            <p className="text-xs text-blue-700 dark:text-blue-300 font-semibold mb-1">ACCOUNT NAME</p>
+                                            <p className="text-lg font-bold text-gray-900 dark:text-white">
                                                 {tenant.propertyId.paymentAccountName}
                                             </p>
                                         </div>
                                     )}
                                     {tenant.propertyId.paymentAccountNumber && (
-                                        <div className="bg-white rounded-lg p-4">
-                                            <p className="text-xs text-blue-700 font-semibold mb-1">ACCOUNT NUMBER</p>
-                                            <p className="text-2xl font-bold text-blue-900 tracking-wider">
+                                        <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
+                                            <p className="text-xs text-blue-700 dark:text-blue-300 font-semibold mb-1">ACCOUNT NUMBER</p>
+                                            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100 tracking-wider">
                                                 {tenant.propertyId.paymentAccountNumber}
                                             </p>
                                         </div>
                                     )}
-                                    <div className="bg-white rounded-lg p-4">
-                                        <p className="text-xs text-blue-700 font-semibold mb-1">REFERENCE</p>
-                                        <p className="text-lg font-bold text-gray-900">
+                                    <div className="bg-white dark:bg-slate-800 rounded-lg p-4">
+                                        <p className="text-xs text-blue-700 dark:text-blue-300 font-semibold mb-1">REFERENCE</p>
+                                        <p className="text-lg font-bold text-gray-900 dark:text-white">
                                             Unit {tenant.unitNumber}
                                         </p>
                                     </div>
                                 </div>
-                                <div className="mt-4 bg-blue-200 rounded-lg p-3">
-                                    <p className="text-xs text-blue-800 font-medium">
+                                <div className="mt-4 bg-blue-200 dark:bg-blue-900/50 rounded-lg p-3">
+                                    <p className="text-xs text-blue-800 dark:text-blue-200 font-medium">
                                         💡 Always include your unit number as reference<br />
                                         💡 Payment may take 24-48 hours to reflect<br />
                                         💡 Keep your transaction receipt
@@ -98,20 +98,20 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                     )}
 
                 {/* M-Pesa Payment */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-sm border-2 border-green-300 overflow-hidden">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl shadow-sm border-2 border-green-300 dark:border-green-700 overflow-hidden">
                     <div className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="bg-green-600 p-3 rounded-lg">
                                 <Smartphone className="w-8 h-8 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900">M-Pesa Payment</h2>
-                                <p className="text-sm text-gray-600">Pay instantly with M-Pesa</p>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">M-Pesa Payment</h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">Pay instantly with M-Pesa</p>
                             </div>
                         </div>
-                        <div className="bg-white rounded-lg p-4 mb-4">
-                            <p className="text-sm text-gray-600 mb-2">Amount to Pay</p>
-                            <p className="text-4xl font-bold text-green-600">
+                        <div className="bg-white dark:bg-slate-800 rounded-lg p-4 mb-4">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Amount to Pay</p>
+                            <p className="text-4xl font-bold text-green-600 dark:text-green-400">
                                 KSh {tenant?.monthlyRent.toLocaleString() || 0}
                             </p>
                         </div>
@@ -121,8 +121,8 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                         >
                             Pay with M-Pesa
                         </button>
-                        <div className="mt-4 bg-green-200 rounded-lg p-3">
-                            <p className="text-xs text-green-800 font-medium">
+                        <div className="mt-4 bg-green-200 dark:bg-green-900/50 rounded-lg p-3">
+                            <p className="text-xs text-green-800 dark:text-green-200 font-medium">
                                 ✓ Instant payment confirmation<br />
                                 ✓ Secure and encrypted transaction<br />
                                 ✓ No hidden fees
@@ -133,30 +133,30 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
             </div>
 
             {/* Payment Information */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                <div className="p-6 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800">
+                <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <CreditCard className="w-6 h-6 text-primary-600" />
                         Payment Information
                     </h2>
                 </div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4">
-                            <p className="text-sm text-gray-600 mb-1">Monthly Rent</p>
-                            <p className="text-2xl font-bold text-gray-900">
+                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-800/50 rounded-lg p-4">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Monthly Rent</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 KSh {tenant?.monthlyRent.toLocaleString() || 0}
                             </p>
                         </div>
-                        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4">
-                            <p className="text-sm text-gray-600 mb-1">Current Balance</p>
-                            <p className={`text-2xl font-bold ${(tenant?.balance || 0) > 0 ? 'text-orange-600' : 'text-green-600'
+                        <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 rounded-lg p-4">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Current Balance</p>
+                            <p className={`text-2xl font-bold ${(tenant?.balance || 0) > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'
                                 }`}>
                                 KSh {Math.max(0, tenant?.balance || 0).toLocaleString()}
                             </p>
                         </div>
-                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
-                            <p className="text-sm text-gray-600 mb-1">Payment Status</p>
+                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-lg p-4">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Payment Status</p>
                             <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${tenant?.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
                                 tenant?.paymentStatus === 'partial' ? 'bg-orange-100 text-orange-800' :
                                     tenant?.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
@@ -165,9 +165,9 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                 {tenant?.paymentStatus?.toUpperCase() || 'PENDING'}
                             </span>
                         </div>
-                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4">
-                            <p className="text-sm text-gray-600 mb-1">Unit Number</p>
-                            <p className="text-2xl font-bold text-gray-900">
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 rounded-lg p-4">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Unit Number</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {tenant?.unitNumber || 'N/A'}
                             </p>
                         </div>
@@ -176,8 +176,8 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
             </div>
 
             {/* Payment Instructions */}
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Payment Guidelines</h3>
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Payment Guidelines</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                         <div className="flex items-start gap-3">
@@ -185,8 +185,8 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                 <span className="text-sm font-bold">1</span>
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">Choose Payment Method</p>
-                                <p className="text-sm text-gray-600">Select either M-Pesa for instant payment or bank transfer</p>
+                                <p className="font-semibold text-gray-900 dark:text-white">Choose Payment Method</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Select either M-Pesa for instant payment or bank transfer</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
@@ -194,8 +194,8 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                 <span className="text-sm font-bold">2</span>
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">Complete Payment</p>
-                                <p className="text-sm text-gray-600">Follow the instructions for your chosen payment method</p>
+                                <p className="font-semibold text-gray-900 dark:text-white">Complete Payment</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Follow the instructions for your chosen payment method</p>
                             </div>
                         </div>
                     </div>
@@ -205,8 +205,8 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                 <span className="text-sm font-bold">3</span>
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">Payment Confirmation</p>
-                                <p className="text-sm text-gray-600">M-Pesa payments are instant, bank transfers take 24-48 hours</p>
+                                <p className="font-semibold text-gray-900 dark:text-white">Payment Confirmation</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">M-Pesa payments are instant, bank transfers take 24-48 hours</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
@@ -214,28 +214,27 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                 <span className="text-sm font-bold">4</span>
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">Keep Records</p>
-                                <p className="text-sm text-gray-600">Save your payment confirmation for your records</p>
+                                <p className="font-semibold text-gray-900 dark:text-white">Keep Records</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Save your payment confirmation for your records</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* M-Pesa Payment Modal */}
             {showPaymentModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+                <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
                         <div className="text-center mb-6">
-                            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Smartphone className="w-8 h-8 text-green-600" />
+                            <div className="bg-green-100 dark:bg-green-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Smartphone className="w-8 h-8 text-green-600 dark:text-green-400" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Pay with M-Pesa</h3>
-                            <p className="text-sm text-gray-600">Enter your M-Pesa number to proceed</p>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Pay with M-Pesa</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Enter your M-Pesa number to proceed</p>
                         </div>
                         <form onSubmit={handlePayment} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Phone Number <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -244,13 +243,13 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value)}
                                     placeholder="254712345678"
-                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-lg"
+                                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                 />
-                                <p className="text-xs text-gray-500 mt-2">Format: 254XXXXXXXXX</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Format: 254XXXXXXXXX</p>
                             </div>
-                            <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-2 border-green-300">
-                                <p className="text-sm text-gray-700 mb-1">Amount to Pay</p>
-                                <p className="text-3xl font-bold text-green-600">
+                            <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 p-4 rounded-lg border-2 border-green-300 dark:border-green-700">
+                                <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Amount to Pay</p>
+                                <p className="text-3xl font-bold text-green-600 dark:text-green-400">
                                     KSh {tenant?.monthlyRent.toLocaleString() || 0}
                                 </p>
                             </div>
@@ -261,7 +260,7 @@ const Payment: React.FC<PaymentProps> = ({ tenant }) => {
                                         setShowPaymentModal(false);
                                         setPhoneNumber('');
                                     }}
-                                    className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                                    className="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-slate-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
                                 >
                                     Cancel
                                 </button>

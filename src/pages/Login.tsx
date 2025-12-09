@@ -44,22 +44,22 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
                 <div className="p-8">
                     <div className="flex justify-center mb-8">
-                        <div className="flex items-center gap-2 text-primary-600">
+                        <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                             <Building2 className="w-8 h-8" />
                             <span className="text-2xl font-bold">PropManage</span>
                         </div>
                     </div>
 
-                    <div className="flex bg-gray-100 p-1 rounded-lg mb-8">
+                    <div className="flex bg-gray-100 dark:bg-slate-700 p-1 rounded-lg mb-8">
                         <button
                             onClick={() => setLoginType('tenant')}
                             className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'tenant'
-                                ? 'bg-white text-primary-600 shadow-sm'
-                                : 'text-gray-500 hover:text-gray-700'
+                                ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                 }`}
                         >
                             Tenant
@@ -67,18 +67,18 @@ const Login = () => {
                         <button
                             onClick={() => setLoginType('manager')}
                             className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginType === 'manager'
-                                ? 'bg-white text-primary-600 shadow-sm'
-                                : 'text-gray-500 hover:text-gray-700'
+                                ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                 }`}
                         >
                             Landlord
                         </button>
                     </div>
 
-                    <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
                         {loginType === 'manager' ? 'Landlord Login' : 'Tenant Portal'}
                     </h2>
-                    <p className="text-gray-500 text-center mb-8">
+                    <p className="text-gray-500 dark:text-gray-400 text-center mb-8">
                         {loginType === 'manager'
                             ? 'Manage your properties and tenants'
                             : 'View your lease and submit requests'}
@@ -92,7 +92,7 @@ const Login = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
@@ -100,14 +100,14 @@ const Login = () => {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
                                     placeholder={loginType === 'manager' ? "admin@example.com" : "tenant@example.com"}
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
@@ -115,7 +115,7 @@ const Login = () => {
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -124,7 +124,7 @@ const Login = () => {
                         <div className="text-right">
                             <Link
                                 to="/forgot-password"
-                                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                             >
                                 Forgot Password?
                             </Link>

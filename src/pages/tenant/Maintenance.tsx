@@ -81,14 +81,14 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
         <div className="space-y-6">
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-600 mb-1">Total Requests</p>
-                            <p className="text-3xl font-bold text-gray-900">{requests.length}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Requests</p>
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white">{requests.length}</p>
                         </div>
-                        <div className="bg-gray-100 p-3 rounded-lg">
-                            <Wrench className="w-6 h-6 text-gray-600" />
+                        <div className="bg-gray-100 dark:bg-slate-800 p-3 rounded-lg">
+                            <Wrench className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                         </div>
                     </div>
                 </div>
@@ -127,17 +127,17 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* New Request Form */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-6">
-                        <div className="p-6 border-b border-gray-200">
-                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 sticky top-6">
+                        <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Wrench className="w-6 h-6 text-primary-600" />
                                 New Request
                             </h2>
-                            <p className="text-sm text-gray-500 mt-1">Submit a maintenance request</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Submit a maintenance request</p>
                         </div>
                         <form onSubmit={submitRequest} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Issue Title <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -146,11 +146,11 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
                                     value={newRequest.title}
                                     onChange={(e) => setNewRequest({ ...newRequest, title: e.target.value })}
                                     placeholder="e.g., Leaking faucet"
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Description <span className="text-red-500">*</span>
                                 </label>
                                 <textarea
@@ -159,17 +159,17 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
                                     value={newRequest.description}
                                     onChange={(e) => setNewRequest({ ...newRequest, description: e.target.value })}
                                     placeholder="Describe the issue in detail..."
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none"
+                                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                                     Priority <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     value={newRequest.priority}
                                     onChange={(e) => setNewRequest({ ...newRequest, priority: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 dark:text-white"
                                 >
                                     <option value="low">Low</option>
                                     <option value="medium">Medium</option>
@@ -190,34 +190,34 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
 
                 {/* Requests List */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-                        <div className="p-6 border-b border-gray-200">
-                            <h2 className="text-xl font-bold text-gray-900">My Requests</h2>
-                            <p className="text-sm text-gray-500 mt-1">Track all your maintenance requests</p>
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800">
+                        <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">My Requests</h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Track all your maintenance requests</p>
                         </div>
                         <div className="p-6">
                             {requests.length === 0 ? (
                                 <div className="text-center py-12">
-                                    <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <div className="bg-gray-100 dark:bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Wrench className="w-8 h-8 text-gray-400" />
                                     </div>
-                                    <p className="text-gray-500 text-lg font-medium">No maintenance requests found</p>
-                                    <p className="text-gray-400 text-sm mt-1">Submit your first request using the form</p>
+                                    <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">No maintenance requests found</p>
+                                    <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Submit your first request using the form</p>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
                                     {requests.map((req) => (
                                         <div
                                             key={req._id}
-                                            className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all bg-gradient-to-r from-gray-50 to-white"
+                                            className="border border-gray-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-md transition-all bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-800/50"
                                         >
                                             <div className="flex items-start justify-between gap-4">
                                                 <div className="flex-1">
                                                     <div className="flex items-start gap-3 mb-3">
                                                         {getStatusIcon(req.status)}
                                                         <div className="flex-1">
-                                                            <h3 className="font-bold text-gray-900 text-lg mb-1">{req.title}</h3>
-                                                            <p className="text-sm text-gray-600 leading-relaxed">{req.description}</p>
+                                                            <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1">{req.title}</h3>
+                                                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{req.description}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex flex-wrap items-center gap-3 ml-8">
@@ -227,7 +227,7 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
                                                         <span className={`px-3 py-1 rounded-full text-xs font-bold ${getPriorityBadge(req.priority)}`}>
                                                             {req.priority.toUpperCase()} PRIORITY
                                                         </span>
-                                                        <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                        <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                                             <Clock className="w-3 h-3" />
                                                             {new Date(req.createdAt).toLocaleDateString('en-US', {
                                                                 month: 'short',
@@ -241,11 +241,11 @@ const Maintenance: React.FC<MaintenanceProps> = ({ tenant, requests, onRequestsU
 
                                             {/* Resolution/Notes (if any) */}
                                             {req.notes && (
-                                                <div className="mt-4 pt-4 border-t border-gray-200 ml-8">
-                                                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                                                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-slate-700 ml-8">
+                                                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                                                         Management Notes
                                                     </p>
-                                                    <p className="text-sm text-gray-700 bg-blue-50 p-3 rounded-lg">
+                                                    <p className="text-sm text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
                                                         {req.notes}
                                                     </p>
                                                 </div>

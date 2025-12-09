@@ -25,11 +25,11 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
                 <div className="p-8">
                     <div className="flex justify-center mb-8">
-                        <div className="flex items-center gap-2 text-primary-600">
+                        <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
                             <Building2 className="w-8 h-8" />
                             <span className="text-2xl font-bold">PropManage</span>
                         </div>
@@ -37,10 +37,10 @@ const ForgotPassword = () => {
 
                     {!success ? (
                         <>
-                            <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
                                 Forgot Password?
                             </h2>
-                            <p className="text-gray-500 text-center mb-8">
+                            <p className="text-gray-500 dark:text-gray-400 text-center mb-8">
                                 Enter your email address and we'll send you instructions to reset your password
                             </p>
 
@@ -52,7 +52,7 @@ const ForgotPassword = () => {
 
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Email Address
                                     </label>
                                     <div className="relative">
@@ -62,7 +62,7 @@ const ForgotPassword = () => {
                                             required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-white"
                                             placeholder="your@email.com"
                                         />
                                     </div>
@@ -87,7 +87,7 @@ const ForgotPassword = () => {
                             <div className="mt-6 text-center">
                                 <Link
                                     to="/login"
-                                    className="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 font-medium"
+                                    className="inline-flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                                 >
                                     <ArrowLeft className="w-4 h-4" />
                                     Back to Login
@@ -101,14 +101,14 @@ const ForgotPassword = () => {
                                     <CheckCircle className="w-10 h-10 text-green-600" />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                 Check Your Email
                             </h3>
-                            <p className="text-gray-600 mb-6">
-                                If an account exists with <strong className="text-gray-900">{email}</strong>,
+                            <p className="text-gray-600 dark:text-gray-300 mb-6">
+                                If an account exists with <strong className="text-gray-900 dark:text-white">{email}</strong>,
                                 you will receive password reset instructions shortly.
                             </p>
-                            <p className="text-sm text-gray-500 mb-6">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                                 Didn't receive the email? Check your spam folder.
                             </p>
                             <Link

@@ -49,7 +49,7 @@ export const TenantDataWrapper = () => {
         if (user) fetchData();
     }, [user]);
 
-    if (loading) return <div className="p-8 text-center">Loading...</div>;
+    if (loading) return <div className="p-8 text-center text-gray-600 dark:text-gray-400">Loading...</div>;
 
     return <Outlet context={{ tenant, requests, rentHistory, notifications, setRequests, setNotifications, loading } satisfies TenantContextType} />;
 };
