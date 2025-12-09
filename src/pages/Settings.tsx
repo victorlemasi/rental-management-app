@@ -151,43 +151,43 @@ const Settings = () => {
             )}
 
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-                <p className="text-gray-500 mt-1">Manage your account settings and preferences</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your account settings and preferences</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left Column - Navigation/Summary */}
                 <div className="lg:col-span-1 space-y-6">
                     {/* User Profile Summary */}
-                    <div className="bg-white rounded-xl border border-gray-200 p-6 text-center">
-                        <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <User className="w-12 h-12 text-primary-600" />
+                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 text-center">
+                        <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <User className="w-12 h-12 text-primary-600 dark:text-primary-400" />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900">{profileData.name}</h2>
-                        <p className="text-sm text-gray-500 capitalize">{profileData.role}</p>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">{profileData.name}</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{profileData.role}</p>
                         <div className="mt-4 flex justify-center gap-2">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${profileData.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${profileData.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                                 }`}>
                                 {profileData.status}
                             </span>
                             {profileData.isVerified && (
-                                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Verified</span>
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-xs font-medium">Verified</span>
                             )}
                         </div>
                     </div>
 
                     {/* Quick Stats */}
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Status</h3>
+                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Account Status</h3>
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                                <span className="text-gray-600">Member Since</span>
+                            <div className="flex justify-between items-center text-gray-600 dark:text-gray-400">
+                                <span>Member Since</span>
                                 <span className="font-medium">
                                     {new Date(profileData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}
                                 </span>
                             </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-gray-600">Last Login</span>
+                            <div className="flex justify-between items-center text-gray-600 dark:text-gray-400">
+                                <span>Last Login</span>
                                 <span className="font-medium text-sm text-right">
                                     {new Date(profileData.lastLogin).toLocaleString('en-US', {
                                         weekday: 'short',
@@ -197,9 +197,9 @@ const Settings = () => {
                                     })}
                                 </span>
                             </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-gray-600">Security Level</span>
-                                <span className="text-green-600 font-medium flex items-center gap-1">
+                            <div className="flex justify-between items-center text-gray-600 dark:text-gray-400">
+                                <span>Security Level</span>
+                                <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
                                     <Shield className="w-4 h-4" /> High
                                 </span>
                             </div>
@@ -210,52 +210,52 @@ const Settings = () => {
                 {/* Right Column - Forms */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Profile Settings */}
-                    <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl border-2 border-blue-200 p-6 shadow-sm">
-                        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-blue-100">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <User className="w-5 h-5 text-blue-600" />
+                    <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-slate-800 rounded-xl border-2 border-blue-200 dark:border-blue-800/50 p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-blue-100 dark:border-blue-800/30">
+                            <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                                <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-blue-900">Profile Information</h2>
-                                <p className="text-xs text-blue-600">Update your personal details</p>
+                                <h2 className="text-lg font-bold text-blue-900 dark:text-blue-100">Profile Information</h2>
+                                <p className="text-xs text-blue-600 dark:text-blue-300">Update your personal details</p>
                             </div>
                         </div>
                         <form onSubmit={handleProfileUpdate} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                                     <input
                                         type="text"
                                         value={profileData.name}
                                         onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
                                     <input
                                         type="email"
                                         value={profileData.email}
                                         onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
                                     <input
                                         type="text"
                                         value={profileData.phone}
                                         onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
                                     <input
                                         type="text"
                                         value={profileData.role}
                                         disabled
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400"
                                     />
                                 </div>
                             </div>
@@ -273,43 +273,43 @@ const Settings = () => {
                     </div>
 
                     {/* Security Settings */}
-                    <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl border-2 border-amber-200 p-6 shadow-sm">
-                        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-amber-100">
-                            <div className="p-2 bg-amber-100 rounded-lg">
-                                <Lock className="w-5 h-5 text-amber-600" />
+                    <div className="bg-gradient-to-br from-amber-50 to-white dark:from-amber-900/20 dark:to-slate-800 rounded-xl border-2 border-amber-200 dark:border-amber-800/50 p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-6 pb-3 border-b-2 border-amber-100 dark:border-amber-800/30">
+                            <div className="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg">
+                                <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-amber-900">Security Settings</h2>
-                                <p className="text-xs text-amber-600">Manage your password and security</p>
+                                <h2 className="text-lg font-bold text-amber-900 dark:text-amber-100">Security Settings</h2>
+                                <p className="text-xs text-amber-600 dark:text-amber-300">Manage your password and security</p>
                             </div>
                         </div>
                         <form onSubmit={handlePasswordUpdate} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
                                 <input
                                     type="password"
                                     value={securityData.currentPassword}
                                     onChange={(e) => setSecurityData({ ...securityData, currentPassword: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
                                     <input
                                         type="password"
                                         value={securityData.newPassword}
                                         onChange={(e) => setSecurityData({ ...securityData, newPassword: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
                                     <input
                                         type="password"
                                         value={securityData.confirmPassword}
                                         onChange={(e) => setSecurityData({ ...securityData, confirmPassword: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                     />
                                 </div>
                             </div>
@@ -327,10 +327,10 @@ const Settings = () => {
                     </div>
 
                     {/* Notification Preferences */}
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6">
                         <div className="flex items-center gap-2 mb-6">
                             <Bell className="w-5 h-5 text-gray-400" />
-                            <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h2>
                         </div>
                         <div className="space-y-4">
                             {[
@@ -339,10 +339,10 @@ const Settings = () => {
                                 { id: 'sms', label: 'SMS Notifications', desc: 'Receive urgent tenants alerts via SMS' },
                                 { id: 'monthlyReport', label: 'Monthly Reports', desc: 'Receive detailed monthly financial reports' },
                             ].map((item) => (
-                                <div key={item.id} className="flex items-center justify-between pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                                <div key={item.id} className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-700 last:border-0 last:pb-0">
                                     <div>
-                                        <p className="font-medium text-gray-900">{item.label}</p>
-                                        <p className="text-sm text-gray-500">{item.desc}</p>
+                                        <p className="font-medium text-gray-900 dark:text-white">{item.label}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -359,15 +359,15 @@ const Settings = () => {
                     </div>
 
                     {/* App Appearance */}
-                    <div className="bg-white rounded-xl border border-gray-200 p-6">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6">
                         <div className="flex items-center gap-2 mb-6">
                             <Monitor className="w-5 h-5 text-gray-400" />
-                            <h2 className="text-lg font-semibold text-gray-900">Appearance</h2>
+                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Appearance</h2>
                         </div>
                         <div className="grid grid-cols-3 gap-4">
                             <button
                                 onClick={() => theme !== 'light' && toggleTheme()}
-                                className={`p-4 border rounded-xl flex flex-col items-center gap-2 transition-all ${theme === 'light' ? 'border-primary-500 bg-primary-50 text-alert-700' : 'border-gray-200 hover:border-gray-300'
+                                className={`p-4 border rounded-xl flex flex-col items-center gap-2 transition-all ${theme === 'light' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-blue-700 dark:text-blue-400' : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 text-gray-600 dark:text-gray-400'
                                     }`}
                             >
                                 <Sun className="w-6 h-6" />
@@ -375,14 +375,14 @@ const Settings = () => {
                             </button>
                             <button
                                 onClick={() => theme !== 'dark' && toggleTheme()}
-                                className={`p-4 border rounded-xl flex flex-col items-center gap-2 transition-all ${theme === 'dark' ? 'border-primary-500 bg-primary-50 text-alert-700' : 'border-gray-200 hover:border-gray-300'
+                                className={`p-4 border rounded-xl flex flex-col items-center gap-2 transition-all ${theme === 'dark' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-blue-700 dark:text-blue-400' : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 text-gray-600 dark:text-gray-400'
                                     }`}
                             >
                                 <Moon className="w-6 h-6" />
                                 <span className="text-sm font-medium">Dark</span>
                             </button>
                             <button
-                                className="p-4 border border-gray-200 rounded-xl flex flex-col items-center gap-2 hover:border-gray-300"
+                                className="p-4 border border-gray-200 dark:border-slate-700 rounded-xl flex flex-col items-center gap-2 hover:border-gray-300 dark:hover:border-slate-600 text-gray-600 dark:text-gray-400"
                             >
                                 <Monitor className="w-6 h-6" />
                                 <span className="text-sm font-medium">System</span>

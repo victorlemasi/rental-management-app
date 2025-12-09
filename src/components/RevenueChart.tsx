@@ -74,15 +74,15 @@ const RevenueChart = () => {
 
     if (loading) {
         return (
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[400px] flex items-center justify-center">
-                <p className="text-gray-500">Loading revenue data...</p>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm h-[400px] flex items-center justify-center">
+                <p className="text-gray-500 dark:text-gray-400">Loading revenue data...</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[400px]">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Revenue Overview</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm h-[400px]">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Revenue Overview</h3>
             <div className="h-[320px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data}>

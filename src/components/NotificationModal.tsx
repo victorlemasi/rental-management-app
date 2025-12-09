@@ -85,14 +85,14 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose }
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden">
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-2xl overflow-hidden border border-gray-200 dark:border-slate-800">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-800">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <Send className="w-5 h-5 text-primary-600" />
                         Send Bulk Notification
                     </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
@@ -100,13 +100,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose }
                 <form onSubmit={handleSend} className="p-6 space-y-6">
                     {/* Target Selection */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Recipients</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recipients</label>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <button
                                 type="button"
                                 onClick={() => setTarget('all')}
                                 className={`p-4 rounded-lg border-2 flex flex-col items-center gap-2 transition-all
-                                    ${target === 'all' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 hover:border-gray-300'}`}
+                                    ${target === 'all' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400' : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 text-gray-600 dark:text-gray-400'}`}
                             >
                                 <Users className="w-6 h-6" />
                                 <span className="font-medium">All Tenants</span>
@@ -115,7 +115,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose }
                                 type="button"
                                 onClick={() => setTarget('property')}
                                 className={`p-4 rounded-lg border-2 flex flex-col items-center gap-2 transition-all
-                                    ${target === 'property' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 hover:border-gray-300'}`}
+                                    ${target === 'property' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400' : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 text-gray-600 dark:text-gray-400'}`}
                             >
                                 <Building2 className="w-6 h-6" />
                                 <span className="font-medium">By Property</span>
@@ -125,12 +125,12 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose }
 
                     {target === 'property' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Select Property</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Property</label>
                             <select
                                 required
                                 value={selectedProperty}
                                 onChange={(e) => setSelectedProperty(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             >
                                 <option value="">Choose a property...</option>
                                 {properties.map(p => (
@@ -143,34 +143,34 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose }
                     {/* Message Content */}
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subject</label>
                             <input
                                 type="text"
                                 required
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
                                 placeholder="Important Announcement"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
                             <textarea
                                 required
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                                 rows={6}
                                 placeholder="Type your message here..."
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-800">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>

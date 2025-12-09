@@ -85,22 +85,22 @@ const Dashboard = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-500 mt-1">Welcome back {user?.name}, here's what's happening today.</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">Welcome back {user?.name}, here's what's happening today.</p>
             </div>
 
             {/* Alerts Section */}
             {expiringLeases.length > 0 && (
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-500 p-4 rounded-r-lg">
                     <div className="flex items-start">
                         <div className="flex-shrink-0">
-                            <AlertTriangle className="h-5 w-5 text-yellow-400" />
+                            <AlertTriangle className="h-5 w-5 text-yellow-400 dark:text-yellow-500" />
                         </div>
                         <div className="ml-3">
-                            <h3 className="text-sm font-medium text-yellow-800">
+                            <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                                 Leases Expiring Soon ({expiringLeases.length})
                             </h3>
-                            <div className="mt-2 text-sm text-yellow-700">
+                            <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
                                 <ul className="list-disc pl-5 space-y-1">
                                     {expiringLeases.map(tenant => (
                                         <li key={tenant._id}>
@@ -153,48 +153,48 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <button
                     onClick={() => navigate('/properties')}
-                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
+                    className="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
                 >
-                    <div className="p-3 bg-blue-50 text-blue-600 rounded-full group-hover:bg-blue-100 transition-colors">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
                         <Building2 className="w-6 h-6" />
                     </div>
-                    <span className="font-medium text-gray-700">Add Property</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Add Property</span>
                 </button>
                 <button
                     onClick={() => navigate('/tenants')}
-                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
+                    className="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
                 >
-                    <div className="p-3 bg-green-50 text-green-600 rounded-full group-hover:bg-green-100 transition-colors">
+                    <div className="p-3 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-full group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors">
                         <Users className="w-6 h-6" />
                     </div>
-                    <span className="font-medium text-gray-700">Add Tenant</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Add Tenant</span>
                 </button>
                 <button
                     onClick={() => navigate('/financials')}
-                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
+                    className="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
                 >
-                    <div className="p-3 bg-purple-50 text-purple-600 rounded-full group-hover:bg-purple-100 transition-colors">
+                    <div className="p-3 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-full group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
                         <DollarSign className="w-6 h-6" />
                     </div>
-                    <span className="font-medium text-gray-700">Record Payment</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Record Payment</span>
                 </button>
                 <button
                     onClick={() => navigate('/maintenance')}
-                    className="p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
+                    className="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl hover:shadow-md transition-all flex flex-col items-center justify-center gap-2 group"
                 >
-                    <div className="p-3 bg-orange-50 text-orange-600 rounded-full group-hover:bg-orange-100 transition-colors">
+                    <div className="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-full group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 transition-colors">
                         <Wrench className="w-6 h-6" />
                     </div>
-                    <span className="font-medium text-gray-700">Maintenance</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Maintenance</span>
                 </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     <RevenueChart />
-                    <div className="bg-white p-6 rounded-xl border border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                            <PieChartIcon className="w-5 h-5 text-primary-600" />
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-gray-200 dark:border-slate-800">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <PieChartIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                             Occupancy Rate
                         </h3>
                         <div className="h-64">
@@ -211,14 +211,14 @@ const Dashboard = () => {
                                         dataKey="value"
                                     >
                                         {occupancyData.map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
                                         ))}
                                     </Pie>
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff' }}
+                                        contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff', borderRadius: '0.5rem' }}
                                         itemStyle={{ color: '#fff' }}
                                     />
-                                    <Legend />
+                                    <Legend formatter={(value) => <span className="text-gray-700 dark:text-gray-300">{value}</span>} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>

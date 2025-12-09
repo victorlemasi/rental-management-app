@@ -74,25 +74,26 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
                 {loading ? (
                     <div className="text-center py-4">Loading history...</div>
                 ) : (
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead>
+
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                        <thead className="bg-gray-50 dark:bg-slate-900">
                             <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Rent</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Water</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Elec</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Garbage</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Security</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Month</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Base Rent</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Water</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Elec</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Garbage</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Security</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Paid</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                             </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        </thead >
+                        <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                             {history.length === 0 ? (
                                 <tr>
-                                    <td colSpan={10} className="px-4 py-4 text-center text-sm text-gray-500">
+                                    <td colSpan={10} className="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                         No payment history found.
                                     </td>
                                 </tr>
@@ -103,62 +104,62 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
 
                                     return (
                                         <tr key={record._id}>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {new Date(record.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {baseRent.toLocaleString()}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {isEditing ? (
                                                     <input
                                                         type="number"
                                                         value={editValues.water}
                                                         onChange={(e) => setEditValues({ ...editValues, water: Number(e.target.value) })}
-                                                        className="w-20 px-2 py-1 border rounded"
+                                                        className="w-20 px-2 py-1 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                                                     />
                                                 ) : (
                                                     (record.water || 0).toLocaleString()
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {isEditing ? (
                                                     <input
                                                         type="number"
                                                         value={editValues.electricity}
                                                         onChange={(e) => setEditValues({ ...editValues, electricity: Number(e.target.value) })}
-                                                        className="w-20 px-2 py-1 border rounded"
+                                                        className="w-20 px-2 py-1 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                                                     />
                                                 ) : (
                                                     (record.electricity || 0).toLocaleString()
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {isEditing ? (
                                                     <input
                                                         type="number"
                                                         value={editValues.garbage}
                                                         onChange={(e) => setEditValues({ ...editValues, garbage: Number(e.target.value) })}
-                                                        className="w-20 px-2 py-1 border rounded"
+                                                        className="w-20 px-2 py-1 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                                                     />
                                                 ) : (
                                                     (record.garbage || 0).toLocaleString()
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                                 {(record.security || 0).toLocaleString()}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                                 {record.amount.toLocaleString()}
                                             </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600">
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 dark:text-green-400">
                                                 {record.amountPaid.toLocaleString()}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
-                                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === 'paid' ? 'bg-green-100 text-green-800' :
-                                                    record.status === 'partial' ? 'bg-yellow-100 text-yellow-800' :
-                                                        record.status === 'overdue' ? 'bg-red-100 text-red-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                                    record.status === 'partial' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                                        record.status === 'overdue' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                                            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                                                     }`}>
                                                     {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
                                                 </span>
@@ -174,7 +175,7 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
                                                         </button>
                                                     </div>
                                                 ) : (
-                                                    <button onClick={() => handleEdit(record)} className="text-blue-600 hover:text-blue-900">
+                                                    <button onClick={() => handleEdit(record)} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
                                                         <Edit2 className="w-4 h-4" />
                                                     </button>
                                                 )}
@@ -184,18 +185,18 @@ const RentHistoryModal: React.FC<RentHistoryModalProps> = ({ isOpen, onClose, te
                                 })
                             )}
                         </tbody>
-                    </table>
+                    </table >
                 )}
-            </div>
+            </div >
             <div className="mt-6 flex justify-end">
                 <button
                     onClick={onClose}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="px-4 py-2 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
                 >
                     Close
                 </button>
             </div>
-        </Modal>
+        </Modal >
     );
 };
 

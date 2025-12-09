@@ -161,8 +161,8 @@ const Tenants = () => {
             )}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Tenants</h1>
-                    <p className="text-gray-500 mt-1">Manage your tenants and lease agreements</p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tenants</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your tenants and lease agreements</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -174,26 +174,26 @@ const Tenants = () => {
             </div>
 
             {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-lg">
                     <div className="flex items-center">
-                        <p className="text-red-700">{error}</p>
+                        <p className="text-red-700 dark:text-red-400">{error}</p>
                     </div>
                 </div>
             )}
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row gap-4 justify-between">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="p-4 border-b border-gray-200 dark:border-slate-800 flex flex-col sm:flex-row gap-4 justify-between">
                     <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                         <input
                             type="text"
                             placeholder="Search tenants..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         />
                     </div>
-                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700">
+                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300">
                         <Filter className="w-4 h-4" />
                         Filter
                     </button>
@@ -201,44 +201,44 @@ const Tenants = () => {
 
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-slate-800/50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lease Period</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rent</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Previous Month</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance Due</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tenant</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Property</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Lease Period</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rent</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Previous Month</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Balance Due</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Payment</th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-800">
                             {filteredTenants.map((tenant) => (
-                                <tr key={tenant._id} className="hover:bg-gray-50">
+                                <tr key={tenant._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
-                                            <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-bold">
+                                            <div className="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold">
                                                 {tenant.name.charAt(0)}
                                             </div>
                                             <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900">{tenant.name}</div>
-                                                <div className="text-sm text-gray-500">{tenant.email}</div>
+                                                <div className="text-sm font-medium text-gray-900 dark:text-white">{tenant.name}</div>
+                                                <div className="text-sm text-gray-500 dark:text-gray-400">{tenant.email}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">{getPropertyName(tenant.propertyId)}</div>
-                                        <div className="text-sm text-gray-500">Unit {tenant.unitNumber}</div>
+                                        <div className="text-sm text-gray-900 dark:text-gray-300">{getPropertyName(tenant.propertyId)}</div>
+                                        <div className="text-sm text-gray-500 dark:text-gray-400">Unit {tenant.unitNumber}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">
+                                        <div className="text-sm text-gray-900 dark:text-gray-300">
                                             {new Date(tenant.leaseStart).toLocaleDateString()} - {new Date(tenant.leaseEnd).toLocaleDateString()}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">KSh {tenant.monthlyRent.toLocaleString()}</div>
+                                        <div className="text-sm font-medium text-gray-900 dark:text-white">KSh {tenant.monthlyRent.toLocaleString()}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         {(() => {
@@ -255,8 +255,8 @@ const Tenants = () => {
                                                     {previousMonths.map((record: any) => {
                                                         const balance = record.amount - record.amountPaid;
                                                         return (
-                                                            <div key={record._id} className="border-b border-gray-100 pb-2 last:border-0">
-                                                                <div className="text-xs font-medium text-gray-700 mb-1">
+                                                            <div key={record._id} className="border-b border-gray-100 dark:border-slate-700 pb-2 last:border-0">
+                                                                <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                                     {(() => {
                                                                         const [year, month] = record.month.split('-');
                                                                         const date = new Date(parseInt(year), parseInt(month) - 1, 15);
@@ -264,16 +264,16 @@ const Tenants = () => {
                                                                     })()}
                                                                 </div>
                                                                 <div className="flex justify-between gap-2 text-xs">
-                                                                    <span className="text-gray-500">Due:</span>
-                                                                    <span>KSh {record.amount.toLocaleString()}</span>
+                                                                    <span className="text-gray-500 dark:text-gray-400">Due:</span>
+                                                                    <span className="dark:text-gray-300">KSh {record.amount.toLocaleString()}</span>
                                                                 </div>
                                                                 <div className="flex justify-between gap-2 text-xs">
-                                                                    <span className="text-gray-500">Paid:</span>
-                                                                    <span className="text-green-600">KSh {record.amountPaid.toLocaleString()}</span>
+                                                                    <span className="text-gray-500 dark:text-gray-400">Paid:</span>
+                                                                    <span className="text-green-600 dark:text-green-400">KSh {record.amountPaid.toLocaleString()}</span>
                                                                 </div>
                                                                 <div className="flex justify-between gap-2 text-xs font-semibold">
-                                                                    <span>Balance:</span>
-                                                                    <span className={balance > 0 ? 'text-red-600' : balance < 0 ? 'text-green-600' : 'text-gray-900'}>
+                                                                    <span className="dark:text-gray-300">Balance:</span>
+                                                                    <span className={balance > 0 ? 'text-red-600 dark:text-red-400' : balance < 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'}>
                                                                         KSh {Math.abs(balance).toLocaleString()}
                                                                     </span>
                                                                 </div>
@@ -288,12 +288,12 @@ const Tenants = () => {
                                         <div className="text-sm space-y-1">
                                             {/* Total Balance Due */}
                                             <div className="flex justify-between gap-4">
-                                                <span className="font-semibold text-gray-900">
+                                                <span className="font-semibold text-gray-900 dark:text-white">
                                                     {tenant.balance > 0 ? 'Total Due:' : tenant.balance < 0 ? 'Overpayment:' : 'Balance:'}
                                                 </span>
-                                                <span className={`font-bold ${tenant.balance > 0 ? 'text-red-600' :
-                                                    tenant.balance < 0 ? 'text-green-600' :
-                                                        'text-gray-900'
+                                                <span className={`font-bold ${tenant.balance > 0 ? 'text-red-600 dark:text-red-400' :
+                                                    tenant.balance < 0 ? 'text-green-600 dark:text-green-400' :
+                                                        'text-gray-900 dark:text-white'
                                                     }`}>
                                                     {tenant.balance < 0 ? '-' : ''}KSh {Math.abs(tenant.balance || 0).toLocaleString()}
                                                 </span>
@@ -301,13 +301,13 @@ const Tenants = () => {
 
                                             {/* Breakdown hint */}
                                             {tenant.balance > 0 && (
-                                                <div className="text-xs text-gray-500 italic">
+                                                <div className="text-xs text-gray-500 dark:text-gray-400 italic">
                                                     (Includes rent + utilities)
                                                 </div>
                                             )}
 
                                             {/* Current Month */}
-                                            <div className="text-xs text-gray-500 text-center pt-1 border-t border-gray-200">
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 text-center pt-1 border-t border-gray-200 dark:border-slate-700">
                                                 {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                             </div>
                                         </div>
@@ -333,28 +333,28 @@ const Tenants = () => {
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 onClick={() => handleExtendLease(tenant)}
-                                                className="text-purple-600 hover:text-purple-900 p-2 hover:bg-purple-50 rounded-full transition-colors"
+                                                className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 p-2 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-full transition-colors"
                                                 title="Extend Lease"
                                             >
                                                 <Calendar className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleAddUtilities(tenant)}
-                                                className="text-yellow-600 hover:text-yellow-900 p-2 hover:bg-yellow-50 rounded-full transition-colors"
+                                                className="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 p-2 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-full transition-colors"
                                                 title="Add Utilities"
                                             >
                                                 <Zap className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleViewHistory(tenant)}
-                                                className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors"
+                                                className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
                                                 title="View Rent History"
                                             >
                                                 <History className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteTenant(tenant._id)}
-                                                className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors"
+                                                className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
                                                 title="Delete Tenant"
                                             >
                                                 <Trash2 className="w-4 h-4" />
@@ -375,58 +375,58 @@ const Tenants = () => {
             >
                 <form onSubmit={handleAddTenant} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                         <input
                             type="text"
                             required
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
                         <input
                             type="password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             placeholder="Leave blank for default: tenant123"
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                             <input
                                 type="email"
                                 required
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
                             <input
                                 type="tel"
                                 required
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Property</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Property</label>
                             <select
                                 required
                                 value={formData.propertyId}
                                 onChange={(e) => setFormData({ ...formData, propertyId: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             >
                                 <option value="">Select Property</option>
                                 {properties.map(p => (
@@ -435,48 +435,48 @@ const Tenants = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Unit Number</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unit Number</label>
                             <input
                                 type="text"
                                 required
                                 value={formData.unitNumber}
                                 onChange={(e) => setFormData({ ...formData, unitNumber: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Lease Start</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lease Start</label>
                             <input
                                 type="date"
                                 required
                                 value={formData.leaseStart}
                                 onChange={(e) => setFormData({ ...formData, leaseStart: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Lease End</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lease End</label>
                             <input
                                 type="date"
                                 required
                                 value={formData.leaseEnd}
                                 onChange={(e) => setFormData({ ...formData, leaseEnd: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Rent ($)</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Monthly Rent ($)</label>
                         <input
                             type="number"
                             required
                             value={formData.monthlyRent}
                             onChange={(e) => setFormData({ ...formData, monthlyRent: parseInt(e.target.value) })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                         />
                     </div>
 
@@ -484,7 +484,7 @@ const Tenants = () => {
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>
@@ -523,7 +523,7 @@ const Tenants = () => {
             >
                 <form onSubmit={submitExtendLease} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Extend lease by (months)
                         </label>
                         <input
@@ -533,15 +533,15 @@ const Tenants = () => {
                             required
                             value={extendLeaseData.months}
                             onChange={(e) => setExtendLeaseData({ ...extendLeaseData, months: parseInt(e.target.value) })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             Enter the number of months to extend the lease (1-60)
                         </p>
                     </div>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-sm text-blue-900">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                        <p className="text-sm text-blue-900 dark:text-blue-200">
                             <strong>Note:</strong> The lease end date will be extended by {extendLeaseData.months} month(s) from the current end date.
                         </p>
                     </div>
@@ -550,7 +550,7 @@ const Tenants = () => {
                         <button
                             type="button"
                             onClick={() => setExtendLeaseModalOpen(false)}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>

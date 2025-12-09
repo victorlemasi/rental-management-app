@@ -86,8 +86,8 @@ const Notifications = () => {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-                    <p className="text-gray-500 mt-1">Send notifications to your tenants</p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">Send notifications to your tenants</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -98,32 +98,32 @@ const Notifications = () => {
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900">Sent Notifications</h2>
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Sent Notifications</h2>
                 </div>
-                <div className="divide-y divide-gray-200">
+                <div className="divide-y divide-gray-200 dark:divide-slate-700">
                     {notifications.length === 0 ? (
                         <div className="p-8 text-center text-gray-500">
                             No notifications sent yet
                         </div>
                     ) : (
                         notifications.map((notification) => (
-                            <div key={notification._id} className="p-6 hover:bg-gray-50">
+                            <div key={notification._id} className="p-6 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <h3 className="font-semibold text-gray-900">{notification.title}</h3>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${notification.type === 'urgent' ? 'bg-red-100 text-red-800' :
-                                                notification.type === 'warning' ? 'bg-orange-100 text-orange-800' :
-                                                    notification.type === 'announcement' ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-green-100 text-green-800'
+                                            <h3 className="font-semibold text-gray-900 dark:text-white">{notification.title}</h3>
+                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${notification.type === 'urgent' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                                notification.type === 'warning' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400' :
+                                                    notification.type === 'announcement' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                                                        'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                 }`}>
                                                 {notification.type}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-gray-700 mb-2">{notification.message}</p>
-                                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{notification.message}</p>
+                                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                                             <span>
                                                 Recipients: {notification.recipientType === 'all' ? 'All Tenants' : `${notification.recipientIds.length} Tenant(s)`}
                                             </span>
@@ -134,7 +134,7 @@ const Notifications = () => {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => handleShareToWhatsApp(notification)}
-                                            className="flex items-center gap-1 px-3 py-1 text-green-600 hover:bg-green-50 rounded-lg transition-colors text-sm font-medium"
+                                            className="flex items-center gap-1 px-3 py-1 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors text-sm font-medium"
                                             title="Share to WhatsApp"
                                         >
                                             <Share2 className="w-4 h-4" />
@@ -142,7 +142,7 @@ const Notifications = () => {
                                         </button>
                                         <button
                                             onClick={() => handleDeleteNotification(notification._id)}
-                                            className="text-red-600 hover:text-red-900 text-sm font-medium"
+                                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium"
                                         >
                                             Delete
                                         </button>
@@ -161,7 +161,7 @@ const Notifications = () => {
             >
                 <form onSubmit={handleSendNotification} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                         <input
                             type="text"
                             required
@@ -169,13 +169,13 @@ const Notifications = () => {
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 bg-white"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white bg-white dark:bg-slate-700"
                             placeholder="Notification title"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
                         <textarea
                             required
                             rows={4}
@@ -183,45 +183,45 @@ const Notifications = () => {
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                             style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-gray-900 bg-white"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-gray-900 dark:text-white bg-white dark:bg-slate-700"
                             placeholder="Your message to tenants"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-black mb-1">Type</label>
+                        <label className="block text-sm font-bold text-black dark:text-white mb-1">Type</label>
                         <select
                             value={formData.type}
                             onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                             style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-black bg-white"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-black dark:text-white bg-white dark:bg-slate-700"
                         >
-                            <option value="info" className="text-black bg-white">Info</option>
-                            <option value="announcement" className="text-black bg-white">Announcement</option>
-                            <option value="warning" className="text-black bg-white">Warning</option>
-                            <option value="urgent" className="text-black bg-white">Urgent</option>
+                            <option value="info" className="text-black dark:text-white bg-white dark:bg-slate-700">Info</option>
+                            <option value="announcement" className="text-black dark:text-white bg-white dark:bg-slate-700">Announcement</option>
+                            <option value="warning" className="text-black dark:text-white bg-white dark:bg-slate-700">Warning</option>
+                            <option value="urgent" className="text-black dark:text-white bg-white dark:bg-slate-700">Urgent</option>
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-black mb-1">Recipients</label>
+                        <label className="block text-sm font-bold text-black dark:text-white mb-1">Recipients</label>
                         <select
                             value={formData.recipientType}
                             onChange={(e) => setFormData({ ...formData, recipientType: e.target.value, recipientIds: [] })}
                             style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-black bg-white"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-black dark:text-white bg-white dark:bg-slate-700"
                         >
-                            <option value="all" className="text-black bg-white">All Tenants</option>
-                            <option value="specific" className="text-black bg-white">Specific Tenants</option>
+                            <option value="all" className="text-black dark:text-white bg-white dark:bg-slate-700">All Tenants</option>
+                            <option value="specific" className="text-black dark:text-white bg-white dark:bg-slate-700">Specific Tenants</option>
                         </select>
                     </div>
 
                     {formData.recipientType === 'specific' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Select Tenants</label>
-                            <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto bg-white">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Tenants</label>
+                            <div className="border border-gray-300 dark:border-slate-600 rounded-lg p-3 max-h-48 overflow-y-auto bg-white dark:bg-slate-700">
                                 {tenants.map((tenant) => (
-                                    <label key={tenant._id} className="flex items-center gap-2 py-2 hover:bg-gray-50 px-2 rounded cursor-pointer">
+                                    <label key={tenant._id} className="flex items-center gap-2 py-2 hover:bg-gray-50 dark:hover:bg-slate-600 px-2 rounded cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={formData.recipientIds.includes(tenant._id)}
@@ -239,9 +239,9 @@ const Notifications = () => {
                                                 }
                                             }}
                                             style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}
-                                            className="rounded text-primary-600 focus:ring-primary-500 border-gray-300"
+                                            className="rounded text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-slate-500"
                                         />
-                                        <span className="text-sm text-gray-900">{tenant.name} - Unit {tenant.unitNumber}</span>
+                                        <span className="text-sm text-gray-900 dark:text-white">{tenant.name} - Unit {tenant.unitNumber}</span>
                                     </label>
                                 ))}
                             </div>
@@ -252,7 +252,7 @@ const Notifications = () => {
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>

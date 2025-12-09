@@ -58,7 +58,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
             {/* Sidebar */}
             <aside className={cn(
-                "w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50 transition-transform duration-300",
+                "w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50 transition-transform duration-300",
                 "lg:translate-x-0",
                 isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             )}>
@@ -86,8 +86,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                                 cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
                                     isActive
-                                        ? "bg-primary-50 text-primary-700"
-                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400"
+                                        : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200"
                                 )
                             }
                         >
@@ -97,7 +97,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-gray-200">
+                <div className="p-4 border-t border-gray-200 dark:border-slate-800">
                     <NavLink
                         to="/settings"
                         onClick={closeMobileMenu}
@@ -105,8 +105,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                             cn(
                                 "flex items-center gap-3 px-4 py-3 w-full rounded-lg transition-colors",
                                 isActive
-                                    ? "bg-primary-50 text-primary-700"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                    ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400"
+                                    : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-200"
                             )
                         }
                     >
@@ -115,7 +115,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
                     </NavLink>
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-4 py-3 w-full text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-1"
+                        className="flex items-center gap-3 px-4 py-3 w-full text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors mt-1"
                     >
                         <LogOut className="w-5 h-5" />
                         <span className="font-medium">Logout</span>

@@ -127,8 +127,8 @@ const Maintenance = () => {
             )}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Maintenance Requests</h1>
-                    <p className="text-gray-500 mt-1">Track and manage maintenance requests</p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Maintenance Requests</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">Track and manage maintenance requests</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
@@ -140,15 +140,15 @@ const Maintenance = () => {
             </div>
 
             {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-lg">
                     <div className="flex items-center">
-                        <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-                        <p className="text-red-700">{error}</p>
+                        <AlertCircle className="h-5 w-5 text-red-500" />
+                        <p className="text-red-700 dark:text-red-400 ml-2">{error}</p>
                     </div>
                 </div>
             )}
 
-            <div className="bg-white p-4 rounded-xl border border-gray-200">
+            <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-gray-200 dark:border-slate-800">
                 <div className="flex gap-2 overflow-x-auto">
                     {['all', 'pending', 'in-progress', 'completed', 'cancelled'].map((status) => (
                         <button
@@ -156,7 +156,7 @@ const Maintenance = () => {
                             onClick={() => setFilterStatus(status)}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${filterStatus === status
                                 ? 'bg-primary-600 text-white'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
                                 }`}
                         >
                             {status === 'all' ? 'All' : status.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
@@ -169,30 +169,30 @@ const Maintenance = () => {
                 {filteredRequests.map((request) => {
                     const StatusIcon = statusIcons[request.status];
                     return (
-                        <div key={request._id} className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                        <div key={request._id} className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-gray-200 dark:border-slate-800 hover:shadow-md transition-shadow">
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <h3 className="text-lg font-bold text-gray-900">{request.title}</h3>
+                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{request.title}</h3>
                                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${priorityColors[request.priority]}`}>
                                             {request.priority}
                                         </span>
                                     </div>
-                                    <p className="text-gray-600 mb-3">{request.description}</p>
-                                    <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                                        <span>Unit: <strong className="text-gray-900">{request.unitNumber}</strong></span>
-                                        <span>Tenant: <strong className="text-gray-900">{request.tenantName}</strong></span>
-                                        <span>Created: <strong className="text-gray-900">{new Date(request.createdAt).toLocaleDateString()}</strong></span>
+                                    <p className="text-gray-600 dark:text-gray-300 mb-3">{request.description}</p>
+                                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
+                                        <span>Unit: <strong className="text-gray-900 dark:text-white">{request.unitNumber}</strong></span>
+                                        <span>Tenant: <strong className="text-gray-900 dark:text-white">{request.tenantName}</strong></span>
+                                        <span>Created: <strong className="text-gray-900 dark:text-white">{new Date(request.createdAt).toLocaleDateString()}</strong></span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <StatusIcon className="w-5 h-5 text-gray-500" />
+                                    <StatusIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[request.status]}`}>
                                         {request.status.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                                     </span>
                                     <button
                                         onClick={() => handleDeleteRequest(request._id)}
-                                        className="ml-2 text-red-600 hover:text-red-900 p-1 hover:bg-red-50 rounded transition-colors"
+                                        className="ml-2 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
@@ -216,7 +216,7 @@ const Maintenance = () => {
                                         Mark Complete
                                     </button>
                                 )}
-                                <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
+                                <button className="px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors text-sm font-medium">
                                     View Details
                                 </button>
                             </div>
@@ -227,8 +227,8 @@ const Maintenance = () => {
 
             {filteredRequests.length === 0 && !loading && (
                 <div className="text-center py-12">
-                    <AlertCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No maintenance requests found</p>
+                    <AlertCircle className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400">No maintenance requests found</p>
                 </div>
             )}
 
@@ -239,36 +239,36 @@ const Maintenance = () => {
             >
                 <form onSubmit={handleAddRequest} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                         <input
                             type="text"
                             required
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             placeholder="e.g. Leaky Faucet"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                         <textarea
                             required
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             rows={3}
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Property</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Property</label>
                             <select
                                 required
                                 value={formData.propertyId}
                                 onChange={(e) => setFormData({ ...formData, propertyId: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             >
                                 <option value="">Select Property</option>
                                 {properties.map(p => (
@@ -277,34 +277,34 @@ const Maintenance = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Unit Number</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unit Number</label>
                             <input
                                 type="text"
                                 required
                                 value={formData.unitNumber}
                                 onChange={(e) => setFormData({ ...formData, unitNumber: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Tenant Name</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tenant Name</label>
                             <input
                                 type="text"
                                 required
                                 value={formData.tenantName}
                                 onChange={(e) => setFormData({ ...formData, tenantName: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
                             <select
                                 value={formData.priority}
                                 onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white"
                             >
                                 <option value="low">Low</option>
                                 <option value="medium">Medium</option>
@@ -318,7 +318,7 @@ const Maintenance = () => {
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>
