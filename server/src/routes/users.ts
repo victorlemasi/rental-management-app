@@ -1,7 +1,7 @@
 import express, { Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { User } from '../models/User';
-import { auth } from '../middleware/auth';
+import { User } from '../models/User.js';
+import { auth } from '../middleware/auth.js';
 
 // Define AuthRequest interface to match the one in auth middleware
 interface AuthRequest extends express.Request {
