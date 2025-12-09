@@ -140,6 +140,16 @@ export const tenantsAPI = {
         if (!response.ok) throw new Error('Failed to record payment');
         return response.json();
     },
+
+    extendLease: async (tenantId: string, months: number) => {
+        const response = await fetch(`${API_BASE_URL}/tenants/${tenantId}/extend-lease`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({ months }),
+        });
+        if (!response.ok) throw new Error('Failed to extend lease');
+        return response.json();
+    },
 };
 
 // Maintenance API

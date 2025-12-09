@@ -501,4 +501,48 @@ router.post('/:id/record-payment', auth, authorize(['admin', 'manager']), async 
     }
 });
 
+// Extend lease period - Admin/Manager only
+router.post('/:id/extend-lease', auth, authorize(['admin', 'manager']), async (req: Request, res: Response) => {
+    try {
+        const tenant = await Tenant.findById(req.params.id);
+        if (!tenant) {
+            return res.status(404).json({ message: 'Tenant not found' });
+        }
+
+        // Check ownership
+        const property = await Property.findOne({ _id: tenant.propertyId, user: (req as any).user.userId });
+        if (!property) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const { months } = req.body;
+
+        if (!months || months <= 0) {
+            return res.status(400).json({ message: 'Invalid number of months. Must be greater than 0.' });
+        }
+
+        // Get current lease end date
+        const currentLeaseEnd = new Date(tenant.leaseEnd);
+
+        // Add months to lease end date
+        const newLeaseEnd = new Date(currentLeaseEnd);
+        newLeaseEnd.setMonth(newLeaseEnd.getMonth() + Number(months));
+
+        // Update tenant
+        tenant.leaseEnd = newLeaseEnd;
+        await tenant.save();
+
+        res.json({
+            success: true,
+            message: `Lease extended by ${months} month(s) successfully`,
+            tenant,
+            previousLeaseEnd: currentLeaseEnd,
+            newLeaseEnd: newLeaseEnd
+        });
+    } catch (error) {
+        console.error('Error extending lease:', error);
+        res.status(500).json({ message: 'Error extending lease period', error });
+    }
+});
+
 export default router;

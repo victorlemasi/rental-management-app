@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Trash2, History, Zap } from 'lucide-react';
+import { Plus, Search, Filter, Trash2, History, Zap, Calendar } from 'lucide-react';
 import { tenantsAPI, propertiesAPI } from '../services/api';
 import type { Tenant, Property } from '../types';
 import Modal from '../components/Modal';
@@ -17,7 +17,9 @@ const Tenants = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [historyModalOpen, setHistoryModalOpen] = useState(false);
     const [utilitiesModalOpen, setUtilitiesModalOpen] = useState(false);
+    const [extendLeaseModalOpen, setExtendLeaseModalOpen] = useState(false);
     const [selectedTenant, setSelectedTenant] = useState<{ id: string; name: string; monthlyRent: number } | null>(null);
+    const [extendLeaseData, setExtendLeaseData] = useState({ tenantId: '', tenantName: '', months: 1 });
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
     const [formData, setFormData] = useState({
         name: '',
@@ -113,6 +115,24 @@ const Tenants = () => {
     const handleAddUtilities = (tenant: Tenant) => {
         setSelectedTenant({ id: tenant._id, name: tenant.name, monthlyRent: tenant.monthlyRent });
         setUtilitiesModalOpen(true);
+    };
+
+    const handleExtendLease = (tenant: Tenant) => {
+        setExtendLeaseData({ tenantId: tenant._id, tenantName: tenant.name, months: 1 });
+        setExtendLeaseModalOpen(true);
+    };
+
+    const submitExtendLease = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await tenantsAPI.extendLease(extendLeaseData.tenantId, extendLeaseData.months);
+            setExtendLeaseModalOpen(false);
+            fetchData();
+            setToast({ message: `Lease extended by ${extendLeaseData.months} month(s) successfully!`, type: 'success' });
+        } catch (err) {
+            console.error('Failed to extend lease:', err);
+            setToast({ message: 'Failed to extend lease', type: 'error' });
+        }
     };
 
     const filteredTenants = tenants.filter((tenant) =>
@@ -312,6 +332,13 @@ const Tenants = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex justify-end gap-2">
                                             <button
+                                                onClick={() => handleExtendLease(tenant)}
+                                                className="text-purple-600 hover:text-purple-900 p-2 hover:bg-purple-50 rounded-full transition-colors"
+                                                title="Extend Lease"
+                                            >
+                                                <Calendar className="w-4 h-4" />
+                                            </button>
+                                            <button
                                                 onClick={() => handleAddUtilities(tenant)}
                                                 className="text-yellow-600 hover:text-yellow-900 p-2 hover:bg-yellow-50 rounded-full transition-colors"
                                                 title="Add Utilities"
@@ -488,6 +515,54 @@ const Tenants = () => {
                 tenantName={selectedTenant?.name || ''}
                 monthlyRent={selectedTenant?.monthlyRent || 0}
             />
+            {/* Extend Lease Modal */}
+            <Modal
+                isOpen={extendLeaseModalOpen}
+                onClose={() => setExtendLeaseModalOpen(false)}
+                title={`Extend Lease - ${extendLeaseData.tenantName}`}
+            >
+                <form onSubmit={submitExtendLease} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Extend lease by (months)
+                        </label>
+                        <input
+                            type="number"
+                            min="1"
+                            max="60"
+                            required
+                            value={extendLeaseData.months}
+                            onChange={(e) => setExtendLeaseData({ ...extendLeaseData, months: parseInt(e.target.value) })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                            Enter the number of months to extend the lease (1-60)
+                        </p>
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-sm text-blue-900">
+                            <strong>Note:</strong> The lease end date will be extended by {extendLeaseData.months} month(s) from the current end date.
+                        </p>
+                    </div>
+
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button
+                            type="button"
+                            onClick={() => setExtendLeaseModalOpen(false)}
+                            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                            Extend Lease
+                        </button>
+                    </div>
+                </form>
+            </Modal>
         </div>
     );
 };
