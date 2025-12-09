@@ -96,101 +96,85 @@ const RentSummary: React.FC<RentSummaryProps> = ({ tenant, rentHistory }) => {
                             {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                         </p>
                     </div>
-                    <div className="p-6 space-y-4">
-                        {/* Base Rent */}
-                        <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                            <span className="text-gray-600 font-medium">Base Rent</span>
-                            <span className="text-lg font-bold text-gray-900">
-                                KSh {(tenant?.monthlyRent || 0).toLocaleString()}
-                            </span>
-                        </div>
+                    <div className="p-6">
+                        <div className="space-y-4">
+                            {/* Base Rent */}
+                            <div className="flex justify-between items-center text-gray-700">
+                                <span className="font-medium">Base Rent</span>
+                                <span className="font-bold">KSh {(tenant?.monthlyRent || 0).toLocaleString()}</span>
+                            </div>
 
-                        {/* Utilities */}
-                        <div className="space-y-2">
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Utilities</p>
-                            <div className="grid grid-cols-2 gap-3 pl-3">
-                                <div className="flex justify-between">
-                                    <span className="text-sm text-gray-600">Water</span>
-                                    <span className="text-sm font-semibold text-gray-900">
-                                        KSh {water.toLocaleString()}
-                                    </span>
+                            {/* Utilities Section */}
+                            <div className="border-t border-b border-gray-100 py-3 space-y-2">
+                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Utilities</p>
+                                <div className="space-y-2 pl-2">
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                        <span>Water</span>
+                                        <span>KSh {water.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                        <span>Electricity</span>
+                                        <span>KSh {electricity.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                        <span>Garbage</span>
+                                        <span>KSh {garbage.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                        <span>Security</span>
+                                        <span>KSh {security.toLocaleString()}</span>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-sm text-gray-600">Electricity</span>
-                                    <span className="text-sm font-semibold text-gray-900">
-                                        KSh {electricity.toLocaleString()}
-                                    </span>
+                                <div className="flex justify-between items-center pt-2 mt-2 border-t border-gray-50">
+                                    <span className="text-sm font-medium text-gray-700">Total Utilities</span>
+                                    <span className="font-bold text-gray-900">KSh {totalUtilities.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-sm text-gray-600">Garbage</span>
-                                    <span className="text-sm font-semibold text-gray-900">
-                                        KSh {garbage.toLocaleString()}
-                                    </span>
+                            </div>
+
+                            {/* Arrears and Credits */}
+                            {(arrears > 0 || credit > 0) && (
+                                <div className="space-y-2 py-2 border-b border-gray-100">
+                                    {arrears > 0 && (
+                                        <div className="flex justify-between text-red-600">
+                                            <span className="text-sm font-medium">Previous Arrears</span>
+                                            <span className="font-bold">+KSh {arrears.toLocaleString()}</span>
+                                        </div>
+                                    )}
+                                    {credit > 0 && (
+                                        <div className="flex justify-between text-green-600">
+                                            <span className="text-sm font-medium">Credit Applied</span>
+                                            <span className="font-bold">-KSh {credit.toLocaleString()}</span>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-sm text-gray-600">Security</span>
-                                    <span className="text-sm font-semibold text-gray-900">
-                                        KSh {security.toLocaleString()}
+                            )}
+
+                            {/* Summary Calculations */}
+                            <div className="space-y-3 pt-2">
+                                <div className="flex justify-between items-center text-lg">
+                                    <span className="font-bold text-gray-900">Total Due</span>
+                                    <span className="font-bold text-primary-600">KSh {totalDue.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600 font-medium">Amount Paid</span>
+                                    <span className="font-bold text-green-600">KSh {amountPaid.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600 font-medium">Outstanding</span>
+                                    <span className={`font-bold ${outstanding > 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                                        KSh {outstanding.toLocaleString()}
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex justify-between pt-2 border-t border-gray-100">
-                                <span className="text-sm font-medium text-gray-700">Total Utilities</span>
-                                <span className="text-sm font-bold text-gray-900">
-                                    KSh {totalUtilities.toLocaleString()}
-                                </span>
-                            </div>
                         </div>
 
-                        {/* Arrears/Credits */}
-                        {arrears > 0 && (
-                            <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                                <span className="text-sm font-medium text-red-700">Previous Arrears</span>
-                                <span className="text-lg font-bold text-red-600">
-                                    +KSh {arrears.toLocaleString()}
-                                </span>
-                            </div>
-                        )}
-                        {credit > 0 && (
-                            <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                                <span className="text-sm font-medium text-green-700">Credit Applied</span>
-                                <span className="text-lg font-bold text-green-600">
-                                    -KSh {credit.toLocaleString()}
-                                </span>
-                            </div>
-                        )}
-
-                        {/* Total Due */}
-                        <div className="flex justify-between items-center pt-4 border-t-2 border-gray-300">
-                            <span className="text-lg font-bold text-gray-900">Total Due</span>
-                            <span className="text-2xl font-bold text-primary-600">
-                                KSh {totalDue.toLocaleString()}
-                            </span>
-                        </div>
-
-                        {/* Amount Paid */}
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-600 font-medium">Amount Paid</span>
-                            <span className="text-lg font-bold text-green-600">
-                                KSh {amountPaid.toLocaleString()}
-                            </span>
-                        </div>
-
-                        {/* Outstanding */}
-                        <div className="flex justify-between items-center pb-4">
-                            <span className="text-gray-600 font-medium">Outstanding</span>
-                            <span className="text-lg font-bold text-red-600">
-                                KSh {outstanding.toLocaleString()}
-                            </span>
-                        </div>
-
-                        {/* Payment Status Badge */}
-                        <div className="flex justify-center pt-4 border-t border-gray-200">
-                            <span className={`px-6 py-2 rounded-full text-sm font-bold ${outstanding <= 0
+                        {/* Status Badge */}
+                        <div className="mt-6 flex justify-center">
+                            <span className={`px-6 py-2 rounded-full text-sm font-bold flex items-center gap-2 ${outstanding <= 0
                                 ? 'bg-green-100 text-green-800'
                                 : 'bg-yellow-100 text-yellow-800'
                                 }`}>
-                                {outstanding <= 0 ? '✓ PAID IN FULL' : 'PAYMENT PENDING'}
+                                {outstanding <= 0 ? '✓ PAID IN FULL' : '⚠️ PAYMENT PENDING'}
                             </span>
                         </div>
                     </div>
