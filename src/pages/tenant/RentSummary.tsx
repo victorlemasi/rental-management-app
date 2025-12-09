@@ -28,7 +28,7 @@ const RentSummary: React.FC<RentSummaryProps> = ({ tenant, rentHistory }) => {
     // Calculate payment statistics
     const totalPaidAllTime = rentHistory.reduce((sum, record) => sum + record.amountPaid, 0);
     const paidMonths = rentHistory.filter(r => r.status === 'paid').length;
-    const partialMonths = rentHistory.filter(r => r.status === 'partial').overdue;
+
 
     return (
         <div className="space-y-6">
@@ -187,8 +187,8 @@ const RentSummary: React.FC<RentSummaryProps> = ({ tenant, rentHistory }) => {
                         {/* Payment Status Badge */}
                         <div className="flex justify-center pt-4 border-t border-gray-200">
                             <span className={`px-6 py-2 rounded-full text-sm font-bold ${outstanding <= 0
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-yellow-100 text-yellow-800'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-yellow-100 text-yellow-800'
                                 }`}>
                                 {outstanding <= 0 ? '✓ PAID IN FULL' : 'PAYMENT PENDING'}
                             </span>
@@ -219,9 +219,9 @@ const RentSummary: React.FC<RentSummaryProps> = ({ tenant, rentHistory }) => {
                         </div>
                         <div className="mt-4 flex justify-center">
                             <span className={`px-4 py-2 rounded-full text-sm font-semibold ${tenant?.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
-                                    tenant?.paymentStatus === 'partial' ? 'bg-orange-100 text-orange-800' :
-                                        tenant?.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            'bg-red-100 text-red-800'
+                                tenant?.paymentStatus === 'partial' ? 'bg-orange-100 text-orange-800' :
+                                    tenant?.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-red-100 text-red-800'
                                 }`}>
                                 {tenant?.paymentStatus?.toUpperCase() || 'PENDING'}
                             </span>
@@ -333,9 +333,9 @@ const RentSummary: React.FC<RentSummaryProps> = ({ tenant, rentHistory }) => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${record.status === 'paid' ? 'bg-green-100 text-green-800' :
-                                                        record.status === 'partial' ? 'bg-yellow-100 text-yellow-800' :
-                                                            record.status === 'overdue' ? 'bg-red-100 text-red-800' :
-                                                                'bg-gray-100 text-gray-800'
+                                                    record.status === 'partial' ? 'bg-yellow-100 text-yellow-800' :
+                                                        record.status === 'overdue' ? 'bg-red-100 text-red-800' :
+                                                            'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
                                                 </span>
