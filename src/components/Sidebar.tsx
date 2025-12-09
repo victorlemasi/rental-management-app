@@ -1,5 +1,5 @@
 import { useNavigate, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, Users, Wrench, Wallet, Receipt, Settings, LogOut, CheckCircle, Bell, X } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, Wrench, Wallet, Receipt, Settings, LogOut, CheckCircle, Bell, X, FileText } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../context/AuthContext';
 
@@ -21,7 +21,10 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
         setIsMobileMenuOpen(false);
     };
 
-    const navItems = [
+    const { user } = useAuth();
+
+    // Admin Navigation Items
+    const adminNavItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
         { icon: Building2, label: 'Properties', path: '/properties' },
         { icon: Users, label: 'Tenants', path: '/tenants' },
@@ -30,6 +33,17 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
         { icon: Receipt, label: 'Payments', path: '/payments' },
         { icon: CheckCircle, label: 'Verify Transaction', path: '/verify-transaction' },
     ];
+
+    // Tenant Navigation Items
+    const tenantNavItems = [
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/tenant-dashboard' },
+        { icon: FileText, label: 'Lease Info', path: '/tenant-dashboard/lease' },
+        { icon: Wrench, label: 'Maintenance', path: '/tenant-dashboard/maintenance' },
+        { icon: Wallet, label: 'Payments', path: '/tenant-dashboard/payments' },
+        { icon: Bell, label: 'Notifications', path: '/tenant-dashboard/notifications' },
+    ];
+
+    const navItems = user?.role === 'tenant' ? tenantNavItems : adminNavItems;
 
     return (
         <>

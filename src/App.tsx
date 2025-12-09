@@ -14,7 +14,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import TenantDashboard from './pages/TenantDashboard';
+import TenantRentPage from './pages/TenantRentPage';
+import TenantLeasePage from './pages/TenantLeasePage';
+import TenantMaintenancePage from './pages/TenantMaintenancePage';
+import TenantPaymentPage from './pages/TenantPaymentPage';
+import TenantNotificationsPage from './pages/TenantNotificationsPage';
+import { TenantDataWrapper } from './components/TenantDataWrapper';
 import Settings from './pages/Settings';
 import DebugTenantData from './pages/DebugTenantData';
 
@@ -49,9 +54,17 @@ function App() {
 
             <Route path="/tenant-dashboard" element={
               <ProtectedRoute allowedRoles={['tenant']}>
-                <TenantDashboard />
+                <Layout />
               </ProtectedRoute>
-            } />
+            }>
+              <Route element={<TenantDataWrapper />}>
+                <Route index element={<TenantRentPage />} />
+                <Route path="lease" element={<TenantLeasePage />} />
+                <Route path="maintenance" element={<TenantMaintenancePage />} />
+                <Route path="payments" element={<TenantPaymentPage />} />
+                <Route path="notifications" element={<TenantNotificationsPage />} />
+              </Route>
+            </Route>
 
             <Route path="/debug-tenant" element={
               <ProtectedRoute allowedRoles={['tenant']}>
