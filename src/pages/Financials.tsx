@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, CreditCard, Download, Trash2, Plus, Calendar } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Download, Trash2, Plus, Calendar, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { paymentsAPI, tenantsAPI } from '../services/api';
 import type { Payment, Tenant } from '../types';
 import StatsCard from '../components/StatsCard';
@@ -27,6 +27,10 @@ const Financials = () => {
         method: 'bank-transfer',
         status: 'completed'
     });
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     const [mpesaFormData, setMpesaFormData] = useState({
         tenantId: '',
@@ -193,19 +197,41 @@ const Financials = () => {
         ? activeTenants.reduce((sum, t) => sum + t.monthlyRent, 0) / activeTenants.length
         : 0;
 
+    // Filter and Pagination Logic
+    const filteredPayments = payments.filter(payment =>
+        payment.tenantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.propertyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.method.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.amount.toString().includes(searchTerm)
+    );
+
+    const totalPages = Math.ceil(filteredPayments.length / itemsPerPage);
+    const currentPayments = filteredPayments.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const goToPage = (page: number) => {
+        setCurrentPage(Math.min(Math.max(1, page), totalPages));
+    };
+
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
     const exportToCSV = () => {
         const csvRows = [];
 
+        // Calculate filtered stats
+        const filteredRevenue = filteredPayments.reduce((sum, p) => sum + p.amount, 0);
+        const filteredPending = filteredPayments.filter(p => p.status === 'pending').length;
+
         // Add summary section
         csvRows.push(['FINANCIAL SUMMARY']);
         csvRows.push(['']);
         csvRows.push(['Metric', 'Value']);
-        csvRows.push(['Total Revenue', `KSh ${totalRevenue.toLocaleString()}`]);
-        csvRows.push(['Pending Payments', pendingPayments.toString()]);
+        csvRows.push(['Total Revenue', `KSh ${filteredRevenue.toLocaleString()}`]);
+        csvRows.push(['Pending Payments', filteredPending.toString()]);
         csvRows.push(['Average Rent', `KSh ${Math.round(averageRent).toLocaleString()}`]);
-        csvRows.push(['Total Payments', payments.length.toString()]);
+        csvRows.push(['Total Payments', filteredPayments.length.toString()]);
         csvRows.push(['Active Tenants', activeTenants.length.toString()]);
         csvRows.push(['']);
         csvRows.push(['']);
@@ -235,7 +261,7 @@ const Financials = () => {
         csvRows.push(['']);
         csvRows.push(['Date', 'Tenant', 'Property', 'Amount (KSh)', 'Payment Method', 'Status', 'Month']);
 
-        payments.forEach(payment => {
+        filteredPayments.forEach(payment => {
             // Format date more robustly
             let formattedDate = 'N/A';
             try {
@@ -405,8 +431,21 @@ const Financials = () => {
             </div>
 
             <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
-                <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+                <div className="p-6 border-b border-gray-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Payment History</h2>
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search payments..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1); // Reset to first page on search
+                            }}
+                            className="pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-800 text-gray-900 dark:text-white text-sm w-full sm:w-64"
+                        />
+                    </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">
@@ -422,52 +461,113 @@ const Financials = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-800">
-                            {payments.map((payment) => (
-                                <tr key={payment._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                        {new Date(payment.date).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                        {payment.tenantName}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {payment.propertyName}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                        KSh {payment.amount.toLocaleString()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 capitalize">
-                                        {payment.method.replace('-', ' ')}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            ${payment.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'}`}>
-                                            {payment.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
-                                        <button
-                                            onClick={() => generateReceipt(payment)}
-                                            className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
-                                            title="Download Receipt"
-                                        >
-                                            <Download className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeletePayment(payment._id)}
-                                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
-                                            title="Delete Payment"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                            {currentPayments.length > 0 ? (
+                                currentPayments.map((payment) => (
+                                    <tr key={payment._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                            {new Date(payment.date).toLocaleDateString()}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                            {payment.tenantName}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            {payment.propertyName}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                            KSh {payment.amount.toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 capitalize">
+                                            {payment.method.replace('-', ' ')}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                ${payment.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                    payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                        'bg-red-100 text-red-800'}`}>
+                                                {payment.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
+                                            <button
+                                                onClick={() => generateReceipt(payment)}
+                                                className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
+                                                title="Download Receipt"
+                                            >
+                                                <Download className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeletePayment(payment._id)}
+                                                className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                                                title="Delete Payment"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7} className="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        No payments found.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {filteredPayments.length > 0 && (
+                    <div className="px-6 py-4 border-t border-gray-200 dark:border-slate-800 flex items-center justify-between">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                            Showing <span className="font-medium">{Math.min(filteredPayments.length, (currentPage - 1) * itemsPerPage + 1)}</span> to{' '}
+                            <span className="font-medium">{Math.min(filteredPayments.length, currentPage * itemsPerPage)}</span> of{' '}
+                            <span className="font-medium">{filteredPayments.length}</span> results
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="p-2 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                            </button>
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                // Logic to show window of pages centered around current if possible
+                                let pageNum = i + 1;
+                                if (totalPages > 5) {
+                                    if (currentPage > 3) {
+                                        pageNum = currentPage - 2 + i;
+                                    }
+                                    if (pageNum > totalPages) {
+                                        pageNum = totalPages - 4 + i;
+                                    }
+                                }
+
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        onClick={() => goToPage(pageNum)}
+                                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors
+                                            ${currentPage === pageNum
+                                                ? 'bg-primary-600 text-white'
+                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 border border-gray-300 dark:border-slate-700'
+                                            }`}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                            })}
+                            <button
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="p-2 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <Modal
