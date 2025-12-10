@@ -332,18 +332,18 @@ const Tenants = () => {
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex justify-end gap-2">
                                             <button
-                                                onClick={() => handleExtendLease(tenant)}
-                                                className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 p-2 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-full transition-colors"
-                                                title="Extend Lease"
-                                            >
-                                                <Calendar className="w-4 h-4" />
-                                            </button>
-                                            <button
                                                 onClick={() => handleAddUtilities(tenant)}
                                                 className="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 p-2 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-full transition-colors"
                                                 title="Add Utilities"
                                             >
                                                 <Zap className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleExtendLease(tenant)}
+                                                className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 p-2 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-full transition-colors"
+                                                title="Extend Lease"
+                                            >
+                                                <Calendar className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleViewHistory(tenant)}
