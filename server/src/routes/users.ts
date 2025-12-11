@@ -92,8 +92,16 @@ router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
 });
 
 // Update user profile
-router.put('/profile', auth, upload.single('profilePicture'), async (req: AuthRequest, res: Response) => {
+router.put('/profile', auth, (req, res, next) => {
+    console.log('Profile update request received');
+    console.log('Headers:', req.headers['content-type']);
+    next();
+}, upload.single('profilePicture'), async (req: AuthRequest, res: Response) => {
     try {
+        console.log('Inside profile update route');
+        console.log('Body:', req.body);
+        console.log('File:', (req as any).file);
+
         const { name, email, phone } = req.body;
         // Check if a file was uploaded? req.file is available due to multer
         const profilePictureParams = req.body.profilePicture; // If sent as string (existing logic)
@@ -105,7 +113,9 @@ router.put('/profile', auth, upload.single('profilePicture'), async (req: AuthRe
         if (file) {
             // Construct the URL. Assuming the server serves /uploads statically.
             // We'll store the relative path. The frontend can prepend the base URL.
+            // CAUTION: Ensure we use forward slashes for URLs even on Windows
             finalProfilePicture = `/uploads/profiles/${file.filename}`;
+            console.log('New profile picture path:', finalProfilePicture);
         }
         const user = await User.findById(req.user.userId);
 

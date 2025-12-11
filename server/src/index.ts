@@ -72,7 +72,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+const uploadsPath = path.join(__dirname, '../uploads');
+console.log('Serving static files from:', uploadsPath);
+app.use('/uploads', express.static(uploadsPath));
 
 // Health check
 app.get('/api/health', (req, res) => {
