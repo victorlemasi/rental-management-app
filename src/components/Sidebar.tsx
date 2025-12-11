@@ -99,7 +99,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }: SidebarProps) => {
 
                 <div className="p-4 border-t border-gray-200 dark:border-slate-800">
                     <NavLink
-                        to="/settings"
+                        to={user?.role === 'tenant' ? '/tenant-dashboard/settings' : '/settings'}
                         onClick={closeMobileMenu}
                         className={({ isActive }) =>
                             cn(

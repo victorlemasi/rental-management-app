@@ -1,6 +1,7 @@
 import express, { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
+import Tenant from '../models/Tenant.js';
 import { auth } from '../middleware/auth.js';
 import multer from 'multer';
 import path from 'path';
@@ -112,6 +113,14 @@ router.put('/profile', auth, upload.single('profilePicture'), async (req: AuthRe
         if (finalProfilePicture !== undefined) user.profilePicture = finalProfilePicture;
 
         await user.save();
+
+        // If user is a tenant, sync profile picture to Tenant model
+        if (user.role === 'tenant') {
+            await Tenant.findOneAndUpdate(
+                { email: user.email },
+                { profilePicture: user.profilePicture }
+            );
+        }
 
         // Return updated user without password
         const updatedUser = {

@@ -43,6 +43,7 @@ const TenantSchema: Schema = new Schema(
             enum: ['paid', 'pending', 'overdue', 'partial'],
             default: 'pending'
         },
+        profilePicture: { type: String, default: '' },
         resetPasswordToken: { type: String },
         resetPasswordExpires: { type: Date }
     },

@@ -63,6 +63,7 @@ function App() {
                 <Route path="maintenance" element={<TenantMaintenancePage />} />
                 <Route path="payments" element={<TenantPaymentPage />} />
                 <Route path="notifications" element={<TenantNotificationsPage />} />
+                <Route path="settings" element={<Settings />} />
               </Route>
             </Route>
 
