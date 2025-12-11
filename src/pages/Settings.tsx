@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Lock, Bell, Moon, Sun, Monitor, Save, Shield, Eye, EyeOff, Upload } from 'lucide-react';
+import { getImageUrl } from '../lib/utils';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { userAPI } from '../services/api';
@@ -46,12 +47,6 @@ const Settings = () => {
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-    const getImageUrl = (url: string) => {
-        if (!url) return null;
-        if (url.startsWith('http') || url.startsWith('blob')) return url;
-        return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${url}`;
-    };
 
     // Fetch user profile and settings on mount
     useEffect(() => {
