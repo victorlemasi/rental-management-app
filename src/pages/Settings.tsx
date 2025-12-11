@@ -292,7 +292,8 @@ const Settings = () => {
                                     type="text"
                                     value={profileData.name}
                                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    disabled={user?.role === 'tenant'}
+                                    className={`w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${user?.role === 'tenant' ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white'}`}
                                 />
                             </div>
                             <div>
@@ -301,7 +302,8 @@ const Settings = () => {
                                     type="email"
                                     value={profileData.email}
                                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    disabled={user?.role === 'tenant'}
+                                    className={`w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${user?.role === 'tenant' ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white'}`}
                                 />
                             </div>
                             <div>
@@ -310,7 +312,8 @@ const Settings = () => {
                                     type="text"
                                     value={profileData.phone}
                                     onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    disabled={user?.role === 'tenant'}
+                                    className={`w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${user?.role === 'tenant' ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 cursor-not-allowed' : 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white'}`}
                                 />
                             </div>
                             <div className="md:col-span-2">
