@@ -268,7 +268,11 @@ export const authAPI = {
             const error = await response.json();
             throw new Error(error.message || 'Login failed');
         }
-        return response.json();
+        const result = await response.json();
+        if (result.user) {
+            result.user = normalizeUser(result.user);
+        }
+        return result;
     },
 
     register: async (userData: any) => {
@@ -281,7 +285,11 @@ export const authAPI = {
             const error = await response.json();
             throw new Error(error.message || 'Registration failed');
         }
-        return response.json();
+        const result = await response.json();
+        if (result.user) {
+            result.user = normalizeUser(result.user);
+        }
+        return result;
     },
 
     forgotPassword: async (email: string) => {
@@ -325,6 +333,14 @@ const safeJsonParse = async (response: Response) => {
     }
 };
 
+const normalizeUser = (user: any) => {
+    if (user && user.profilePicture && user.profilePicture.startsWith('/uploads')) {
+        const apiBase = API_BASE_URL.replace('/api', '');
+        user.profilePicture = `${apiBase}${user.profilePicture}`;
+    }
+    return user;
+};
+
 // User Settings API
 export const userAPI = {
     getProfile: async () => {
@@ -332,20 +348,28 @@ export const userAPI = {
             headers: getHeaders(),
         });
         if (!response.ok) throw new Error('Failed to fetch user profile');
-        return safeJsonParse(response);
+        const user = await safeJsonParse(response);
+        return normalizeUser(user);
     },
 
-    updateProfile: async (data: { name?: string; email?: string; phone?: string; profilePicture?: string }) => {
+    updateProfile: async (data: { name?: string; email?: string; phone?: string; profilePicture?: string | File } | FormData) => {
+        const isFormData = data instanceof FormData;
         const response = await fetch(`${API_BASE_URL}/users/profile`, {
             method: 'PUT',
-            headers: getHeaders(),
-            body: JSON.stringify(data),
+            headers: isFormData ? {
+                ...(localStorage.getItem('token') ? { Authorization: `Bearer ${localStorage.getItem('token')}` } : {}),
+            } : getHeaders(),
+            body: isFormData ? data : JSON.stringify(data),
         });
         if (!response.ok) {
             const error = await safeJsonParse(response);
             throw new Error(error.message || 'Failed to update profile');
         }
-        return safeJsonParse(response);
+        const result = await safeJsonParse(response);
+        if (result.user) {
+            result.user = normalizeUser(result.user);
+        }
+        return result;
     },
 
     changePassword: async (data: { currentPassword: string; newPassword: string }) => {

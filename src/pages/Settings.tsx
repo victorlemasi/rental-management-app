@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Lock, Bell, Moon, Sun, Monitor, Save, Shield, Eye, EyeOff } from 'lucide-react';
+import { User, Lock, Bell, Moon, Sun, Monitor, Save, Shield, Eye, EyeOff, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { userAPI } from '../services/api';
@@ -44,6 +44,15 @@ const Settings = () => {
         confirm: false
     });
 
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    const getImageUrl = (url: string) => {
+        if (!url) return null;
+        if (url.startsWith('http') || url.startsWith('blob')) return url;
+        return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}${url}`;
+    };
+
     // Fetch user profile and settings on mount
     useEffect(() => {
         const fetchUserData = async () => {
@@ -80,12 +89,23 @@ const Settings = () => {
         e.preventDefault();
         setProfileLoading(true);
         try {
-            const response = await userAPI.updateProfile({
+            let updateData: any = {
                 name: profileData.name,
                 email: profileData.email,
                 phone: profileData.phone,
                 profilePicture: profileData.profilePicture
-            });
+            };
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('name', profileData.name);
+                formData.append('email', profileData.email);
+                formData.append('phone', profileData.phone);
+                formData.append('profilePicture', selectedFile);
+                updateData = formData;
+            }
+
+            const response = await userAPI.updateProfile(updateData);
 
             // Update the auth context with new user data
             const token = localStorage.getItem('token');
@@ -149,6 +169,18 @@ const Settings = () => {
         }
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+                setToast({ message: 'File size must be less than 5MB', type: 'error' });
+                return;
+            }
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
     return (
         <div className="space-y-6">
             {toast && (
@@ -169,12 +201,25 @@ const Settings = () => {
                 <div className="lg:col-span-1 space-y-6">
                     {/* User Profile Summary */}
                     <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 text-center">
-                        <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
-                            {profileData.profilePicture ? (
-                                <img src={profileData.profilePicture} alt={profileData.name} className="w-full h-full object-cover" />
+                        <div className="w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden relative group">
+                            {previewUrl || profileData.profilePicture ? (
+                                <img
+                                    src={previewUrl || getImageUrl(profileData.profilePicture)!}
+                                    alt={profileData.name}
+                                    className="w-full h-full object-cover"
+                                />
                             ) : (
-                                <User className="w-12 h-12 text-primary-600 dark:text-primary-400" />
+                                <User className="w-16 h-16 text-primary-600 dark:text-primary-400" />
                             )}
+                            <label className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-sm font-medium">
+                                <Upload className="w-6 h-6 mb-1" />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="hidden"
+                                />
+                            </label>
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">{profileData.name}</h2>
                         <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{profileData.role}</p>
@@ -263,14 +308,27 @@ const Settings = () => {
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profile Picture URL</label>
-                                    <input
-                                        type="text"
-                                        placeholder="https://example.com/my-profile.jpg"
-                                        value={profileData.profilePicture}
-                                        onChange={(e) => setProfileData({ ...profileData, profilePicture: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                    />
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profile Picture</label>
+                                    <div className="flex items-center gap-4">
+                                        <label className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-200">
+                                            <Upload className="w-4 h-4" />
+                                            <span>Upload New Picture</span>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                        {selectedFile && (
+                                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                {selectedFile.name}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        JPG, GIF or PNG. Max size 5MB.
+                                    </p>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>

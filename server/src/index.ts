@@ -12,6 +12,11 @@ import { authRoutes } from './routes/auth.js';
 import { mpesaRoutes } from './routes/mpesa.js';
 import notificationRoutes from './routes/notifications.js';
 import userRoutes from './routes/users.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { initRentScheduler, generateMonthlyRent } from './services/rentGenerator.js';
 
@@ -65,6 +70,9 @@ app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
+
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check
 app.get('/api/health', (req, res) => {

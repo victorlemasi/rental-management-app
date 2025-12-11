@@ -33,9 +33,12 @@
         "intasend-node": "^1.1.2",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.0.3",
+        "multer": "^2.0.2",
         "node-cron": "^4.2.1",
         "tsx": "^4.7.0",
         "typescript": "^5.3.3"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/multer": "^2.0.0"
+    }
 }

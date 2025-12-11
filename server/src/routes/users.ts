@@ -2,6 +2,9 @@ import express, { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
 import { auth } from '../middleware/auth.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 // Define AuthRequest interface to match the one in auth middleware
 interface AuthRequest extends express.Request {
@@ -9,6 +12,37 @@ interface AuthRequest extends express.Request {
 }
 
 const router = express.Router();
+
+// Configure Multer for file upload
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = 'uploads/profiles/';
+        // Ensure directory exists
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        // Create unique filename: user-id-timestamp.ext
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'user-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only images are allowed'));
+        }
+    }
+});
 
 // Get user profile
 router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
@@ -43,9 +77,21 @@ router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
 });
 
 // Update user profile
-router.put('/profile', auth, async (req: AuthRequest, res: Response) => {
+router.put('/profile', auth, upload.single('profilePicture'), async (req: AuthRequest, res: Response) => {
     try {
-        const { name, email, phone, profilePicture } = req.body;
+        const { name, email, phone } = req.body;
+        // Check if a file was uploaded? req.file is available due to multer
+        const profilePictureParams = req.body.profilePicture; // If sent as string (existing logic)
+
+        // We'll prioritize the file if it exists
+        const file = (req as any).file;
+        let finalProfilePicture = profilePictureParams;
+
+        if (file) {
+            // Construct the URL. Assuming the server serves /uploads statically.
+            // We'll store the relative path. The frontend can prepend the base URL.
+            finalProfilePicture = `/uploads/profiles/${file.filename}`;
+        }
         const user = await User.findById(req.user.userId);
 
         if (!user) {
@@ -63,7 +109,7 @@ router.put('/profile', auth, async (req: AuthRequest, res: Response) => {
 
         if (name) user.name = name;
         if (phone !== undefined) user.phone = phone;
-        if (profilePicture !== undefined) user.profilePicture = profilePicture;
+        if (finalProfilePicture !== undefined) user.profilePicture = finalProfilePicture;
 
         await user.save();
 
