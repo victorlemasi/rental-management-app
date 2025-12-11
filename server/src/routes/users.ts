@@ -22,14 +22,15 @@ const router = express.Router();
 // Configure Multer for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // Use absolute path based on this file's location to ensure consistency with static serve
-        // users.ts is in src/routes, so we go up two levels to src, then to server root, then to uploads
-        const uploadDir = path.join(__dirname, '../../uploads/profiles');
-        console.log('Uploading to directory:', uploadDir);
+        // Use process.cwd() to target the server root directly
+        // This is more reliable than __dirname across different build environments (dist vs src)
+        const uploadDir = path.join(process.cwd(), 'uploads/profiles');
+        console.log('Current Workimg Directory:', process.cwd());
+        console.log('Target Upload Directory:', uploadDir);
 
         // Ensure directory exists
         if (!fs.existsSync(uploadDir)) {
-            console.log('Creating directory...');
+            console.log('Creating directory:', uploadDir);
             fs.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);

@@ -72,7 +72,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/users', userRoutes);
 
 // Serve static files
-const uploadsPath = path.join(__dirname, '../uploads');
+// Use process.cwd() to be consistent with upload path
+const uploadsPath = path.join(process.cwd(), 'uploads');
 console.log('Serving static files from:', uploadsPath);
 app.use('/uploads', express.static(uploadsPath));
 
