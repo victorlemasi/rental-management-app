@@ -17,6 +17,7 @@ const Settings = () => {
         name: user?.name || 'Admin User',
         email: user?.email || 'admin@example.com',
         phone: '',
+        profilePicture: user?.profilePicture || '',
         role: user?.role || 'Administrator',
         status: 'active',
         isVerified: false,
@@ -50,6 +51,7 @@ const Settings = () => {
                     name: profile.name,
                     email: profile.email,
                     phone: profile.phone || '',
+                    profilePicture: profile.profilePicture || '',
                     role: profile.role,
                     status: profile.status || 'active',
                     isVerified: profile.isVerified || false,
@@ -75,7 +77,8 @@ const Settings = () => {
             const response = await userAPI.updateProfile({
                 name: profileData.name,
                 email: profileData.email,
-                phone: profileData.phone
+                phone: profileData.phone,
+                profilePicture: profileData.profilePicture
             });
 
             // Update the auth context with new user data
@@ -160,8 +163,12 @@ const Settings = () => {
                 <div className="lg:col-span-1 space-y-6">
                     {/* User Profile Summary */}
                     <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 text-center">
-                        <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <User className="w-12 h-12 text-primary-600 dark:text-primary-400" />
+                        <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                            {profileData.profilePicture ? (
+                                <img src={profileData.profilePicture} alt={profileData.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <User className="w-12 h-12 text-primary-600 dark:text-primary-400" />
+                            )}
                         </div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">{profileData.name}</h2>
                         <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{profileData.role}</p>
@@ -246,6 +253,16 @@ const Settings = () => {
                                         type="text"
                                         value={profileData.phone}
                                         onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profile Picture URL</label>
+                                    <input
+                                        type="text"
+                                        placeholder="https://example.com/my-profile.jpg"
+                                        value={profileData.profilePicture}
+                                        onChange={(e) => setProfileData({ ...profileData, profilePicture: e.target.value })}
                                         className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                                     />
                                 </div>

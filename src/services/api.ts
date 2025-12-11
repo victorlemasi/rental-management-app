@@ -335,7 +335,7 @@ export const userAPI = {
         return safeJsonParse(response);
     },
 
-    updateProfile: async (data: { name?: string; email?: string; phone?: string }) => {
+    updateProfile: async (data: { name?: string; email?: string; phone?: string; profilePicture?: string }) => {
         const response = await fetch(`${API_BASE_URL}/users/profile`, {
             method: 'PUT',
             headers: getHeaders(),

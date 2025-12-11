@@ -54,9 +54,13 @@ const Header = ({ onMenuClick }: HeaderProps) => {
                     </div>
                     <button
                         onClick={() => navigate('/settings')}
-                        className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
+                        className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors overflow-hidden border border-gray-200 dark:border-slate-700"
                     >
-                        <User className="w-5 h-5 sm:w-6 sm:h-6" />
+                        {user?.profilePicture ? (
+                            <img src={user.profilePicture} alt={user.name} className="w-full h-full object-cover" />
+                        ) : (
+                            <User className="w-5 h-5 sm:w-6 sm:h-6" />
+                        )}
                     </button>
                 </div>
             </div>

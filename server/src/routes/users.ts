@@ -23,6 +23,7 @@ router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
             name: user.name,
             email: user.email,
             phone: user.phone || '',
+            profilePicture: user.profilePicture || '',
             role: user.role,
             createdAt: user.createdAt,
             lastLogin: user.lastLogin,
@@ -44,7 +45,7 @@ router.get('/profile', auth, async (req: AuthRequest, res: Response) => {
 // Update user profile
 router.put('/profile', auth, async (req: AuthRequest, res: Response) => {
     try {
-        const { name, email, phone } = req.body;
+        const { name, email, phone, profilePicture } = req.body;
         const user = await User.findById(req.user.userId);
 
         if (!user) {
@@ -62,6 +63,7 @@ router.put('/profile', auth, async (req: AuthRequest, res: Response) => {
 
         if (name) user.name = name;
         if (phone !== undefined) user.phone = phone;
+        if (profilePicture !== undefined) user.profilePicture = profilePicture;
 
         await user.save();
 
@@ -71,6 +73,7 @@ router.put('/profile', auth, async (req: AuthRequest, res: Response) => {
             name: user.name,
             email: user.email,
             phone: user.phone,
+            profilePicture: user.profilePicture,
             role: user.role
         };
 
