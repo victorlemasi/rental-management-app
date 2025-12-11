@@ -7,18 +7,24 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
+import { fileURLToPath } from 'url';
+
 // Define AuthRequest interface to match the one in auth middleware
 interface AuthRequest extends express.Request {
     user?: any;
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
 // Configure Multer for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // Use absolute path relative to project root
-        const uploadDir = path.join(process.cwd(), 'uploads', 'profiles');
+        // Use absolute path based on this file's location to ensure consistency with static serve
+        // users.ts is in src/routes, so we go up two levels to src, then to server root, then to uploads
+        const uploadDir = path.join(__dirname, '../../uploads/profiles');
         console.log('Uploading to directory:', uploadDir);
 
         // Ensure directory exists
