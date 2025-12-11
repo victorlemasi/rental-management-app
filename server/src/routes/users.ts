@@ -17,9 +17,13 @@ const router = express.Router();
 // Configure Multer for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const uploadDir = 'uploads/profiles/';
+        // Use absolute path relative to project root
+        const uploadDir = path.join(process.cwd(), 'uploads', 'profiles');
+        console.log('Uploading to directory:', uploadDir);
+
         // Ensure directory exists
         if (!fs.existsSync(uploadDir)) {
+            console.log('Creating directory...');
             fs.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);
@@ -27,7 +31,9 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         // Create unique filename: user-id-timestamp.ext
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'user-' + uniqueSuffix + path.extname(file.originalname));
+        const filename = 'user-' + uniqueSuffix + path.extname(file.originalname);
+        console.log('Generated filename:', filename);
+        cb(null, filename);
     }
 });
 
@@ -37,9 +43,11 @@ const upload = multer({
         fileSize: 5 * 1024 * 1024 // 5MB limit
     },
     fileFilter: (req, file, cb) => {
+        console.log('Processing file:', file.originalname, file.mimetype);
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
+            console.error('File rejected: Not an image');
             cb(new Error('Only images are allowed'));
         }
     }
